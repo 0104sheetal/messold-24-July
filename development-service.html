@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Development Architecture V7 — MESSOLD</title>
+    
+    <!-- Link to General Sans and Geist via CDN for proper font rendering -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist-sans@1.0.1/dist/geist-sans.css">
+    
+    <style>
+        /* --- BRAND DESIGN CORE SYSTEMS --- */
+        :root {
+            --bg-master: #050505;
+            --text-master: #ffffff;
+            --border-master: rgba(255, 255, 255, 0.1);
+            --accent-master: #ffffff;
+            --font-editorial: "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.5, 1);
+            --transition-color: background-color 0.8s var(--ease-cinematic), color 0.8s var(--ease-cinematic), border-color 0.8s var(--ease-cinematic);
+        }
+
+        /* --- IMMERSIVE OVERRIDES & UTILITIES --- */
+        .ms-theme-engine {
+            font-family: var(--font-editorial);
+            background-color: var(--bg-master);
+            color: var(--text-master);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: var(--transition-color);
+            font-weight: 300; 
+        }
+
+        .ms-theme-engine *, .ms-theme-engine *::before, .ms-theme-engine *::after {
+            box-sizing: inherit;
+        }
+
+        /* Dynamic Background Color Inversions for targeted middle/end sections */
+        .ms-theme-engine .dynamic-bg-transition {
+            transition: var(--transition-color);
+        }
+        
+        /* Updated: Dynamically shifts values to white context seamlessly on scroll intersection */
+        .ms-theme-engine .dynamic-bg-transition.bg-active-state {
+            --bg-master: #ffffff; 
+            --text-master: #050505;
+            /*--border-master: rgba(5, 5, 5, 0.12);*/
+            background-color: var(--bg-master);
+            color: var(--text-master);
+        }
+
+        .layout-wrapper {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 5rem;
+        }
+
+        @media (max-width: 991px) {
+            .layout-wrapper { padding: 0 2.5rem; }
+        }
+        @media (max-width: 768px) {
+            .layout-wrapper { padding: 0 1.5rem; }
+        }
+
+        /* Spacing System - Cleaned up and standardized across devices */
+        .section-padding {
+            padding: 5.5rem 0;
+        }
+        @media (max-width: 991px) {
+            .section-padding { padding: 4.5rem 0; }
+        }
+        @media (max-width: 768px) {
+            .section-padding { padding: 3.5rem 0; }
+        }
+
+        /* Generic Elegant Typographic Indicators */
+        .label-editorial {
+            font-size: 0.75rem;
+            color: inherit;
+            font-family: var(--font-editorial);
+            letter-spacing: 0.1em;
+            display: inline-block;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+
+        .cta-editorial-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2.5rem;
+            border: 1px solid var(--text-master);
+            background: transparent;
+            color: var(--text-master);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 300;
+            transition: all 0.4s var(--ease-cinematic);
+        }
+        .cta-editorial-btn:hover {
+            background: var(--text-master);
+            color: var(--bg-master);
+        }
+
+        /* --- ADVANCED SCROLL-ANIMATING HERO SECTION --- */
+        .hero-scroll-container {
+            position: relative;
+            height: 200vh;
+            background: #050505;
+        }
+
+        .hero-sticky-viewport {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero-content-overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #ffffff;
+            max-width: 1100px;
+            padding: 0 2rem;
+            will-change: transform, opacity;
+            transform-style: preserve-3d;
+        }
+
+        .hero-title-headline {
+            font-size: clamp(2.8rem, 4.5vw, 5.5rem);
+            font-weight: 300;
+            line-height: 1.3;
+            letter-spacing: -0.04em;
+            margin-bottom: 1rem;
+            margin-top: 0rem;
+        }
+        .hero-title-headline span { font-weight: 300; display: block; }
+
+        .hero-paragraph-desc {
+            font-size: clamp(1rem, 1.5vw, 1.05rem);
+            font-weight: 400;
+            opacity: 0.8;
+            max-width: 650px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        .hero-action-row .cta-editorial-btn { 
+            border-color: #ffffff; 
+            color: #ffffff; 
+        }
+        .hero-action-row .cta-editorial-btn:hover { 
+            background: #ffffff; 
+            color: #050505; 
+        }
+
+        .hero-premium-ticker-stack {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: #000000;
+            /*border-top: 1px solid rgba(255, 255, 255, 0.08);*/
+            padding: 0.5rem 0;
+            overflow: hidden;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            will-change: transform;
+        }
+
+        .ticker-scroller-track {
+            display: flex;
+            width: max-content;
+            animation: infiniteLoopMarquee 28s linear infinite;
+        }
+        .ticker-scroller-track.reverse-track {
+            animation: infiniteLoopMarqueeReverse 28s linear infinite;
+        }
+
+        .ticker-scroller-item {
+            font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            padding: 0 3rem;
+            font-weight: 200;
+            opacity: 0.25;
+            transition: opacity 0.4s ease;
+        }
+        .ticker-scroller-item:hover { opacity: 0.9; }
+        .ticker-scroller-item strong { font-weight: 400; color: #ffffff; }
+
+        @keyframes infiniteLoopMarquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+        @keyframes infiniteLoopMarqueeReverse {
+            0% { transform: translate3d(-50%, 0, 0); }
+            100% { transform: translate3d(0, 0, 0); }
+        }
+
+        /* --- DESCRIPTIVE SHOPIFY CHAMPIONS SHOWCASE --- */
+        .champions-split-showcase {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 5rem;
+            align-items: center;
+            padding-bottom: 2rem;
+        }
+        @media (max-width: 991px) {
+            .champions-split-showcase { grid-template-columns: 1fr; gap: 3rem; }
+        }
+        
+        .champions-editorial-statement {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 0rem;
+        }
+        .champions-editorial-statement strong { font-weight: 400; }
+        
+        .champions-prose-description {
+            font-size: 1rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .champions-visual-frame {
+            background: var(--border-master);
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            border: 1px solid var(--border-master);
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        .champions-visual-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        span.label-editorial.omnichannel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 0rem 3rem;
+        }
+
+        .champions-marquee-wrapper {
+            overflow: hidden;
+            width: 100%;
+            border-top: 1px solid var(--border-master);
+            border-bottom: 1px solid var(--border-master);
+            padding: 1.8rem 0;
+            margin-top: 1rem;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        .champions-flex-track {
+            display: flex;
+            gap: 5rem;
+            width: max-content;
+            animation: infiniteLoopMarquee 20s linear infinite;
+            align-items: center;
+        }
+        .champion-badge-text {
+            font-size: 1.3rem;
+            font-weight: 200;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        .champion-badge-text strong { font-weight: 400; }
+
+        /* --- NEW SHOPIFY CHAMPIONS SECTION LAYOUT --- */
+        .champions-inverted-showcase {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+        @media (max-width: 991px) {
+            .champions-inverted-showcase { grid-template-columns: 1fr; gap: 3rem; }
+            .champions-inverted-showcase .champions-visual-frame { order: -1; }
+        }
+
+        .marketing-marquee-wrapper {
+            overflow: hidden;
+            width: 100%;
+            border-bottom: 1px solid var(--border-master);
+            padding: 2.5rem 0;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        
+        .marketing-logo-track {
+            display: flex;
+            gap: 6rem;
+            width: max-content;
+            animation: infiniteLoopMarquee 25s linear infinite;
+            align-items: center;
+        }
+
+        .marketing-logo-item {
+            height: 32px;
+            width: auto;
+            opacity: 0.4;
+            transition: opacity 0.4s ease, filter 0.4s ease;
+            filter: grayscale(1) brightness(2);
+        }
+        .dynamic-bg-transition.bg-active-state .marketing-logo-item {
+            filter: grayscale(1) brightness(0);
+        }
+        .marketing-logo-item:hover {
+            opacity: 1;
+            filter: grayscale(0) brightness(1);
+        }
+
+        /* --- EDITORIAL SPLIT CONFIGURATION --- */
+        .split-editorial-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+        @media (max-width: 991px) {
+            .split-editorial-grid { grid-template-columns: 1fr; gap: 0rem; }
+        }
+
+        .split-statement-sticky {
+            position: sticky;
+            top: 6rem;
+        }
+        .split-statement-headline {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+        .split-statement-headline span { display: block; font-weight: 300; margin-top: 1rem; }
+
+        .split-reasons-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .reason-typography-block {
+            opacity: 0.15;
+            transform: translateY(30px);
+            transition: all 0.8s var(--ease-cinematic);
+        }
+        .reason-typography-block.revealed-node {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reason-node-num {
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            opacity: 0.7;
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .reason-node-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0;
+            letter-spacing: 0.01em;
+            margin-top: 0;
+        }
+        .reason-node-desc {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            opacity: 0.75;
+            font-weight: 400;
+        }
+
+        /* --- DEPLOYMENT ROUTINE LABELS OPTIMIZATION --- */
+        .process-scroll-jacking-stage {
+            position: relative;
+            height: 380vh;
+            background: #050505;
+            color: #ffffff;
+        }
+
+        .process-sticky-latch {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .process-header-container {
+            width: 100%;
+            padding: 0 5rem;
+            margin-bottom: 2rem;
+            position: absolute;
+            top: 12%;
+            left: 0;
+            z-index: 5;
+        }
+        @media (max-width: 991px) { .process-header-container { padding: 0 2.5rem; } }
+        @media (max-width: 768px) { .process-header-container { padding: 0 1.5rem; top: 6%; } }
+
+        h2.our-process-headline {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 300;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            padding-bottom: 01.5rem;
+            margin-top: 0;
+        }
+
+        .process-horizontal-track {
+            display: flex;
+            height: fit-content;
+            width: max-content;
+            padding: 0 5rem;
+            will-change: transform;
+            transition: transform 0.1s linear;
+            margin-top: 0rem;
+        }
+
+        .process-stage-node {
+            width: clamp(260px, 30vw, 360px);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 1.5rem 0 2rem;
+            margin: 0 1.5rem;
+            opacity: 0.15;
+            transform: scale(0.96);
+            transition: opacity 0.5s var(--ease-cinematic), transform 0.5s var(--ease-cinematic), border-color 0.5s var(--ease-cinematic);
+        }
+        /*.process-stage-node:first-child { border-left: none; margin-left: 0; padding-left: 0; }*/
+        
+        .process-stage-node.revealed-active-stage {
+            opacity: 1;
+            transform: scale(1);
+            border-left-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .process-stage-node.faded-out-stage {
+            opacity: 0.15 !important;
+            transform: scale(0.95);
+        }
+
+        .stage-node-title-row {
+            margin-bottom: -1rem;
+        }
+        .stage-card-num {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+        .stage-card-title {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 300;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        .stage-card-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.7;
+            font-weight: 300;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .process-scroll-jacking-stage {
+                height: auto;
+                background: #050505;
+            }
+            .process-sticky-latch {
+                position: relative;
+                height: auto;
+                padding: 4rem 1.5rem;
+            }
+            .process-header-container {
+                position: relative;
+                top: 0; left: 0;
+                padding: 0;
+                margin-bottom: 0rem;
+            }
+            .process-horizontal-track {
+                flex-direction: column;
+                width: 100%;
+                padding: 0;
+                margin-top: 0;
+                transform: none !important;
+                gap: 3rem;
+            }
+            .process-stage-node {
+                width: 100%;
+                margin: 0;
+                padding: 0 0 0 1.5rem;
+                border-left: 1px solid rgba(255, 255, 255, 0.2);
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+
+        /* --- CAPABILITY VECTORS MATRIX WITH ICONS --- */
+        .capability-asymmetrical-matrix {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        @media (max-width: 991px) {
+            .capability-asymmetrical-matrix { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .capability-asymmetrical-matrix { grid-template-columns: 1fr; gap: 0}
+        }
+
+        .capability-matrix-node {
+            border-top: 1px solid var(--border-master);
+            padding-top: 2rem;
+            transition: border-color 0.4s ease;
+        }
+        .capability-matrix-node:hover {
+            border-color: var(--text-master);
+        }
+        
+        .cap-matrix-icon-frame {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cap-matrix-icon-frame svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: var(--text-master);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.4s ease;
+        }
+
+        .cap-matrix-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+        .cap-matrix-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        /* --- RIGOROUS COUNTERS SYSTEM --- */
+        .engineering-editorial-column {
+            display: flex;
+            flex-direction: column;
+            gap: 6rem;
+            margin-top: 3rem;
+        }
+
+        .engineering-block-item {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 5rem;
+            align-items: center;
+        }
+        .engineering-block-item.alt-block-layout {
+            grid-template-columns: 0.9fr 1.1fr;
+        }
+
+        @media (max-width: 991px) {
+            .engineering-block-item, .engineering-block-item.alt-block-layout {
+                grid-template-columns: 1fr;
+                gap: 0rem;
+            }
+            .engineering-block-item.alt-block-layout .engineering-media-wrapper {
+                order: -1;
+            }
+        }
+
+        .engineering-media-wrapper {
+            background: var(--border-master);
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            transition: background-color 0.8s var(--ease-cinematic);
+        }
+        .engineering-media-wrapper img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .engineering-notes-box {
+            padding: 1rem 0;
+        }
+
+        .engineering-notes-headline {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .engineering-notes-body {
+            font-size: 1rem;
+            line-height: 1.7;
+            opacity: 0.7;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .engineering-metrics-badge {
+            display: inline-flex;
+            gap: 3rem;
+            border-top: 1px solid var(--border-master);
+            padding-top: 1.5rem;
+            width: 100%;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+
+        .metric-counter-block {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 300;
+        }
+        .metric-counter-display {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: var(--text-master);
+            margin-top: 0.25rem;
+            letter-spacing: -0.03em;
+            transition: color 0.8s var(--ease-cinematic);
+        }
+
+        /* --- OPERATIONAL BLUEPRINT --- */
+        .blueprint-horizontal-viewport {
+            margin-top: 3rem;
+            border: 1px solid var(--border-master);
+            display: flex;
+            height: 420px;
+            overflow: hidden;
+            transition: border-color 0.4s ease;
+        }
+        @media (max-width: 991px) {
+            .blueprint-horizontal-viewport {
+                flex-direction: column;
+                height: auto;
+            }
+        }
+
+        .blueprint-accordion-pane {
+            flex: 1;
+            border-right: 1px solid var(--border-master);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            background: var(--bg-master);
+            transition: flex 0.6s var(--ease-cinematic), background-color 0.4s ease, border-color 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        .blueprint-accordion-pane:last-child { border-right: none; }
+
+        @media (max-width: 991px) {
+            .blueprint-accordion-pane {
+                border-right: none;
+                border-bottom: 1px solid var(--border-master);
+                min-height: 140px;
+                padding: 2rem;
+                flex: none;
+            }
+            .blueprint-accordion-pane:last-child { border-bottom: none; }
+        }
+
+        .blueprint-accordion-pane:hover {
+            flex: 3;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+        }
+        
+        /* Dark context override fallback to ensure contrast inside variable containers if background toggles */
+        .dynamic-bg-transition .blueprint-accordion-pane:hover {
+            background: rgba(5, 5, 5, 0.03);
+        }
+
+        .blueprint-pane-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 20px;
+        }
+        .blueprint-pane-index { 
+            font-size: 0.8rem; 
+            opacity: 0.4; 
+            font-weight: 300; 
+            position: relative;
+            z-index: 4;
+        }
+        
+        .blueprint-pane-title {
+            font-size: 1.25rem;
+            font-weight: 400;
+            transform: rotate(-90deg) translate(-20px, 0);
+            transform-origin: left top;
+            white-space: nowrap;
+            position: absolute;
+            top: 160px; 
+            left: 2rem;
+            z-index: 2;
+            transition: transform 0.5s var(--ease-cinematic), top 0.5s var(--ease-cinematic), left 0.5s var(--ease-cinematic);
+        }
+
+        .blueprint-accordion-pane:hover .blueprint-pane-title {
+            transform: rotate(0) translate(0, 0);
+            position: relative;
+            top: 0; 
+            left: 0;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .blueprint-pane-hidden-content {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease 0.15s, transform 0.4s ease 0.15s;
+            max-width: 100%;
+        }
+        .blueprint-accordion-pane:hover .blueprint-pane-hidden-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 991px) {
+            .blueprint-pane-title {
+                transform: rotate(0) !important;
+                position: relative !important;
+                top: 0 !important; 
+                left: 0 !important;
+                margin-top: 0.5rem;
+            }
+            .blueprint-pane-hidden-content {
+                opacity: 1;
+                transform: translateY(0);
+                margin-top: 1rem;
+            }
+            .blueprint-accordion-pane:hover { flex: none; padding: 2rem; }
+        }
+
+        .blueprint-pane-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        .expertise-sticky-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* --- VERIFIED TELEMETRY LIGHTBOX MODAL --- */
+        .netflix-slider-outer {
+            position: relative;
+            margin-top: 3rem;
+        }
+
+        .netflix-track-clip {
+            overflow: hidden;
+            padding: 1rem 0;
+        }
+
+        .netflix-horizontal-strip {
+            display: flex;
+            gap: 2.5rem;
+            transition: transform 0.6s var(--ease-cinematic);
+            width: max-content;
+        }
+
+        .netflix-video-card {
+            width: 380px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        @media (max-width: 480px) {
+            .netflix-video-card { width: 280px; }
+        }
+
+        .netflix-video-element-wrapper {
+            position: relative;
+            aspect-ratio: 16/10;
+            background: #000;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.4s var(--ease-cinematic);
+        }
+        .netflix-video-card:hover .netflix-video-element-wrapper {
+            transform: scale(1.02);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .netflix-video-element-wrapper video {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.65;
+            transition: opacity 0.3s ease;
+        }
+        .netflix-video-card:hover video { opacity: 0.9; }
+
+        .netflix-play-trigger-icon {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #ffffff;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+        .netflix-video-card:hover .netflix-play-trigger-icon {
+            background: #ffffff; color: #050505; scale: 1.1;
+        }
+
+        .netflix-card-quote {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            opacity: 0.85;
+        }
+
+        .netflix-card-profile-meta {
+            border-top: 1px solid var(--border-master);
+            padding-top: 1rem;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        .netflix-profile-name { font-size: 0.9rem; font-weight: 400; margin-bottom: 0.2rem; }
+        .netflix-profile-brand { font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 300; }
+
+        .netflix-controls-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .netflix-arrow-trigger {
+            width: 50px; height: 50px;
+            border: 1px solid var(--text-master);
+            background: transparent;
+            color: var(--text-master);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .netflix-arrow-trigger:hover {
+            background: var(--text-master); color: var(--bg-master);
+        }
+        .netflix-arrow-trigger:disabled {
+            opacity: 0.2; cursor: not-allowed;
+        }
+
+        .ms-video-lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.96);
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 2rem;
+        }
+        .ms-video-lightbox-overlay.lightbox-is-open {
+            opacity: 1; pointer-events: auto;
+        }
+        .lightbox-window-container {
+            position: relative;
+            width: 100%; max-width: 960px;
+            aspect-ratio: 16/9;
+            background: #000;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+        .lightbox-window-container video {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+        .lightbox-close-trigger {
+            position: absolute;
+            top: -3.5rem; right: 0;
+            background: transparent; border: none;
+            color: #ffffff; font-size: 0.9rem; text-transform: uppercase;
+            letter-spacing: 0.15em; cursor: pointer; opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .lightbox-close-trigger:hover { opacity: 1; }
+
+
+        /* --- OPTIMIZED 3-COLUMN COHESIVE MASONRY ARCHITECTURE --- */
+        .premium-frameworks-showcase {
+            position: relative;
+        }
+        
+        .industry-cases-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 6rem;
+            align-items: start;
+        }
+        
+        @media (max-width: 1024px) { 
+            .industry-cases-grid-layout { 
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem;
+            } 
+        }
+        @media (max-width: 768px) { 
+            .industry-cases-grid-layout { 
+                grid-template-columns: 1fr; 
+                gap: 3.5rem;
+            } 
+        }
+
+        section.section-padding.premium-frameworks-showcase.case-study-project {
+            padding-top: 0rem;
+        }
+
+        .industry-editorial-card-node {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            background: transparent;
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.9s var(--ease-cinematic), transform 0.9s var(--ease-cinematic);
+            will-change: transform;
+        }
+        
+        .industry-editorial-card-node.revealed-node {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Fixed / Cleaned Asymmetry System to unalign horizontally cleanly instead of disjointed walls */
+        @media (min-width: 1025px) {
+            .industry-editorial-card-node.offset-position-high {
+                transform: translateY(-20px);
+                margin-bottom: -20px;
+            }
+            .industry-editorial-card-node.offset-position-low {
+                transform: translateY(20px);
+                margin-top: 20px;
+            }
+            .industry-editorial-card-node.offset-position-base {
+                transform: translateY(0);
+            }
+        }
+
+        /* Standardized Premium Image Canvas Ratio System Across All Cards */
+        .industry-editorial-card-node .ind-card-media-canvas {
+            aspect-ratio: 16/10 !important; /* Forces uniform image grid metrics */
+        }
+
+        .ind-card-media-canvas {
+            width: 100%;
+            background: #111;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.4s ease;
+        }
+
+        .ind-card-media-canvas img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.3) brightness(0.9);
+            transition: transform 0.8s var(--ease-cinematic), filter 0.8s var(--ease-cinematic);
+            will-change: transform;
+        }
+
+        .ind-card-media-canvas::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(5,5,5, 0.8));
+            opacity: 0.4;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .industry-editorial-card-node:hover .ind-card-media-canvas img {
+            transform: scale(1.05);
+            filter: grayscale(0) brightness(1.05);
+        }
+
+        .industry-editorial-card-node:hover .ind-card-media-canvas {
+            border-color: var(--text-master);
+        }
+
+        .ind-card-content-block {
+            padding: 1.5rem 0 0 0;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .ind-card-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .ind-card-label-sector {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        .ind-card-metric-badge {
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            color: inherit;
+            opacity: 0.8;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .industry-editorial-card-node:hover .ind-card-metric-badge {
+            border-color: var(--text-master);
+            color: var(--text-master);
+        }
+
+        .ind-card-heading-title {
+            font-size: clamp(1.3rem, 2vw, 1.6rem);
+            font-weight: 400;
+            line-height: 1.3;
+            margin: 0.25rem 0 0.5rem 0;
+            letter-spacing: -0.02em;
+            color: inherit;
+        }
+
+        .ind-card-prose-summary {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.6;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .ind-card-action-anchor {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+            border-bottom: 1px solid var(--border-master);
+            width: fit-content;
+            padding-bottom: 2px;
+            color: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .ind-card-action-anchor::after {
+            content: "→";
+            transform: translate3d(0, 0, 0);
+            transition: transform 0.4s var(--ease-cinematic);
+        }
+        
+        .industry-editorial-card-node:hover .ind-card-action-anchor {
+            border-color: var(--text-master);
+        }
+        .industry-editorial-card-node:hover .ind-card-action-anchor::after {
+            transform: translate3d(4px, 0, 0);
+        }
+
+        .industry-global-action-footer-row {
+            margin-top: 6rem;
+            text-align: center;
+        }
+
+        /* --- CLEAR ANSWERS (FAQ) --- */
+        .premium-faq-split-axis {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 6rem;
+        }
+        @media (max-width: 991px) {
+            .premium-faq-split-axis { grid-template-columns: 1fr; gap: 0rem; }
+        }
+
+        .faq-left-editorial-panel h2 {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+        .faq-left-editorial-panel p {
+            font-size: 1rem; opacity: 0.7; line-height: 1.6; font-weight: 300; margin-bottom: 3rem;
+        }
+
+        .faq-editorial-contacts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .faq-contact-anchor {
+            font-size: 0.95rem; color: var(--text-master); text-decoration: none; font-weight: 500; width: fit-content; border-bottom: 1px solid var(--text-master); padding-bottom: 0.2rem;
+        }
+
+        .faq-accordion-stack {
+            border-top: 1px solid var(--border-master);
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+
+        .faq-accordion-node {
+            border-bottom: 0.2px solid #d2cece;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        .faq-node-trigger {
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            /*border-bottom: 0.2px solid #d2cece;*/
+        }
+        .faq-node-headline { font-size: 1.15rem; font-weight: 400; padding-right: 2rem; }
+        .faq-node-sign { font-size: 1.2rem; font-weight: 200; transition: transform 0.4s var(--ease-cinematic); }
+        
+        .faq-node-hidden-drawer {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease-cinematic);
+        }
+        .faq-drawer-inner-prose {
+            padding-bottom: 2rem; font-size: 0.95rem; line-height: 1.65; opacity: 0.7; font-weight: 300;
+        }
+
+        .faq-accordion-node.drawer-active .faq-node-sign {
+            transform: rotate(45deg);
+        }
+
+        /* --- STUDIO FOOTER STAGE --- */
+        .asymmetrical-studio-footer {
+            padding: 6rem 0 4rem 0;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 6rem;
+            align-items: end;
+        }
+        @media (max-width: 991px) {
+            .asymmetrical-studio-footer { grid-template-columns: 1fr; gap: 4rem; }
+        }
+
+        .footer-left-headline h2 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 200;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+        }
+
+        .footer-right-telemetry-directory {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .footer-directory-nav-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .footer-directory-nav-block label {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.4; margin-bottom: 0.5rem; font-weight: 300;
+        }
+        .footer-directory-nav-block a {
+            font-size: 1.5rem; color: var(--text-master); text-decoration: none; font-weight: 200; width: fit-content; transition: opacity 0.3s ease;
+        }
+        .footer-directory-nav-block a:hover { opacity: 0.6; }
+
+        .footer-meta-notes-row {
+            display: flex;
+            gap: 3rem;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
+        /* --- GLOBAL TABLET AND SMART MOBILE VIEWPORT OVERRIDES --- */
+        @media (max-width: 1024px) {
+            .split-statement-sticky {
+                position: relative;
+                top: 0;
+                margin-bottom: 3rem;
+            }
+            .industry-global-action-footer-row {
+                margin-top: 4rem;
+            }
+            .netflix-video-card {
+                width: 320px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .marketing-marquee-wrapper {
+                padding: 1.5rem 0;
+            }
+            .marketing-logo-track {
+                gap: 3.5rem;
+            }
+            .marketing-logo-item {
+                height: 24px;
+            }
+            span.label-editorial.omnichannel {
+                padding: 1rem 0 1.5rem;
+            }
+            .split-reasons-list {
+                gap: 2.5rem;
+            }
+            .netflix-horizontal-strip {
+                gap: 1.5rem;
+            }
+            .netflix-video-card {
+                width: 290px;
+            }
+            .netflix-slider-outer {
+                margin-top: 1.5rem;
+            }
+            .netflix-controls-row {
+                margin-top: 1.5rem;
+                justify-content: center;
+            }
+            .lightbox-close-trigger {
+                top: -2.5rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body class="ms-theme-engine color-stage-black">
+
+    <!-- 1. HERO SCROLL CONTAINER -->
+    <div class="hero-scroll-container">
+        <section class="hero-sticky-viewport">
+            <div class="hero-content-overlay" id="heroText">
+                <span class="label-editorial">Website Development Service</span>
+                <h1 class="hero-title-headline">Engineering Shopify Stores <span>That Scale Businesses.</span></h1>
+                <p class="hero-paragraph-desc">Bespoke technical execution engineered exclusively for high-volume enterprise brands requiring absolute stability, architectural modularity, and rapid performance velocity.</p>
+                <div class="hero-action-row">
+                    <a href="#footerContact" class="cta-editorial-btn">Book Discovery Call</a>
+                </div>
+            </div>
+            
+            <div class="hero-premium-ticker-stack" id="heroTicker">
+                <div class="ticker-scroller-track">
+                    <div class="ticker-scroller-item">Shopify Plus <strong>Enterprise</strong></div>
+                    <div class="ticker-scroller-item">Headless <strong>Commerce</strong></div>
+                    <div class="ticker-scroller-item">Subscriptions <strong>Ecosystems</strong></div>
+                    <div class="ticker-scroller-item">Wholesale <strong>Architecture</strong></div>
+                    <div class="ticker-scroller-item">Shopify Plus <strong>Enterprise</strong></div>
+                    <div class="ticker-scroller-item">Headless <strong>Commerce</strong></div>
+                    <div class="ticker-scroller-item">Subscriptions <strong>Ecosystems</strong></div>
+                    <div class="ticker-scroller-item">Wholesale <strong>Architecture</strong></div>
+                </div>
+                <div class="ticker-scroller-track reverse-track">
+                    <div class="ticker-scroller-item">Metaobjects <strong>Layering</strong></div>
+                    <div class="ticker-scroller-item">International <strong>Selling</strong></div>
+                    <div class="ticker-scroller-item">ERP <strong>Integrations</strong></div>
+                    <div class="ticker-scroller-item">Checkout <strong>Extensions</strong></div>
+                    <div class="ticker-scroller-item">Metaobjects <strong>Layering</strong></div>
+                    <div class="ticker-scroller-item">International <strong>Selling</strong></div>
+                    <div class="ticker-scroller-item">ERP <strong>Integrations</strong></div>
+                    <div class="ticker-scroller-item">Checkout <strong>Extensions</strong></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 2. VERIFIED ALIGNMENT CONTAINER -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Verified Alignment</span>
+            
+            <div class="champions-split-showcase">
+                <div>
+                    <h2 class="champions-editorial-statement">An accredited ecosystem for high-growth scale.</h2>
+                    <p class="champions-prose-description">
+                        As vetted technical specialists, we engineer highly optimized storefront parameters that convert traffic at historic thresholds. We bypass the structural limitations of native legacy themes to construct clean codebase configurations tailored perfectly to complex operational flows, international checkout expansion paths, and high-frequency real-time backend updates.
+                    </p>
+                    <a href="#capabilityvectors" class="cta-editorial-btn" style="padding: 0.8rem 2rem; font-size: 0.75rem;">Explore Architecture</a>
+                </div>
+                <div>
+                    <div class="champions-visual-frame">
+                        <img src="https://www.bunastudio.com/cdn/shop/files/DSCF7465-Edit.jpg" alt="MESSOLD enterprise systems engineering interface visualization">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: SHOPIFY CHAMPIONS & OMNICHANNEL MASTERING MARQUEE -->
+    <section class="section-padding dynamic-bg-transition">
+        <div class="layout-wrapper">
+            
+            <div class="champions-inverted-showcase">
+                <div>
+                    <div class="champions-visual-frame">
+                        <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=800&q=80" alt="Shopify Champions Enterprise Scale Execution Framework">
+                    </div>
+                </div>
+                <div>
+                    <h2 class="champions-editorial-statement">Shopify Champions</h2>
+                    <p class="champions-prose-description">
+                        We drive omnichannel market dominance by unifying online storefront architectures with offline physical logic matrices. Our performance setups guarantee seamless brand translation across every consumer breakpoint, offering enterprise businesses unrivaled infrastructure speed, scaling safety nets, and optimized performance mechanics.
+                    </p>
+                    <a href="#footerContact" class="cta-editorial-btn" style="padding: 0.8rem 2rem; font-size: 0.75rem;">Partner With Champions</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interactive Multi-Logo Marketing Ticker Loop -->
+        <div class="marketing-marquee-wrapper">
+
+            <span class="label-editorial omnichannel">Our Leading Partners</span>
+            <div class="marketing-logo-track">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Shopify%20Partner.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/razorpay-logo-white.svg" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/shiprocket_1.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Microsoft-Gold.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Freshworks.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Gokwik.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/google.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Cashfree.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/payu2.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/paypal_1.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/interkart_1.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Shopify%20Partner.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/razorpay-logo-white.svg" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/shiprocket_1.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Microsoft-Gold.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Freshworks.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Gokwik.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/google.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Cashfree.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/payu2.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/paypal_1.png" alt="Amazon Mastery Marketplace">
+                <img class="marketing-logo-item" src="https://www.messold.com/data/logos/interkart_1.png" alt="Amazon Mastery Marketplace">
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. CORE PHILOSOPHY GRID -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <div class="split-editorial-grid">
+                <div class="split-statement-sticky">
+                    <span class="label-editorial">Core Philosophy</span>
+                    <h2 class="split-statement-headline">We don't build websites. <span>We engineer revenue systems.</span></h2>
+                </div>
+                <div class="split-reasons-list">
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">01 / DISCOVERY INTERPOLATION</span>
+                        <h3 class="reason-node-title">Conversion-First UX</h3>
+                        <p class="reason-node-desc">Every interactive node is designed based on deep transactional behavioral data, removing micro-frictional patterns that disrupt paths to conversion.</p>
+                    </div>
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">02 / ARCHITECTURAL INTEGRITY</span>
+                        <h3 class="reason-node-title">Custom Shopify Development</h3>
+                        <p class="reason-node-desc">Clean Liquid code structures and standardized application integrations devoid of typical visual app overhead parameters.</p>
+                    </div>
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">03 / VELOCITY INDEXING</span>
+                        <h3 class="reason-node-title">Fast Loading Performance</h3>
+                        <p class="reason-node-desc">Advanced data fetching models, rigorous asset balancing, and optimized edge delivery systems targeting Core Web Vitals structural health metrics.</p>
+                    </div>
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">04 / LIFECYCLE MANAGEMENT</span>
+                        <h3 class="reason-node-title">Long-term Technical Partnership</h3>
+                        <p class="reason-node-desc">We do not execute transactional drop-offs. We iterate alongside your expansion curves, offering continuous system intelligence support cycles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. DEPLOYMENT ROUTINE (FADE ANIMATION STRIP) -->
+    <div class="process-scroll-jacking-stage" id="deploymentroutine">
+        <section class="process-sticky-latch">
+            <div class="process-header-container">
+                <span class="label-editorial" style="margin-bottom: 0.5rem;">Deployment Routine</span>
+                <h2 class="our-process-headline">Explore Our Process</h2>
+            </div>
+            
+            <div class="process-horizontal-track" id="processTrack">
+                <div class="process-stage-node revealed-active-stage" data-index="0">
+                    <div class="stage-node-title-row">
+                        <span class="stage-card-num">STAGE 01</span>
+                        <h3 class="stage-card-title">Project Kickoff</h3>
+                    </div>
+                    <p class="stage-card-desc">Aligning engineering teams, scoping absolute repository environments, and solidifying milestones configuration parameters.</p>
+                </div>
+                <div class="process-stage-node" data-index="1">
+                    <div class="stage-node-title-row">
+                        <span class="stage-card-num">STAGE 02</span>
+                        <h3 class="stage-card-title">Architectural Scoping</h3>
+                    </div>
+                    <p class="stage-card-desc">Mapping existing data schema mutations, custom application matrices, and edge logic rules parameters securely.</p>
+                </div>
+                <div class="process-stage-node" data-index="2">
+                    <div class="stage-node-title-row">
+                        <span class="stage-card-num">STAGE 03</span>
+                        <h3 class="stage-card-title">Sprint Executions</h3>
+                    </div>
+                    <p class="stage-card-desc">Writing isolated modular code blocks natively matching strict UI specs without standard platform template bloat.</p>
+                </div>
+                <div class="process-stage-node" data-index="3">
+                    <div class="stage-node-title-row">
+                        <span class="stage-card-num">STAGE 04</span>
+                        <h3 class="stage-card-title">System Integration</h3>
+                    </div>
+                    <p class="stage-card-desc">Plugging middleware nodes into ERP systems and connecting real-time inventory management paths flawlessly.</p>
+                </div>
+                <div class="process-stage-node" data-index="4">
+                    <div class="stage-node-title-row">
+                        <span class="stage-card-num">STAGE 05</span>
+                        <h3 class="stage-card-title">Production Delivery</h3>
+                    </div>
+                    <p class="stage-card-desc">Enforcing final zero-downtime canonical migration, pixel accuracy triggers, and live browser optimization cycles.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 5. CAPABILITY VECTORS MATRIX WITH EMBEDDED ICONS -->
+    <section class="section-padding dynamic-bg-transition" id="capabilityvectors">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Capability Vectors</span>
+            <h2 class="split-statement-headline">Architectural Prowess Built Into <br>Shopify Core Systems.</h2>
+            
+            <div class="capability-asymmetrical-matrix">
+                <div class="capability-matrix-node">
+                    <div class="cap-matrix-icon-frame">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="9"></rect>
+                            <rect x="14" y="3" width="7" height="5"></rect>
+                            <rect x="14" y="12" width="7" height="9"></rect>
+                            <rect x="3" y="16" width="7" height="5"></rect>
+                        </svg>
+                    </div>
+                    <h3 class="cap-matrix-title">Shopify Plus Enterprise</h3>
+                    <p class="cap-matrix-desc">Deploying multi-store localization frameworks, complex scripting engines, and highly customizable internal architecture layers.</p>
+                </div>
+                
+                <div class="capability-matrix-node">
+                    <div class="cap-matrix-icon-frame">
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="cap-matrix-title">Custom Theme Development</h3>
+                    <p class="cap-matrix-desc">Semantic, high-performance modular sections built strictly from scratch following precise component specifications.</p>
+                </div>
+                
+                <div class="capability-matrix-node">
+                    <div class="cap-matrix-icon-frame">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3 class="cap-matrix-title">Checkout Customisation</h3>
+                    <p class="cap-matrix-desc">Deploying Shopify Checkout Extensions natively to drive average order value upsells and deep pixel validation mappings.</p>
+                </div>
+                
+                <div class="capability-matrix-node">
+                    <div class="cap-matrix-icon-frame">
+                        <svg viewBox="0 0 24 24">
+                            <line x1="6" y1="3" x2="6" y2="21"></line>
+                            <line x1="18" y1="3" x2="18" y2="21"></line>
+                            <line x1="6" y1="12" x2="18" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 class="cap-matrix-title">App Integrations & APIs</h3>
+                    <p class="cap-matrix-desc">Connecting mission-critical enterprise Resource Planners (ERP) and complex inventory management mechanics through middleware pipelines.</p>
+                </div>
+                
+                <div class="capability-matrix-node">
+                    <div class="cap-matrix-icon-frame">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3 class="cap-matrix-title">Performance Optimisation</h3>
+                    <p class="cap-matrix-desc">Revising layout shifting vectors, establishing strict lazy loading thresholds, and structuring asynchronous rendering priorities.</p>
+                </div>
+                
+                <div class="capability-matrix-node">
+                    <div class="cap-matrix-icon-frame">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="cap-matrix-title">International Expansion</h3>
+                    <p class="cap-matrix-desc">Configuring Shopify Markets to distribute multi-currency processing layers and geo-targeted store distribution routes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. RIGOROUS COUNTERS SYSTEM -->
+    <section class="section-padding dynamic-bg-transition">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Rigorous Specifications</span>
+            <h2 class="split-statement-headline" style="max-width: 600px;">Built Behind The Scenes.</h2>
+            
+            <div class="engineering-editorial-column">
+                <div class="engineering-block-item">
+                    <div class="engineering-media-wrapper">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Core web vitals performance graph dashboard">
+                    </div>
+                    <div class="engineering-notes-box">
+                        <h3 class="engineering-notes-headline">Structural Optimization Architecture</h3>
+                        <p class="engineering-notes-body">We isolate JavaScript initialization paths, completely eliminate layout shifts, and prioritize critical CSS delivery mechanisms. The result is rapid visual stabilization across all modern browser screens.</p>
+                        <div class="engineering-metrics-badge">
+                            <div class="metric-counter-block">Target Speed Index <span class="metric-counter-display" data-target="99">0</span></div>
+                            <div class="metric-counter-block">Accessibility Index <span class="metric-counter-display" data-target="100">0</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="engineering-block-item alt-block-layout">
+                    <div class="engineering-notes-box">
+                        <h3 class="engineering-notes-headline">Semantic Schema & SEO Routing</h3>
+                        <p class="engineering-notes-body">Constructing clean data vocabularies naturally parsing product metaobjects, real-time inventory values, and review metrics down to the structural code layer. Search index engines map out your store effortlessly.</p>
+                        <div class="engineering-metrics-badge">
+                            <div class="metric-counter-block">Structured Entities <span class="metric-counter-display" data-target="45">0</span></div>
+                            <div class="metric-counter-block">Data Accuracy <span class="metric-counter-display" data-target="99">0</span></div>
+                        </div>
+                    </div>
+                    <div class="engineering-media-wrapper">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Structured data code matrix schema layout representation">
+                    </div>
+                </div>
+
+                <div class="engineering-block-item">
+                    <div class="engineering-media-wrapper">
+                        <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80" alt="Conversion tracking server analytics configuration console view">
+                    </div>
+                    <div class="engineering-notes-box">
+                        <h3 class="engineering-notes-headline">Precision Telemetry & Server Tracking</h3>
+                        <p class="engineering-notes-body">Setting up server-side analytics loops that bypass normal web ad-blocking rules to keep attribution records highly accurate across external platforms without loading down the buyer's storefront thread.</p>
+                        <div class="engineering-metrics-badge">
+                            <div class="metric-counter-block">Attribution Boost <span class="metric-counter-display" data-target="18">0</span></div>
+                            <div class="metric-counter-block">Latency (ms) <span class="metric-counter-display" data-target="0">0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. OPERATIONAL BLUEPRINT -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Operational Blueprint</span>
+            <h2 class="split-statement-headline" style="max-width: 600px;">The Engineering Lifecycle.</h2>
+            
+            <div class="blueprint-horizontal-viewport">
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">01</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">Discovery</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Deep structural auditing of API bottlenecks, performance debt, and legacy application parameters.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">02</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">Strategy</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Mapping out integration logic trees, technical layout metrics, and checkout upgrade maps.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">03</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">UX Mapping</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Crafting micro-interaction path diagrams mapped against customer transaction habits.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">04</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">UI Design</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Editorial layout system creation with precise grid properties tailored to premium brands.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">05</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">Development</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Hand-generating modular components using modern, valid Liquid and JS frameworks.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">06</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">Rigorous QA</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Subjecting checkout routing and speed boundaries to cross-device stress testing matrices.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">07</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">Launch</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Executing flawless DNS failover migrations without interrupting live buyer sessions.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-accordion-pane">
+                    <div class="blueprint-pane-top">
+                        <span class="blueprint-pane-index">08</span>
+                    </div>
+                    <h3 class="blueprint-pane-title">Optimisation</h3>
+                    <div class="blueprint-pane-hidden-content">
+                        <p class="blueprint-pane-desc">Iteratively applying performance tuning models based on live post-launch session telemetry.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. VERIFIED TELEMETRY -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Verified Telemetry</span>
+            <h2 class="expertise-sticky-title">Client Video Stories.</h2>
+            
+            <div class="netflix-slider-outer">
+                <div class="netflix-track-clip">
+                    <div class="netflix-horizontal-strip" id="netflixStrip">
+                        
+                        <div class="netflix-video-card" data-video-url="https://assets.mixkit.co/videos/preview/mixkit-corporate-woman-working-with-colleagues-in-office-42267-large.mp4">
+                            <div class="netflix-video-element-wrapper">
+                                <span class="netflix-play-trigger-icon">PLAY</span>
+                                <video loop muted playsinline poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/aayushi.png" src="https://cdn.shopify.com/videos/c/o/v/3919a0774ab744acb272b5fb46764f3b.mov"></video>
+                            </div>
+                            <p class="netflix-card-quote">"MESSOLD completely reconstructed our catalog rendering framework. Real-time conversion trends scaled immediately post-deployment."</p>
+                            <div class="netflix-card-profile-meta">
+                                <h4 class="netflix-profile-name">Aayushi Jain</h4>
+                                <span class="netflix-profile-brand">Founder, Weaving Cult &bull; Apparel</span>
+                            </div>
+                        </div>
+
+                        <div class="netflix-video-card" data-video-url="https://assets.mixkit.co/videos/preview/mixkit-man-working-on-his-laptop-at-home-42284-large.mp4">
+                            <div class="netflix-video-element-wrapper">
+                                <span class="netflix-play-trigger-icon">PLAY</span>
+                                <video loop muted playsinline poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/adib_rais.png" src="https://cdn.shopify.com/videos/c/o/v/d7649d4dc9ff4f20974fe9862cb263a3.mov"></video>
+                            </div>
+                            <p class="netflix-card-quote">"The API checkout layers they built solved complex custom parameters we thought were impossible on standard Shopify layers."</p>
+                            <div class="netflix-card-profile-meta">
+                                <h4 class="netflix-profile-name">Adeeb Rais</h4>
+                                <span class="netflix-profile-brand">Founder, Love a Lot &bull; Cosmetics</span>
+                            </div>
+                        </div>
+
+                        <div class="netflix-video-card" data-video-url="https://assets.mixkit.co/videos/preview/mixkit-working-late-in-a-modern-office-42251-large.mp4">
+                            <div class="netflix-video-element-wrapper">
+                                <span class="netflix-play-trigger-icon">PLAY</span>
+                                <video loop muted playsinline poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/pooja-ps.png" src="https://cdn.shopify.com/videos/c/o/v/4a803f50587d41db9a78c9f3cd1c4ec8.mp4"></video>
+                            </div>
+                            <p class="netflix-card-quote">"Our page score metrics jumped drastically while total bounce profiles reached historic lows inside the first quarter."</p>
+                            <div class="netflix-card-profile-meta">
+                                <h4 class="netflix-profile-name">Dr. Pooja Malhotra</h4>
+                                <span class="netflix-profile-brand">Founder, Powersutra &bull; Wellness</span>
+                            </div>
+                        </div>
+
+                        <div class="netflix-video-card" data-video-url="https://assets.mixkit.co/videos/preview/mixkit-woman-designer-working-on-laptop-42296-large.mp4">
+                            <div class="netflix-video-element-wrapper">
+                                <span class="netflix-play-trigger-icon">PLAY</span>
+                                <video loop muted playsinline poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/yuti.png" src="https://cdn.shopify.com/videos/c/o/v/4a803f50587d41db9a78c9f3cd1c4ec8.mp4"></video>
+                            </div>
+                            <p class="netflix-card-quote">"Architectural transition models handled our high-volume flash sales without single database lock latency dropouts."</p>
+                            <div class="netflix-card-profile-meta">
+                                <h4 class="netflix-profile-name">Yuti Edward</h4>
+                                <span class="netflix-profile-brand">Founder, Udd Studio</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="netflix-controls-row">
+                    <button class="netflix-arrow-trigger" id="netflixPrev" disabled>&larr;</button>
+                    <button class="netflix-arrow-trigger" id="netflixNext">&rarr;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMMERSIVE POPUP LIGHTBOX DOM ELEMENT -->
+    <div class="ms-video-lightbox-overlay" id="videoLightbox">
+        <div class="lightbox-window-container">
+            <button class="lightbox-close-trigger" id="closeLightbox">Close / Esc</button>
+            <video id="lightboxTargetVideo" controls playsinline></video>
+        </div>
+    </div>
+
+    <!-- 9. PREMIUM SECTOR ADAPTABILITY UI SYSTEM -->
+    <section class="section-padding premium-frameworks-showcase case-study-project">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Sector Adaptability</span>
+            <h2 class="split-statement-headline">Tailored Frameworks Across Verticals.</h2>
+            
+            <div class="industry-cases-grid-layout">
+                
+                <!-- Card 1 -->
+                <a href="#footerContact" class="industry-editorial-card-node offset-position-base instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/powersutra_1.png" alt="Aura Apparels Enterprise Luxury Commerce Architecture Interface">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">FASHION</span>
+                            <span class="ind-card-metric-badge">+140% Conversion</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Powersutra</h3>
+                        <p class="ind-card-prose-summary">Complete architecture rebuild mapping isolated collection routing and sub-second asset initialization workflows.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <!-- Card 2 -->
+                <a href="#footerContact" class="industry-editorial-card-node offset-position-high instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/kraft_f61b0bf4-afe9-4cd8-821c-76e3b944ac48.png" alt="Le Soin Headless Pipeline Fast Decoupled Frontend Framework Interface">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">JEWELRY</span>
+                            <span class="ind-card-metric-badge">0.9s LCP Score</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Kraftsmiths</h3>
+                        <p class="ind-card-prose-summary">Deploying decoupled Hydrogen storefront models to remove historical content rendering limits flawlessly.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="#footerContact" class="industry-editorial-card-node offset-position-low instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/Udd_Studio.webp" alt="Verte Metals Integration ERP Core System Pipeline Matrix">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">FASHION</span>
+                            <span class="ind-card-metric-badge">Real-Time ERP Sync</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Udd Studio</h3>
+                        <p class="ind-card-prose-summary">Bespoke background schema links balancing high-value catalog inventories across physical nodes simultaneously.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <!-- Card 4 -->
+                <a href="#footerContact" class="industry-editorial-card-node offset-position-low instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://silaatelier.com/cdn/shop/files/DSC01633.jpg" alt="Global Expansion Setup Multi Market Checkout Interface Layout">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">FASHION</span>
+                            <span class="ind-card-metric-badge">Multi-Market Routing</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Sila Atelier</h3>
+                        <p class="ind-card-prose-summary">Configuring regional currency filters, domestic logistics handlers, and translation triggers globally.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <!-- Card 5 -->
+                <a href="#footerContact" class="industry-editorial-card-node offset-position-base instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://www.bloomup.in/cdn/shop/files/Group_1686557056.png" alt="Nordic Atelier System Dynamic WebGL 3D Configurator Engine">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">KIDS CLOTHING</span>
+                            <span class="ind-card-metric-badge">3D Configurator Engine</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Bloom Up</h3>
+                        <p class="ind-card-prose-summary">Interactive component modules engineered smoothly onto canvas layers without increasing background layout load times.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <!-- Card 6 -->
+                <a href="#footerContact" class="industry-editorial-card-node offset-position-high instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://thememyparty.ca/cdn/shop/files/1_43_136d3a58-7592-4f18-8c0c-5f9e7a455de7.jpg" alt="Core Subscriptions Matrix Recurring Customer Engine Pipeline">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">EVENT PLANNING</span>
+                            <span class="ind-card-metric-badge">Automated Subscriptions</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Theme My Party</h3>
+                        <p class="ind-card-prose-summary">Frictionless recurring customer portal hubs connected directly into Shopify native checkout logic lanes.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+            </div>
+
+            <div class="industry-global-action-footer-row">
+                <a href="#footerContact" class="cta-editorial-btn">Explore More Case Studies</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. CLEAR ANSWERS (FAQ) -->
+    <section class="section-padding dynamic-bg-transition">
+        <div class="layout-wrapper">
+            <div class="premium-faq-split-axis">
+                <div class="faq-left-editorial-panel">
+                    <span class="label-editorial">Clear Answers</span>
+                    <h2>Need help deciding?</h2>
+                    <p>Connect with our engineering specialists directly to query tailored migration scopes, tech stack choices, and project roadmaps.</p>
+                    <div class="faq-editorial-contacts-list">
+                        <a href="mailto:hello@messold.com" class="faq-contact-anchor">hello@messold.com</a>
+                        <a href="tel:+12345678" class="faq-contact-anchor">+1 (234) 567-890</a>
+                    </div>
+                </div>
+                
+                <div class="faq-accordion-stack">
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">Will our existing design elements remain intact during migration?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                Yes. We map out your present user interface patterns fully before engineering optimization pipelines from scratch, refining layout efficiency elements while ensuring absolute brand system recognition.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">How long does a custom enterprise storefront rollout take?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                Standard enterprise architectures require roughly 8 to 14 weeks from structural scoping phases to secure public deployment. Timeline scales fluctuate based on system integrations and database complexities.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">Do you provide continuous technical support cycles?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                We maintain active strategic retainer systems providing rapid troubleshooting answers, seasonal flash-sale preparation, and structural component feature additions.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">Will our existing design elements remain intact during migration?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                Yes. We map out your present user interface patterns fully before engineering optimization pipelines from scratch, refining layout efficiency elements while ensuring absolute brand system recognition.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">How long does a custom enterprise storefront rollout take?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                Standard enterprise architectures require roughly 8 to 14 weeks from structural scoping phases to secure public deployment. Timeline scales fluctuate based on system integrations and database complexities.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">Do you provide continuous technical support cycles?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                We maintain active strategic retainer systems providing rapid troubleshooting answers, seasonal flash-sale preparation, and structural component feature additions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // --- HERO SCROLL ANIMATION ENGINE ---
+            const heroContainer = document.querySelector(".hero-scroll-container");
+            const heroText = document.getElementById("heroText");
+            const heroTicker = document.getElementById("heroTicker");
+
+            if (heroContainer && heroText && heroTicker) {
+                window.addEventListener("scroll", () => {
+                    const containerRect = heroContainer.getBoundingClientRect();
+                    const totalHeight = heroContainer.offsetHeight - window.innerHeight;
+                    const scrolled = Math.max(0, Math.min(1, -containerRect.top / totalHeight));
+                    
+                    heroText.style.transform = `translate3d(0, ${scrolled * -40}px, ${scrolled * -150}px) scale(${1 - scrolled * 0.08})`;
+                    heroText.style.opacity = `${1 - scrolled * 0.6}`;
+                    heroTicker.style.transform = `translate3d(0, ${scrolled * -60}px, 0)`;
+                });
+            }
+
+            // --- INTERSECTION OBSERVER FOR SMART BACKGROUND TRANSITIONS ---
+            const targetBgSections = document.querySelectorAll(".dynamic-bg-transition");
+            const bgObserverOptions = {
+                root: null,
+                threshold: 0.15, 
+                rootMargin: "0px 0px -10% 0px"
+            };
+
+            const bgObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add("bg-active-state");
+                    } else {
+                        entry.target.classList.remove("bg-active-state");
+                    }
+                });
+            }, bgObserverOptions);
+
+            targetBgSections.forEach(section => bgObserver.observe(section));
+
+            // --- IMAGES & VISUAL CARDS INTERSECTION TRIGGER ---
+            const revealNodes = document.querySelectorAll(".scroll-triggered-reveal, .instant-scroll-reveal");
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("revealed-node");
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            revealNodes.forEach(node => revealObserver.observe(node));
+
+            // --- DYNAMIC INTERACTION ON SCROLL FOR COHESIVE MASONRY EFFECTS ---
+            const premiumGrid = document.querySelector(".industry-cases-grid-layout");
+            const advancedCards = document.querySelectorAll(".industry-editorial-card-node");
+
+            if (premiumGrid && advancedCards.length > 0) {
+                window.addEventListener("scroll", () => {
+                    if (window.innerWidth > 1024) {
+                        const boundingViewport = premiumGrid.getBoundingClientRect();
+                        const scrollDist = window.innerHeight - boundingViewport.top;
+                        
+                        if (scrollDist > 0) {
+                            advancedCards.forEach((card) => {
+                                if (card.classList.contains("offset-position-high")) {
+                                    card.style.transform = `translate3d(0, ${scrollDist * -0.02 - 20}px, 0)`;
+                                } else if (card.classList.contains("offset-position-low")) {
+                                    card.style.transform = `translate3d(0, ${scrollDist * 0.02 + 20}px, 0)`;
+                                } else {
+                                    card.style.transform = `translate3d(0, ${scrollDist * -0.005}px, 0)`;
+                                }
+                            });
+                        }
+                    } else {
+                        advancedCards.forEach(card => card.style.transform = "none");
+                    }
+                });
+            }
+
+            // --- HORIZONTAL SCROLL DEPLOYMENT ROUTINE ---
+            const processStage = document.getElementById("deploymentroutine");
+            const processTrack = document.getElementById("processTrack");
+            const processNodes = document.querySelectorAll(".process-stage-node");
+
+            if (processStage && processTrack && processNodes.length > 0) {
+                const updateHorizontalScroll = () => {
+                    if (window.innerWidth <= 768) {
+                        processTrack.style.transform = "none";
+                        processNodes.forEach(node => {
+                            node.classList.add("revealed-active-stage");
+                            node.classList.remove("faded-out-stage");
+                        });
+                        return;
+                    }
+
+                    const stageRect = processStage.getBoundingClientRect();
+                    const totalScrollArea = processStage.offsetHeight - window.innerHeight;
+                    const scrollProgress = Math.max(0, Math.min(1, -stageRect.top / totalScrollArea));
+                    const totalWidth = processTrack.offsetWidth;
+                    const visibleWidth = window.innerWidth;
+                    const maxTranslateX = totalWidth - visibleWidth + (visibleWidth * 0.1);
+
+                    processTrack.style.transform = `translate3d(${-scrollProgress * maxTranslateX}px, 0, 0)`;
+
+                    processNodes.forEach((node, index) => {
+                        const nodeRect = node.getBoundingClientRect();
+                        const nodeCenter = nodeRect.left + (nodeRect.width / 2);
+                        
+                        if (nodeCenter < visibleWidth * 0.85 || index === 0) {
+                            node.classList.add("revealed-active-stage");
+                        } else {
+                            node.classList.remove("revealed-active-stage");
+                        }
+
+                        if (nodeCenter < visibleWidth * 0.15 && index !== processNodes.length - 1) {
+                            node.classList.add("faded-out-stage");
+                        } else {
+                            node.classList.remove("faded-out-stage");
+                        }
+                    });
+                };
+
+                window.addEventListener("scroll", updateHorizontalScroll);
+                window.addEventListener("resize", updateHorizontalScroll);
+                updateHorizontalScroll();
+            }
+
+            // --- COUNTER ENGINE INTERSECTION LAYER ---
+            const counters = document.querySelectorAll(".metric-counter-display");
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute("data-target"));
+                        if (isNaN(target)) return;
+                        
+                        let count = 0;
+                        const duration = 1500;
+                        const increment = target / (duration / 16);
+                        
+                        const updateCount = () => {
+                            count += increment;
+                            if (count >= target) {
+                                entry.target.innerText = target + (target === 99 && entry.target.parentElement.innerText.includes("Speed") ? "%" : (target === 18 ? "%" : ""));
+                            } else {
+                                entry.target.innerText = Math.floor(count);
+                                requestAnimationFrame(updateCount);
+                            }
+                        };
+                        updateCount();
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(counter => counterObserver.observe(counter));
+
+            // --- VIDEO SLIDER MECHANICS ---
+            const strip = document.getElementById("netflixStrip");
+            const nextBtn = document.getElementById("netflixNext");
+            const prevBtn = document.getElementById("netflixPrev");
+            let currentTranslateX = 0;
+
+            if (strip && nextBtn && prevBtn) {
+                const getCardWidth = () => {
+                    if (window.innerWidth <= 480) return 280 + 24;
+                    if (window.innerWidth <= 768) return 290 + 24;
+                    if (window.innerWidth <= 1024) return 320 + 40;
+                    return 380 + 40;
+                };
+
+                nextBtn.addEventListener("click", () => {
+                    const maxScroll = strip.scrollWidth - strip.parentElement.offsetWidth;
+                    currentTranslateX -= getCardWidth();
+                    if (Math.abs(currentTranslateX) >= maxScroll) {
+                        currentTranslateX = -maxScroll;
+                        nextBtn.disabled = true;
+                    }
+                    prevBtn.disabled = false;
+                    strip.style.transform = `translate3d(${currentTranslateX}px, 0, 0)`;
+                });
+
+                prevBtn.addEventListener("click", () => {
+                    currentTranslateX += getCardWidth();
+                    if (currentTranslateX >= 0) {
+                        currentTranslateX = 0;
+                        prevBtn.disabled = true;
+                    }
+                    nextBtn.disabled = false;
+                    strip.style.transform = `translate3d(${currentTranslateX}px, 0, 0)`;
+                });
+
+                window.addEventListener("resize", () => {
+                    currentTranslateX = 0;
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = false;
+                    strip.style.transform = `translate3d(0, 0, 0)`;
+                });
+            }
+
+            // --- VERIFIED TELEMETRY LIGHTBOX SYSTEM ---
+            const videoCards = document.querySelectorAll(".netflix-video-card");
+            const videoLightbox = document.getElementById("videoLightbox");
+            const lightboxTargetVideo = document.getElementById("lightboxTargetVideo");
+            const closeLightbox = document.getElementById("closeLightbox");
+
+            if(videoCards && videoLightbox && lightboxTargetVideo && closeLightbox) {
+                videoCards.forEach(card => {
+                    card.addEventListener("click", () => {
+                        const videoUrl = card.getAttribute("data-video-url");
+                        lightboxTargetVideo.src = videoUrl;
+                        videoLightbox.classList.add("lightbox-is-open");
+                        lightboxTargetVideo.play();
+                    });
+                });
+
+                const terminateLightbox = () => {
+                    videoLightbox.classList.remove("lightbox-is-open");
+                    lightboxTargetVideo.pause();
+                    lightboxTargetVideo.src = "";
+                };
+
+                closeLightbox.addEventListener("click", terminateLightbox);
+                videoLightbox.addEventListener("click", (e) => {
+                    if(e.target === videoLightbox) terminateLightbox();
+                });
+                document.addEventListener("keydown", (e) => {
+                    if(e.key === "Escape" && videoLightbox.classList.contains("lightbox-is-open")) terminateLightbox();
+                });
+            }
+
+            // --- ACCORDION FAQ ENGINE ---
+            const faqNodes = document.querySelectorAll(".faq-accordion-node");
+            faqNodes.forEach(node => {
+                const trigger = node.querySelector(".faq-node-trigger");
+                const drawer = node.querySelector(".faq-node-hidden-drawer");
+
+                if (trigger && drawer) {
+                    trigger.addEventListener("click", () => {
+                        const isNodeActive = node.classList.contains("drawer-active");
+
+                        faqNodes.forEach(n => {
+                            n.classList.remove("drawer-active");
+                            n.querySelector(".faq-node-hidden-drawer").style.maxHeight = null;
+                        });
+
+                        if (!isNodeActive) {
+                            node.classList.add("drawer-active");
+                            drawer.style.maxHeight = drawer.scrollHeight + "px";
+                        }
+                    });
+                }
+            });
+
+            // --- EXPANDABLE BLUEPRINT PANES ---
+            const blueprintPanes = document.querySelectorAll(".blueprint-accordion-pane");
+            blueprintPanes.forEach(pane => {
+                pane.addEventListener("mouseenter", () => {
+                    if(window.innerWidth > 991) {
+                        blueprintPanes.forEach(p => p.style.flex = "1");
+                        pane.style.flex = "3";
+                    }
+                });
+                pane.addEventListener("mouseleave", () => {
+                    if(window.innerWidth > 991) {
+                        blueprintPanes.forEach(p => p.style.flex = "1");
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
