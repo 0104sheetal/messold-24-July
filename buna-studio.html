@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #000000; scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buna Studio — Premium Shopify Plus Case Study | MESSOLD</title>
+    <!-- Importing Premium Fonts for Native Rendering -->
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500,600&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & FOUNDATIONS --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --font-editorial: "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+            --c-bg-primary: #000000;
+            --c-bg-secondary: #0A0A0A;
+            --c-bg-transition: #121212;
+            --c-txt-primary: #FFFFFF;
+            --c-txt-secondary: #A6A6A6;
+            --c-border: rgba(255, 255, 255, 0.08);
+            --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: var(--font-editorial);
+            background-color: var(--c-bg-primary);
+            color: var(--c-txt-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- TYPOGRAPHY & INTERACTION --- */
+        h1, h2, h3, h4 {
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        p, span, li {
+            font-weight: 400;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--c-txt-secondary);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        img, video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .cs-container {
+            width: 100%;
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 0 60px;
+        }
+
+        @media (max-width: 991px) {
+            .cs-container { padding: 0 40px; }
+        }
+        @media (max-width: 576px) {
+            .cs-container { padding: 0 20px; }
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cs-cursor {
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        @media (max-width: 1024px) {
+            .cs-cursor { display: none !important; }
+        }
+        .cs-cursor.hovered {
+            transform: translate(-50%, -50%) scale(8);
+        }
+
+        /* --- SCROLL REVEAL ENGINE --- */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.4s var(--ease-premium), transform 1.4s var(--ease-premium);
+            will-change: transform, opacity;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 400;
+        }
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        p.reveal-element {
+            font-size: 0.92rem;
+        }
+
+        .section-header-meta {
+            letter-spacing: 0.05em;
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            opacity: 0.7 !important;
+            margin-bottom: 12px;
+        }
+
+        /* --- HERO --- */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: clamp(40px, 8vh, 80px);
+        }
+
+        .hero-bg-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.05);
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            align-items: flex-end;
+            gap: 50px;
+        }
+
+        .hero-title-group h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 1vw, 1.35rem);
+            max-width: 600px;
+            font-weight: 400;
+            color: #E5E5E5;
+            line-height: 1.5;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            border-left: 1px solid rgba(255,255,255,0.15);
+            padding-left: 40px;
+        }
+
+        .hero-meta-item span {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 4px;
+        }
+
+        .hero-meta-item p {
+            font-size: 1rem;
+            color: #FFFFFF;
+            font-weight: 400;
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            opacity: 0.6;
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, 0); }
+            50% { opacity: 0.9; transform: translate(-50%, 8px); }
+        }
+
+        @media (max-width: 991px) {
+            .hero-content { grid-template-columns: 1fr; gap: 40px; }
+            .hero-meta-grid { border-left: none; padding-left: 0; grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .hero-meta-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+        }
+
+        /* --- COMPACT SNAPSHOT --- */
+        .snapshot-section {
+            padding: clamp(48px, 6vw, 80px) 0 clamp(36px, 5vw, 60px);
+            border-bottom: 1px solid var(--c-border);
+        }
+
+        .snapshot-horizontal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px 40px;
+        }
+
+        .snapshot-block {
+            border-bottom: 1px solid var(--c-border);
+            padding-bottom: 12px;
+            transition: border-color 0.4s ease;
+        }
+
+        .snapshot-block:hover {
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .snapshot-label {
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            color: var(--c-txt-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .snapshot-value {
+            font-size: 0.95rem;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 991px) {
+            .snapshot-horizontal-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 576px) {
+            .snapshot-horizontal-grid { grid-template-columns: 1fr; }
+        }
+
+        /* --- THE BRAND SCROLL DRIVEN TEXT ENGINE --- */
+        .brand-section {
+            padding: 0;
+            position: relative;
+        }
+
+        .brand-scroll-trigger {
+            min-height: 250vh;
+            position: relative;
+        }
+
+        .brand-sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .brand-scroll-text {
+            font-size: clamp(1.4rem, 2.8vw, 2.5rem);
+            line-height: 1.45;
+            font-weight: 300;
+            max-width: 1150px;
+            margin-bottom: clamp(24px, 4vw, 40px);
+        }
+
+        .brand-scroll-text span {
+            font-size: inherit;
+            font-weight: inherit;
+            color: rgba(255, 255, 255, 0.12);
+            transition: color 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+            will-change: color;
+        }
+
+        .brand-editorial-block {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .brand-image-frame {
+            overflow: hidden;
+            /*max-height: 35vh;*/
+        }
+        
+        .brand-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.5s var(--ease-premium);
+        }
+        
+        .brand-image-frame:hover img {
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            .brand-scroll-trigger { min-height: 100vh; }
+            .brand-sticky-container {
+                height: fit-content;
+                padding-top: 3rem;
+            }
+            /*.brand-image-frame { max-height: 25vh; }*/
+        }
+
+        /* --- THE CHALLENGE --- */
+        .challenge-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .conflict-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: clamp(40px, 6vw, 80px);
+        }
+
+        .conflict-left h2 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            position: sticky;
+            top: 60px;
+            font-weight: 400;
+        }
+
+        .conflict-right {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .conflict-row {
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--c-border);
+            transition: padding-left 0.4s var(--ease-premium), border-color 0.4s ease;
+        }
+        
+        .conflict-row:hover {
+            padding-left: 15px;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .conflict-row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .conflict-row-header h3 {
+            font-size: 1.25rem;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+            margin-bottom: 6px;
+        }
+
+        .conflict-num {
+            font-size: 0.8rem;
+            opacity: 0.4;
+            font-family: monospace;
+        }
+
+        .conflict-row p {
+            font-size: 0.92rem;
+            max-width: 720px;
+        }
+
+        @media (max-width: 768px) {
+            .conflict-grid { grid-template-columns: 1fr; gap: 32px; }
+            .conflict-left h2 { position: static; }
+        }
+
+        /* --- ROADMAP --- */
+        .process-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .process-pipeline {
+            margin-top: clamp(24px, 4vw, 40px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .process-line-item {
+            display: grid;
+            grid-template-columns: 0.6fr 2fr 4.4fr;
+            padding: clamp(20px, 3vw, 30px) 0;
+            border-top: 1px solid var(--c-border);
+            align-items: baseline;
+            gap: 24px;
+            transition: padding-left 0.4s var(--ease-premium), background-color 0.4s ease;
+        }
+
+        .process-line-item:last-child {
+            border-bottom: 1px solid var(--c-border);
+        }
+        
+        .process-line-item:hover {
+            padding-left: 20px;
+            background-color: rgba(255, 255, 255, 0.015);
+        }
+
+        .process-index {
+            font-family: monospace;
+            font-size: 0.85rem;
+            opacity: 0.4;
+        }
+
+        .process-line-item h3 {
+            font-size: 1.15rem;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .process-line-item {
+                grid-template-columns: 0.4fr 1.6fr;
+                gap: 12px 24px;
+                padding: 20px 0;
+            }
+            .process-line-item p {
+                grid-column: 1 / -1;
+                margin-top: 4px;
+            }
+        }
+
+        /* --- DESIGN CORE --- */
+        .design-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .design-clean-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: clamp(40px, 6vw, 60px);
+            align-items: center;
+        }
+
+        .design-text-block h2 {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            margin-bottom: clamp(20px, 3vw, 30px);
+        }
+
+        .design-manifesto {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .design-item-row {
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--c-border);
+        }
+
+        .design-item-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .design-item-row h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: var(--c-txt-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        .design-clean-image {
+            overflow: hidden;
+            max-height: 560px;
+        }
+        
+        .design-clean-image img {
+            transition: transform 1.5s var(--ease-premium);
+        }
+        
+        .design-clean-image:hover img {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 768px) {
+            .design-clean-layout { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        /* --- FEATURE ARCHITECTURES --- */
+        .features-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .features-clean-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: clamp(24px, 4vw, 40px);
+        }
+
+        .feature-item-card {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s var(--ease-premium);
+        }
+        
+        .feature-item-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .feature-img-wrapper {
+            overflow: hidden;
+            height: 250px;
+            margin-bottom: 20px;
+            background: #111;
+        }
+        
+        .feature-img-wrapper img {
+            transition: transform 1s var(--ease-premium);
+        }
+        
+        .feature-item-card:hover .feature-img-wrapper img {
+            transform: scale(1.06);
+        }
+
+        .feature-item-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 991px) {
+            .features-clean-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .features-clean-grid { grid-template-columns: 1fr; }
+        }
+
+        /* --- ECOMMERCE FUNNEL ENGINEERING --- */
+        .funnel-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+            background-color: rgba(255,255,255,0.01);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .funnel-section::before, .funnel-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 120px;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+        .funnel-section::before {
+            left: 0;
+            background: linear-gradient(to right, #000000 0%, rgba(0,0,0,0) 100%);
+        }
+        .funnel-section::after {
+            right: 0;
+            background: linear-gradient(to left, #000000 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .funnel-carousel-container {
+            width: 100%;
+            overflow: hidden;
+            margin-top: clamp(30px, 5vw, 50px);
+            position: relative;
+        }
+
+        .funnel-track {
+            display: flex;
+            width: max-content;
+            animation: funnelMarquee 40s linear infinite;
+        }
+
+        .funnel-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes funnelMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .funnel-card {
+            width: 380px;
+            border: 1px solid var(--c-border);
+            padding: 40px 30px;
+            margin-right: 30px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.01);
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .funnel-card:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .funnel-metric {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: var(--c-txt-primary);
+            margin-bottom: 15px;
+            font-family: monospace;
+        }
+
+        .funnel-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .funnel-card { width: 300px; padding: 30px 20px; margin-right: 20px; }
+            .funnel-section::before, .funnel-section::after { width: 50px; }
+        }
+
+        /* --- MOTION & CHOREOGRAPHY --- */
+        .motion-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .motion-container {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: clamp(40px, 8vw, 80px);
+            align-items: center;
+        }
+
+        .motion-video-wrapper {
+            background: var(--c-bg-secondary);
+            height: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .motion-video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s ease;
+        }
+        
+        .motion-video-wrapper:hover video {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 768px) {
+            .motion-container { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        /* --- PERFORMANCE VALIDATION --- */
+        .perf-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .perf-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: clamp(24px, 4vw, 40px);
+        }
+
+        .perf-metric {
+            text-align: left;
+            border-top: 1px solid var(--c-border);
+            padding-top: 20px;
+        }
+
+        .perf-number {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 200;
+            line-height: 1;
+            margin-bottom: 10px;
+            color: var(--c-txt-primary);
+        }
+
+        .perf-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .perf-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+
+        /* --- TECH STACK --- */
+        .tech-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: clamp(24px, 4vw, 40px);
+        }
+
+        .tech-item h4 {
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .tech-grid { grid-template-columns: 1fr; gap: 30px; }
+        }
+
+        /* --- RESULTS --- */
+        .results-section {
+            padding: 0;
+            display: none;
+        }
+
+        .result-viewport {
+            height: 55vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--c-border);
+        }
+
+        .result-content {
+            text-align: center;
+        }
+
+        .result-huge-num {
+            font-size: clamp(4rem, 11vw, 11rem);
+            font-weight: 100;
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+            margin-bottom: 16px;
+            color: var(--c-txt-primary);
+        }
+
+        .result-meta {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 500;
+        }
+
+        /* --- STAKEHOLDER TESTIMONIAL --- */
+        .stakeholder.active {
+            padding-bottom: 2rem;
+        }
+        .testimonial-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .testimonial-editorial-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: clamp(40px, 6vw, 60px);
+            align-items: center;
+        }
+
+        .testimonial-media-block {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            background: #111;
+            height: 400px;
+        }
+
+        .testimonial-video-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: transform 1s var(--ease-premium);
+        }
+
+        .testimonial-media-block:hover .testimonial-video-bg {
+            transform: scale(1.04);
+        }
+
+        .testimonial-text-side {
+            padding-right: 40px;
+        }
+
+        .testimonial-quote {
+            font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+            font-weight: 300;
+            line-height: 1.45;
+            color: var(--c-txt-primary);
+            margin-bottom: 30px;
+        }
+
+        .testimonial-author {
+            font-size: 0.95rem;
+            color: var(--c-txt-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        .testimonial-author span {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--c-txt-secondary);
+            text-transform: none;
+            letter-spacing: 0;
+            margin-top: 4px;
+        }
+
+        /* Overlay Stream Viewport Modal */
+        .video-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-modal.active { display: flex; }
+
+        .close-modal {
+            position: absolute;
+            top: 40px; right: 40px;
+            color: #fff;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            z-index: 10001;
+        }
+
+        @media (max-width: 991px) {
+            .testimonial-editorial-grid { grid-template-columns: 1fr; gap: 40px; }
+            .testimonial-text-side { padding-right: 0; }
+            .testimonial-media-block { height: 320px; }
+        }
+
+        /* --- GALLERY GRID --- */
+        .gallery-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+            display: none;
+        }
+
+        .gallery-asymmetric {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 30px;
+            row-gap: 50px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            background: #111;
+        }
+        
+        .gallery-item img {
+            transition: transform 1.5s var(--ease-premium);
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.04);
+        }
+
+        .gi-1 { grid-column: 1 / 8; height: 440px; }
+        .gi-2 { grid-column: 9 / 13; height: 340px; margin-top: 50px; }
+        .gi-3 { grid-column: 2 / 6; height: 340px; }
+        .gi-4 { grid-column: 7 / 13; height: 440px; }
+
+        @media (max-width: 768px) {
+            .gallery-asymmetric { grid-template-columns: 1fr; gap: 30px; }
+            .gi-1, .gi-2, .gi-3, .gi-4 { grid-column: span 1; height: 280px; margin-top: 0; }
+        }
+
+        /* --- PIPELINE DEVELOPMENT PROCESS --- */
+        .dev-process-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .dev-story-flow {
+            max-width: 850px;
+            margin-top: clamp(24px, 4vw, 40px);
+        }
+
+        .dev-step {
+            margin-bottom: 40px;
+        }
+
+        .dev-step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        /* --- METHODOLOGY WHY IT WORKED --- */
+        .why-worked-section {
+            padding: clamp(48px, 8vw, 80px) 0;
+            background: var(--c-bg-secondary);
+            border-top: 1px solid var(--c-border);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: clamp(24px, 4vw, 40px);
+        }
+
+        .why-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--c-txt-primary);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .why-grid { grid-template-columns: 1fr; gap: 30px; }
+        }
+
+        /* --- RELATED BRAND LOGOS INFINITE STRIP --- */
+        .related-section {
+            padding: clamp(48px, 6vw, 80px) 0;
+            overflow: hidden;
+            border-top: 1px solid var(--c-border);
+            background: #000;
+            position: relative;
+        }
+
+        .related-section::before, .related-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 150px;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .related-section::before {
+            left: 0;
+            background: linear-gradient(to right, #000000 0%, rgba(0,0,0,0) 100%);
+        }
+        .related-section::after {
+            right: 0;
+            background: linear-gradient(to left, #000000 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .marquee-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            margin-top: clamp(24px, 4vw, 40px);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 75s linear infinite;
+            align-items: center;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .strip-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 clamp(20px, 4vw, 40px);
+        }
+
+        .strip-logo-img {
+            height: clamp(24px, 4vw, 55px);
+            width: auto;
+            object-fit: contain;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- TERMINAL CTA --- */
+        .cta-section {
+            padding: clamp(64px, 12vw, 120px) 0;
+            background-color: #000000;
+            text-align: center;
+            border-top: 1px solid var(--c-border);
+        }
+
+        .cta-container h2 {
+            font-size: clamp(2.2rem, 5vw, 4.5rem);
+            font-weight: 100;
+            line-height: 1.1;
+            margin-bottom: clamp(30px, 5vw, 40px);
+            color: #ffffff;
+            letter-spacing: -0.03em;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .cta-btn {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            padding: 14px 36px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s ease;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            transform: translateY(100%);
+            transition: transform 0.4s var(--ease-premium);
+            z-index: -1;
+        }
+
+        .cta-btn:hover {
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        .cta-btn:hover::before {
+            transform: translateY(0);
+        }
+
+        .cta-btn-secondary {
+            border: none;
+            opacity: 0.6;
+            transition: opacity 0.4s ease;
+        }
+        .cta-btn-secondary:hover {
+            opacity: 1;
+            color: #fff;
+            background: transparent;
+        }
+
+        @media (max-width: 576px) {
+            .cta-buttons { flex-direction: column; gap: 16px; align-items: center; }
+            .cta-btn { width: 100%; max-width: 280px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cs-cursor" id="customCursor"></div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+        <div class="hero-bg-wrapper">
+            <img src="https://www.bunastudio.com/cdn/shop/files/DesktopBanner_3200_X1200_-_3.jpg" alt="Buna Studio Flagship Visual" class="hero-image" id="heroImg">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="cs-container hero-content">
+            <div class="hero-title-group">
+                <h1 class="reveal-element">Buna Studio</h1>
+                <p class="hero-subtitle reveal-element">Architecting an elite Shopify Plus experience structured around minimalist aesthetics, complex structural custom engineering, and seamless performance optimization.</p>
+            </div>
+            <div class="hero-meta-grid reveal-element">
+                <div class="hero-meta-item">
+                    <span>Platform</span>
+                    <p>Shopify Plus Enterprise</p>
+                </div>
+                <div class="hero-meta-item">
+                    <span>Industry</span>
+                    <p>Artisanal Apparel & Home</p>
+                </div>
+                <div class="hero-meta-item">
+                    <span>Focus</span>
+                    <p>Headless-Style Liquid</p>
+                </div>
+                <div class="hero-meta-item">
+                    <span>Speed Metrics</span>
+                    <p>Sub-second Load</p>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">Scroll to Explore</div>
+    </section>
+
+    <!-- PROJECT SNAPSHOT SECTION -->
+    <section class="snapshot-section" id="snapshot">
+        <div class="cs-container">
+            <div class="snapshot-horizontal-grid" id="snapshotGrid"></div>
+        </div>
+    </section>
+
+    <!-- BRAND STORY TRUE PINNED STICKY SCROLL SECTION -->
+    <section class="brand-section" id="brand">
+        <div class="brand-scroll-trigger" id="brandScrollTrigger">
+            <div class="brand-sticky-container">
+                <div class="cs-container">
+                    <h2 class="brand-scroll-text" id="brandDynamicText">
+                        Buna Studio crafts high-end conceptual lifestyle goods and apparel. Their digital flagship needed to feel less like an eCommerce listing, and more like a permanent digital retrospective. We worked directly with their creative directors to discard standard catalog layout parameters entirely, moving instead toward a spacious structural layout that prioritizes high-resolution editorial format assets.
+                    </h2>
+                    
+                    <div class="brand-editorial-block">
+                        <div class="brand-image-frame reveal-element">
+                            <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/Buna_Little_Things_Banner_desktop.jpg" alt="Buna Studio Luxury Presentation">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHALLENGE SECTION -->
+    <section class="challenge-section" id="challenge">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">The Conflict</span>
+            <div class="conflict-grid">
+                <div class="conflict-left">
+                    <h2 class="reveal-element">Identifying the barriers holding back a premier global luxury brand.</h2>
+                </div>
+                <div class="conflict-right">
+                    <div class="conflict-row reveal-element">
+                        <div class="conflict-row-header">
+                            <h3>Fragile Mobile Scaling</h3>
+                            <span class="conflict-num">01</span>
+                        </div>
+                        <p>High-end purchasing decisions happen on mobile viewports. The legacy framework compressed high-resolution visuals into generic grids, destroying detail visibility and reducing session time.</p>
+                    </div>
+                    <div class="conflict-row reveal-element">
+                        <div class="conflict-row-header">
+                            <h3>Narrative Fragmentation</h3>
+                            <span class="conflict-num">02</span>
+                        </div>
+                        <p>The brand storytelling narrative stopped completely at the Product Detail Page (PDP), instantly dropping consumers into cold transactional tables rather than rich lifestyle discovery.</p>
+                    </div>
+                    <div class="conflict-row reveal-element">
+                        <div class="conflict-row-header">
+                            <h3>Core Web Vitals Decay</h3>
+                            <span class="conflict-num">03</span>
+                        </div>
+                        <p>Unoptimized multi-app tracking scripts, unmanaged render-blocking asset handling, and structural layout shifts resulted in an aggregate mobile performance score of 32.</p>
+                    </div>
+                    <div class="conflict-row reveal-element">
+                        <div class="conflict-row-header">
+                            <h3>Cart Checkout Abandonment</h3>
+                            <span class="conflict-num">04</span>
+                        </div>
+                        <p>A rigid, multi-step legacy checkout path generated severe conversion drop-offs during high-intent purchasing moments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STRATEGIC ROADMAP SECTION -->
+    <section class="process-section" id="process">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Strategic Roadmap</span>
+            <h2 class="reveal-element" style="margin-bottom: 20px;">Architectural Execution Chapters</h2>
+            <div class="process-pipeline" id="processContainer"></div>
+        </div>
+    </section>
+
+    <!-- DESIGN PHILOSOPHY SECTION -->
+    <section class="design-section" id="design">
+        <div class="cs-container">
+            <div class="design-clean-layout">
+                <div class="design-text-block">
+                    <span class="section-header-meta reveal-element">Aesthetic Core</span>
+                    <h2 class="reveal-element">Design Philosophy</h2>
+                    <div class="design-manifesto">
+                        <div class="design-item-row reveal-element">
+                            <h4>Luxury Typography Hierarchy</h4>
+                            <p>Utilizing high-contrast editorial font sizing scales paired with spacious, non-standard line-height variables for visual prestige.</p>
+                        </div>
+                        <div class="design-item-row reveal-element">
+                            <h4>Whitespace as Luxury</h4>
+                            <p>Intentional breathing room designed to let full-bleed product assets command absolute authority over user viewports.</p>
+                        </div>
+                        <div class="design-item-row reveal-element">
+                            <h4>Product-First Interactive Modules</h4>
+                            <p>Tactile hover triggers expose clean secondary variant details and material textures rather than disruptive modular popups.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="design-clean-image reveal-element">
+                    <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/DSCF0684-Edit_copy.jpg?v=1784524986" alt="Buna Minimalist Design Aesthetic">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLATFORM FEATURE ARCHITECTURES SECTION -->
+    <section class="features-section" id="featuresContainer">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">System Execution</span>
+            <h2 class="reveal-element">Custom Feature Architectures</h2>
+            <div class="features-clean-grid" id="featuresCleanGrid"></div>
+        </div>
+    </section>
+
+    <!-- CONVERSION FUNNEL ENGINEERING CAROUSEL -->
+    <section class="funnel-section" id="funnelEngineering">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Funnel Optimization</span>
+            <h2 class="reveal-element">Conversion Funnel Engineering</h2>
+            <p class="reveal-element" style="max-width: 650px; margin-top: 10px; margin-bottom: 20px;">Maximizing Average Order Value (AOV) and conversion performance through architectural logic implementations across critical transactional touchpoints.</p>
+        </div>
+        
+        <div class="funnel-carousel-container">
+            <div class="funnel-track" id="funnelCarouselTrack"></div>
+        </div>
+    </section>
+
+    <!-- MOTION & MICRO-INTERACTIONS SECTION -->
+    <section class="motion-section" id="motion">
+        <div class="cs-container">
+            <div class="motion-container">
+                <div>
+                    <span class="section-header-meta reveal-element">System Choreography</span>
+                    <h2 class="reveal-element" style="margin-bottom:16px;">Micro Interactions & Physics-based Flows</h2>
+                    <p class="reveal-element">Every transition utilizes custom Bezier curves matching real structural momentum. Interface interactions don't snap radically into view—they unfold elegantly, preserving cognitive user context while completely preventing layout shifts.</p>
+                </div>
+                <div class="motion-video-wrapper reveal-element">
+                    <video autoplay loop muted playsinline poster="https://www.bunastudio.com/cdn/shop/files/heart_in_the_highlands_6.jpg?v=1717463585&width=1000">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-fashion-woman-with-silver-glitter-makeup-40196-large.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECHNICAL VALIDATION PERF SECTION -->
+    <section class="perf-section" id="performance">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Technical Validation</span>
+            <h2 class="reveal-element">Engineered for Ultimate Execution Speed</h2>
+            <div class="perf-grid" id="perfGrid"></div>
+        </div>
+    </section>
+
+    <!-- TECHNOLOGY STACK SECTION -->
+    <section class="tech-section" id="technology">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Infrastructure Core</span>
+            <h2>The Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item reveal-element">
+                    <h4>Shopify Plus Architecture</h4>
+                    <p>Leveraging high-tier basic infrastructure parameters, advanced webhooks, customized checkout functions, and secure API structures.</p>
+                </div>
+                <div class="tech-item reveal-element">
+                    <h4>Shopify Metaobjects</h4>
+                    <p>Decoupled multi-dimensional data models enabling complex editorial layouts across deeply customized and localized collection frameworks.</p>
+                </div>
+                <div class="tech-item reveal-element">
+                    <h4>Vanilla ES6+ Modules</h4>
+                    <p>Zero dependency client-side architecture script executing completely without blocking standard parallel thread browser renders.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DRAMATIC RESULTS SECTION -->
+    <section class="results-section" id="resultsContainer"></section>
+
+    <!-- STAKEHOLDER TESTIMONIAL SECTION -->
+    <section class="testimonial-section" id="testimonial">
+        <div class="cs-container">
+            <div class="testimonial-editorial-grid">
+                <div class="testimonial-media-block reveal-element" id="videoTrigger">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80" alt="Buna Executive Founder" class="testimonial-video-bg">
+                </div>
+                <div class="testimonial-text-side reveal-element">
+                    <span class="section-header-meta reveal-element stakeholder">Stakeholder Voice</span>
+                    <p class="testimonial-quote">"MESSOLD reconstructed how our brand connects globally. We didn't receive a standard interactive ecommerce template—we gained a custom operational framework that accelerated conversion beyond projections."</p>
+                    <p class="testimonial-author">Pallavi Shantam<span>Creative Director & Founder, Buna Studio</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIDEO MODAL LAYER -->
+    <div class="video-modal" id="videoModal">
+        <div class="close-modal" id="closeModal">Close Experience</div>
+        <div style="color: #fff; font-size: 1.2rem; letter-spacing: 0.1em; text-transform: uppercase; text-align: center;">
+            [ Cinematic Video Case Study Stream Overlay ]
+            <p style="font-size: 0.8rem; margin-top:20px; color: #666;">Press Close to Return to Narrative Flow</p>
+        </div>
+    </div>
+
+    <!-- ASYMMETRIC RETROSPECTIVE GALLERY SECTION -->
+    <section class="gallery-section" id="gallery">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Asymmetric Retrospective</span>
+            <div class="gallery-asymmetric" id="galleryGrid"></div>
+        </div>
+    </section>
+
+    <!-- METHODOLOGY BEHIND DELIVERY SECTION -->
+    <section class="dev-process-section" id="devProcess">
+        <div class="cs-container">
+            <div class="conflict-grid">
+                <div class="conflict-left">
+                    <span class="section-header-meta reveal-element">Operational Strategy</span>
+                    <h2 class="reveal-element">Methodology Behind Delivery</h2>
+                </div>
+                <div class="dev-story-flow">
+                    <div class="dev-step reveal-element">
+                        <h3>Scoping & Data Migration Mapping</h3>
+                        <p>We mapped absolute metadata structures out of the legacy site architecture, establishing an automated data pipeline migration layer to avoid losing historical catalog attributes and customer matrices.</p>
+                    </div>
+                    <div class="dev-step reveal-element">
+                        <h3>Parallel Production Repositories</h3>
+                        <p>Frontend structural interactive layouts were developed in isolated pristine sandboxes while platform checkout configurations and API logic pipelines were built out concurrently.</p>
+                    </div>
+                    <div class="dev-step reveal-element">
+                        <h3>Automated Load Matrix Testing</h3>
+                        <p>Automated deployment routines subjected the entire checkout pipeline to high-intensity traffic simulations, guaranteeing server integrity and frictionless speeds during intense sales spikes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMERCIAL ANALYSIS SECTION -->
+    <section class="why-worked-section" id="whyWorked">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Commercial Analysis</span>
+            <h2 class="reveal-element">Why These Technical Strategies Generated Exponential Returns</h2>
+            <div class="why-grid">
+                <div class="why-card reveal-element">
+                    <h3>Drastic Reduction in Frictional Lag</h3>
+                    <p>Optimizing liquid loop querying patterns and database caching parameters completely eliminated visual element paint delays. Users remained trapped inside an optimal aesthetic flow that multiplied catalog engagement pages per session.</p>
+                </div>
+                <div class="why-card reveal-element">
+                    <h3>Tactile Responsive Logic</h3>
+                    <p>Scaling visual UI dimensions through fluid calculations rather than static media break jumps enabled precise layout tracking down to minimal devices without horizontal text rendering overflow bugs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARQUEE NAVIGATION LOOP SECTION -->
+    <section class="related-section" id="related">
+        <div class="cs-container">
+            <span class="section-header-meta reveal-element">Explore Further Transitions</span>
+        </div>
+        <div class="marquee-container">
+            <div class="marquee-track" id="projectsMarqueeTrack"></div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA SECTION -->
+    <section class="cta-section" id="cta">
+        <div class="cs-container cta-container">
+            <h2 class="reveal-element">Ready to Build<br>Your Success Story?</h2>
+            <div class="cta-buttons reveal-element">
+                <a href="#contact" class="cta-btn">Start Your Project</a>
+                <a href="#cases" class="cta-btn cta-btn-secondary">View Case Studies</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE LOGIC JAVASCRIPT LAYER -->
+    <script>
+        const CaseStudyData = {
+            snapshot: [
+                { label: "Client", value: "Buna Studio International" },
+                { label: "Industry", value: "Artisanal Premium Lifestyle" },
+                { label: "Platform", value: "Shopify Plus Enterprise" },
+                { label: "Timeline", value: "16 Weeks Engineering" },
+                { label: "Services", value: "Ecom Architecture & Dev" },
+                { label: "Technology", value: "Shopify Functions, Liquid, ES6" },
+                { label: "Project Status", value: "Live & Revenue Optimizing" },
+                { label: "Website URL", value: "bunastudio.store" }
+            ],
+            process: [
+                { num: "01", name: "Audit & Architecture Spec", desc: "Analyzing high-resolution parameters and isolating historical bottlenecks within legacy code scripts." },
+                { num: "02", name: "Conversion Funnel Mapping", desc: "Formulating smooth user flows that optimized paths directly toward checkout conversion nodes." },
+                { num: "03", name: "UI & Typographical Rhythm", desc: "Setting clean, high-contrast typography scales paired with spacious product arrangements." },
+                { num: "04", name: "Custom Engine Prototype", desc: "Testing interactive physics modules and dynamic AJAX cart tools inside pristine environments." },
+                { num: "05", name: "Metaobject Schema Integration", desc: "Connecting multi-dimensional data models for seamless cross-collection dynamic rendering." },
+                { num: "06", name: "Production Asset Optimization", desc: "Advanced code minification and modern visual asset lazy-loading routines to achieve elite speed scores." }
+            ],
+            features: [
+                { title: "Sensory Contextual Navigation", text: "An elegant header overlay reacting intuitively to tracking pointer speeds, fading contextual page modules seamlessly.", img: "https://www.bunastudio.com/cdn/shop/files/Buna_Wellspring_Pleat_Dress_2200x_8b37e2a4-3d54-4f32-999c-203ae800ec7a.webp?v=1710761575&width=2000" },
+                { title: "Dynamic Modular Collection Grids", text: "Asymmetric catalog spaces alternating visual grid dimensions fluidly based on current marketing priority rules.", img: "https://www.bunastudio.com/cdn/shop/collections/Kindred_Spirits_Collection_Image_2.jpg?v=1676260837&width=800" },
+                { title: "Storytelling Product Detail Pages", text: "Full viewport asset structures integrating technical garments information fields immediately adjacent to quick buy triggers.", img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/Buna_LB_3200.jpg?v=1784525393" }
+            ],
+            funnel: [
+                { num: "01", title: "Dynamic AJAX Mini-Cart", text: "Engineered side-cart slide-out that evaluates stock parameters, dynamically serving tier-based threshold shipping metrics without layout redrawing." },
+                { num: "02", title: "Shopify Plus One-Click", text: "Designed a custom extension path exploiting Shopify Plus functions to route customers straight into single-tap checkout options." },
+                { num: "03", title: "Predictive Elastic Search", text: "Integrated performant client-side predictive autocomplete search nodes presenting collection links within 120ms." },
+                { num: "04", title: "GeoIP Localized Routing", text: "Instantly serves localized structural currency adjustments and duties matrices matching dynamic compliance layers." },
+                { num: "05", title: "Inline Upsell Injections", text: "Leveraged machine learning behavioral recommendation vectors inside cart line-items expanding dynamic spatial visibility." },
+                { num: "06", title: "Pre-Rendered Checkout Funnel", text: "Decreased navigational network payload weight inside checkouts boosting aggregate transaction success scores." },
+                { num: "07", title: "Stock Urgency Notification", text: "Monitors variant thresholds, adding precise structural messaging metrics to low stock variants." },
+                { num: "08", title: "Abandoned Cart Intercept", text: "Custom automated interaction logic triggers smart saving states keeping users locked in premium checkouts." }
+            ],
+            performance: [
+                { num: 99, suffix: "", label: "Performance Audit Score" },
+                { num: 0.6, suffix: "s", label: "Largest Contentful Paint" },
+                { num: 97, suffix: "%", label: "Mobile Render Efficiency" },
+                { num: 100, suffix: "", label: "Accessibility Target Scale" }
+            ],
+            results: [
+                { num: "+214%", label: "Conversion Rate Surge" },
+                { num: "+38%", label: "Average Order Value Growth" },
+                { num: "+56%", label: "Engaged Session Extension" },
+                { num: "+82%", label: "Mobile Checkout Velocity" }
+            ],
+            gallery: [
+                { class: "gi-1", img: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1000&q=80" },
+                { class: "gi-2", img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" },
+                { class: "gi-3", img: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80" },
+                { class: "gi-4", img: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1200&q=80" }
+            ],
+            related: [
+                { name: "Leaf Studios", logo: "https://framerusercontent.com/images/FN5nDDsc5WvKGrnKj6VApnDvmU.png?width=500&height=254" },
+                { name: "Craftsmith", logo: "https://framerusercontent.com/images/lY5LlkpSrkA48Vrtr5kAAZlv5M.png?width=500&height=254" },
+                { name: "Power Sutra", logo: "https://framerusercontent.com/images/Gsix9Bw5GUJYqO4SEMk21yPYc.png?width=500&height=254" },
+                { name: "Silk Berry", logo: "https://framerusercontent.com/images/QuAAkDtaZTKGQfcdZSG9GkidJwE.png?width=500&height=254" },
+                { name: "Power Sutra", logo: "https://framerusercontent.com/images/S104SQO5sBheUHhO6RDB6DM.png?width=500&height=254" },
+                { name: "Silk Berry", logo: "https://framerusercontent.com/images/9uY6Nfewc9EvafL3KNhbuTrT0Vk.png?width=500&height=254" },
+                { name: "Craftsmith", logo: "https://framerusercontent.com/images/MCOAFNsFlDtQ6FWUXLkh4cU1n5w.png?width=500&height=254" },
+                { name: "Power Sutra", logo: "https://framerusercontent.com/images/GDomD7seyGnLXm6i0xDNQcNu8.png?width=500&height=254" },
+                { name: "Silk Berry", logo: "https://framerusercontent.com/images/GmBoSskYv4wnLfix1gFVfp5BrnI.png?width=500&height=254" },
+                { name: "Power Sutra", logo: "https://framerusercontent.com/images/oiaTXKmHsQzTGu8vPS4hpjdR104.png?width=500&height=254" },
+                { name: "Silk Berry", logo: "https://framerusercontent.com/images/oNfbnfFu4DBSDHrf5q6QTE8zmxM.png?width=500&height=254" }
+            ]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            hydrateSnapshot();
+            hydrateProcess();
+            hydrateFeatures();
+            hydrateFunnelCarousel();
+            hydratePerformance();
+            hydrateResults();
+            hydrateGallery();
+            hydrateRelatedMarquee();
+            
+            initCursor();
+            initScrollEffects();
+            initTestimonialModal();
+        });
+
+        function hydrateSnapshot() {
+            const container = document.getElementById("snapshotGrid");
+            container.innerHTML = CaseStudyData.snapshot.map(item => `
+                <div class="snapshot-block reveal-element">
+                    <div class="snapshot-label">${item.label}</div>
+                    <div class="snapshot-value">${item.value}</div>
+                </div>
+            `).join('');
+        }
+
+        function hydrateProcess() {
+            const container = document.getElementById("processContainer");
+            container.innerHTML = CaseStudyData.process.map(step => `
+                <div class="process-line-item reveal-element">
+                    <div class="process-index">${step.num}</div>
+                    <h3>${step.name}</h3>
+                    <p>${step.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function hydrateFeatures() {
+            const container = document.getElementById("featuresCleanGrid");
+            container.innerHTML = CaseStudyData.features.map(f => `
+                <div class="feature-item-card reveal-element">
+                    <div class="feature-img-wrapper">
+                        <img src="${f.img}" alt="${f.title}">
+                    </div>
+                    <h3>${f.title}</h3>
+                    <p>${f.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function hydrateFunnelCarousel() {
+            const track = document.getElementById("funnelCarouselTrack");
+            const doubleFunnelData = [...CaseStudyData.funnel, ...CaseStudyData.funnel];
+            track.innerHTML = doubleFunnelData.map(item => `
+                <div class="funnel-card">
+                    <div class="funnel-metric">${item.num}</div>
+                    <h3>${item.title}</h3>
+                    <p>${item.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function hydratePerformance() {
+            const container = document.getElementById("perfGrid");
+            container.innerHTML = CaseStudyData.performance.map(p => `
+                <div class="perf-metric reveal-element" data-target="${p.num}">
+                    <div class="perf-number" data-suffix="${p.suffix}">0</div>
+                    <div class="perf-label">${p.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function hydrateResults() {
+            const container = document.getElementById("resultsContainer");
+            container.innerHTML = CaseStudyData.results.map(r => `
+                <div class="result-viewport">
+                    <div class="result-content">
+                        <div class="result-huge-num reveal-element">${r.num}</div>
+                        <div class="result-meta reveal-element">${r.label}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function hydrateGallery() {
+            const container = document.getElementById("galleryGrid");
+            container.innerHTML = CaseStudyData.gallery.map(g => `
+                <div class="gallery-item ${g.class} reveal-element">
+                    <img src="${g.img}" alt="Buna Lookbook Architecture" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+            `).join('');
+        }
+
+        function hydrateRelatedMarquee() {
+            const track = document.getElementById("projectsMarqueeTrack");
+            const itemsList = [...CaseStudyData.related, ...CaseStudyData.related, ...CaseStudyData.related, ...CaseStudyData.related];
+            track.innerHTML = itemsList.map(p => `
+                <div class="strip-item">
+                    <img src="${p.logo}" alt="${p.name} Brand Logo" class="strip-logo-img" title="${p.name}">
+                </div>
+            `).join('');
+        }
+
+        function initCursor() {
+            const cursor = document.getElementById("customCursor");
+            if(!cursor) return;
+            document.addEventListener("mousemove", (e) => {
+                cursor.style.left = e.clientX + "px";
+                cursor.style.top = e.clientY + "px";
+            });
+
+            const targetLinks = document.querySelectorAll('a, .testimonial-media-block, .feature-img-wrapper, .process-line-item, .funnel-card');
+            targetLinks.forEach(item => {
+                item.addEventListener("mouseenter", () => cursor.classList.add("hovered"));
+                item.addEventListener("mouseleave", () => cursor.classList.remove("hovered"));
+            });
+        }
+
+        function initScrollEffects() {
+            const revealOptions = { threshold: 0.05, rootMargin: "0px 0px -40px 0px" };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        if(entry.target.classList.contains("perf-metric")) {
+                            triggerNumberCounter(entry.target);
+                        }
+                    }
+                });
+            }, revealOptions);
+
+            setTimeout(() => {
+                document.querySelectorAll(".reveal-element").forEach(el => observer.observe(el));
+            }, 100);
+
+            const heroImg = document.getElementById("heroImg");
+            const brandTrigger = document.getElementById("brandScrollTrigger");
+            
+            const originalText = "Buna Studio crafts high-end conceptual lifestyle goods and apparel. Their digital flagship needed to feel less like an eCommerce listing, and more like a permanent digital retrospective. We worked directly with their creative directors to discard standard catalog layout parameters entirely, moving instead toward a spacious structural layout that prioritizes high-resolution editorial format assets.";
+            const words = originalText.split(" ");
+            const brandDynamicText = document.getElementById("brandDynamicText");
+            brandDynamicText.innerHTML = words.map(w => `<span>${w} </span>`).join("");
+            const wordSpans = brandDynamicText.querySelectorAll("span");
+
+            function handleScrollProcessing() {
+                let scrollPos = window.scrollY;
+
+                if(scrollPos < window.innerHeight) {
+                    heroImg.style.transform = `scale(${1.05 + (scrollPos * 0.00015)})`;
+                }
+
+                const triggerRect = brandTrigger.getBoundingClientRect();
+                const triggerTopOffset = triggerRect.top + scrollPos;
+                const totalScrollableArea = brandTrigger.offsetHeight - window.innerHeight;
+                
+                if (scrollPos >= triggerTopOffset && scrollPos <= triggerTopOffset + totalScrollableArea) {
+                    const progress = (scrollPos - triggerTopOffset) / totalScrollableArea;
+                    const totalWordsToShow = Math.floor(progress * wordSpans.length);
+                    
+                    wordSpans.forEach((span, idx) => {
+                        if (idx <= totalWordsToShow) {
+                            span.style.color = "#ffffff";
+                        } else {
+                            span.style.color = "";
+                        }
+                    });
+                } else if (scrollPos < triggerTopOffset) {
+                    wordSpans.forEach(span => span.style.color = "");
+                } else if (scrollPos > triggerTopOffset + totalScrollableArea) {
+                    wordSpans.forEach(span => span.style.color = "#ffffff");
+                }
+            }
+
+            window.addEventListener("scroll", handleScrollProcessing, { passive: true });
+            window.addEventListener("touchmove", handleScrollProcessing, { passive: true });
+        }
+
+        function triggerNumberCounter(element) {
+            if (element.classList.contains("counted")) return;
+            element.classList.add("counted");
+
+            const target = parseFloat(element.getAttribute("data-target"));
+            const numDisplay = element.querySelector(".perf-number");
+            const suffix = numDisplay.getAttribute("data-suffix") || "";
+            let current = 0;
+            const duration = 1500;
+            const stepTime = 30;
+            const increments = target / (duration / stepTime);
+
+            const timer = setInterval(() => {
+                current += increments;
+                if(current >= target) {
+                    numDisplay.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    numDisplay.textContent = (target % 1 === 0 ? Math.floor(current) : current.toFixed(1)) + suffix;
+                }
+            }, stepTime);
+        }
+
+        function initTestimonialModal() {
+            const trigger = document.getElementById("videoTrigger");
+            const modal = document.getElementById("videoModal");
+            const closeBtn = document.getElementById("closeModal");
+
+            if(!trigger) return;
+
+            trigger.addEventListener("click", () => {
+                modal.classList.add("active");
+                document.body.style.overflow = "hidden";
+            });
+
+            closeBtn.addEventListener("click", () => {
+                modal.classList.remove("active");
+                document.body.style.overflow = "";
+            });
+        }
+    </script>
+</body>
+</html>
