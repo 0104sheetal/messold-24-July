@@ -1,0 +1,3920 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UGC Management — Loop Studio</title>
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --font-editorial:
+          "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+        --font-mono: "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+
+        --ink: #08080a;
+        --ink-2: #111114;
+        --paper: #fcfcfa;
+        --paper-2: #f1f0ec;
+        --g70: #5e5e5e;
+        --g45: #9a9a98;
+        --g25: #c9c8c4;
+        --line: rgba(8, 8, 10, 0.11);
+        --lineinv: rgba(255, 255, 255, 0.14);
+
+        --max: 1400px;
+        --gut: clamp(20px, 4.6vw, 80px);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease2: cubic-bezier(0.19, 1, 0.22, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        font-family: var(--font-editorial);
+        background: var(--paper);
+        color: var(--ink);
+        line-height: 1.5;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      body.lock {
+        overflow: hidden;
+      }
+      img,
+      video {
+        max-width: 100%;
+        display: block;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: inherit;
+      }
+      ::selection {
+        background: var(--ink);
+        color: var(--paper);
+      }
+      :focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+      }
+
+      .wrap {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 var(--gut);
+      }
+      .narrow {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+
+      /* ================= TYPE ================= */
+      .mono {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        font-weight: 500;
+        display: inline-block;
+    }
+      .h-xl {
+        font-size: clamp(42px, 6vw, 104px);
+        line-height: 0.9;
+        letter-spacing: -0.05em;
+        font-weight: 400;
+      }
+      .h-l {
+        font-size: clamp(1.8rem, 4vw, 3.5rem);
+        line-height: 1.2;
+        letter-spacing: -0.045em;
+        font-weight: 300;
+      }
+      .h-m {
+        font-size: clamp(23px, 2.8vw, 40px);
+        line-height: 1.07;
+        letter-spacing: -0.035em;
+        font-weight: 400;
+      }
+      .h-s {
+        font-size: clamp(17px, 1.5vw, 22px);
+        line-height: 1.24;
+        letter-spacing: -0.022em;
+        font-weight: 500;
+      }
+      .thin {
+        font-weight: 200;
+      }
+      .ital {
+        font-style: italic;
+        font-weight: 300;
+      }
+      .lede {
+        font-size: clamp(15px, 1vw, 17.5px);
+        line-height: 1.62;
+        color: var(--g70);
+        max-width: 50ch;
+        font-weight: 400;
+      }
+      .small {
+        font-size: 14.5px;
+        line-height: 1.62;
+        color: var(--g70);
+      }
+
+      /* ================= LOADER (no counter) ================= */
+      #loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9990;
+        background: var(--ink);
+        transform-origin: top;
+        transition: clip-path 1s var(--ease2) 0.15s;
+        clip-path: inset(0 0 0 0);
+        display: grid;
+        place-items: center;
+      }
+      #loader.done {
+        clip-path: inset(0 0 100% 0);
+      }
+      .ld-mk {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid rgba(255, 255, 255, 0.35);
+        border-radius: 50%;
+        position: relative;
+      }
+      .ld-mk::after {
+        content: "";
+        position: absolute;
+        inset: 4px;
+        border-radius: 50%;
+        background: #fff;
+        animation: blip 1.1s var(--ease) infinite;
+      }
+
+      /* ================= NAV ================= */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 900;
+        transition:
+          background 0.5s ease,
+          border-color 0.5s ease,
+          backdrop-filter 0.5s ease,
+          color 0.5s ease;
+        border-bottom: 1px solid transparent;
+        display: none;
+      }
+      header.solid {
+        background: rgba(252, 252, 250, 0.8);
+        backdrop-filter: blur(20px) saturate(1.5);
+        border-bottom-color: var(--line);
+      }
+      header.inv {
+        color: var(--paper);
+      }
+      header.inv.solid {
+        background: rgba(8, 8, 10, 0.74);
+        border-bottom-color: var(--lineinv);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.035em;
+      }
+      .logo .mk {
+        width: 14px;
+        height: 14px;
+        border: 1.4px solid currentColor;
+        border-radius: 50%;
+        position: relative;
+        flex: none;
+      }
+      .logo .mk::after {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: blip 3s var(--ease) infinite;
+      }
+      @keyframes blip {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(0.3);
+          opacity: 0.35;
+        }
+      }
+      .nlinks {
+        display: flex;
+        gap: 32px;
+        align-items: center;
+      }
+      .nlinks a {
+        font-size: 14px;
+        font-weight: 450;
+        position: relative;
+        padding: 5px 0;
+        overflow: hidden;
+        display: block;
+      }
+      .nlinks a span {
+        display: block;
+        transition: transform 0.5s var(--ease2);
+      }
+      .nlinks a span.dup {
+        position: absolute;
+        left: 0;
+        top: 100%;
+      }
+      .nlinks a:hover span {
+        transform: translateY(-100%);
+      }
+
+      /* --- buttons: rectangular, no radius --- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 26px;
+        border-radius: 0;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.03rem;
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        transition:
+          color 0.45s var(--ease2),
+          border-color 0.45s var(--ease2);
+        text-transform: uppercase;
+      }
+      .btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        transform: translateY(101%);
+        transition: transform 0.55s var(--ease2);
+      }
+      .btn:hover::before {
+        transform: translateY(0);
+      }
+      .btn .ar {
+        transition: transform 0.45s var(--ease2);
+      }
+      .btn:hover .ar {
+        transform: translateX(5px);
+      }
+      .b-dark {
+        background: var(--ink);
+        color: var(--paper);
+      }
+      .b-dark::before {
+        background: #35353b;
+      }
+      .b-line {
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+      .b-line::before {
+        background: var(--ink);
+      }
+      .b-line:hover {
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+      .b-inv {
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .b-inv::before {
+        background: var(--g25);
+      }
+      .b-lineinv {
+        border: 1px solid var(--lineinv);
+        color: var(--paper);
+      }
+      .b-lineinv::before {
+        background: var(--paper);
+      }
+      .b-lineinv:hover {
+        color: var(--ink);
+        border-color: var(--paper);
+      }
+
+      .burger {
+        display: none;
+        width: 24px;
+        height: 13px;
+        position: relative;
+      }
+      .burger i {
+        position: absolute;
+        left: 0;
+        height: 1.4px;
+        width: 100%;
+        background: currentColor;
+        transition: 0.4s var(--ease2);
+      }
+      .burger i:nth-child(1) {
+        top: 0;
+      }
+      .burger i:nth-child(2) {
+        bottom: 0;
+      }
+      .burger.on i:nth-child(1) {
+        top: 6px;
+        transform: rotate(45deg);
+      }
+      .burger.on i:nth-child(2) {
+        bottom: 5.6px;
+        transform: rotate(-45deg);
+      }
+
+      .mob {
+        position: fixed;
+        inset: 0;
+        z-index: 880;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 100px var(--gut) 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        clip-path: inset(0 0 100% 0);
+        transition: clip-path 0.8s var(--ease2);
+      }
+      .mob.on {
+        clip-path: inset(0 0 0 0);
+      }
+      .mob a {
+        font-size: clamp(28px, 7.4vw, 44px);
+        letter-spacing: -0.04em;
+        font-weight: 300;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--lineinv);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.6s var(--ease2);
+      }
+      .mob.on a {
+        opacity: 1;
+        transform: none;
+      }
+      .mob.on a:nth-child(1) {
+        transition-delay: 0.18s;
+      }
+      .mob.on a:nth-child(2) {
+        transition-delay: 0.25s;
+      }
+      .mob.on a:nth-child(3) {
+        transition-delay: 0.32s;
+      }
+      .mob.on a:nth-child(4) {
+        transition-delay: 0.39s;
+      }
+      .mob.on a:nth-child(5) {
+        transition-delay: 0.46s;
+      }
+      .mob.on a:nth-child(6) {
+        transition-delay: 0.53s;
+      }
+
+      /* ================= REVEAL ================= */
+      .rv {
+        opacity: 0;
+        transform: translateY(26px);
+        transition:
+          opacity 1s var(--ease),
+          transform 1s var(--ease);
+      }
+      .rv.in {
+        opacity: 1;
+        transform: none;
+      }
+      [data-d="1"] {
+        transition-delay: 0.09s;
+      }
+      [data-d="2"] {
+        transition-delay: 0.18s;
+      }
+      [data-d="3"] {
+        transition-delay: 0.27s;
+      }
+      [data-d="4"] {
+        transition-delay: 0.36s;
+      }
+      .ml {
+        display: block;
+        overflow: hidden;
+        padding-bottom: 0.045em;
+      }
+      .ml > i {
+        display: block;
+        font-style: inherit;
+        transform: translateY(103%);
+        transition: transform 1.15s var(--ease2);
+      }
+      .ml.in > i {
+        transform: none;
+      }
+      .ml:nth-of-type(2) > i {
+        transition-delay: 0.1s;
+      }
+      .ml:nth-of-type(3) > i {
+        transition-delay: 0.2s;
+      }
+      .rule {
+        height: 1px;
+        background: var(--line);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1.3s var(--ease2);
+        display: none;
+      }
+      .rule.in {
+        transform: scaleX(1);
+      }
+      .dark .rule {
+        background: var(--lineinv);
+      }
+
+      /* ================= HERO ================= */
+      .hero {
+        position: relative;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 112px 0 0;
+        overflow: hidden;
+      }
+      .hero .wrap {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+      }
+      .htop {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-bottom: clamp(26px, 3.4vw, 44px);
+      }
+      .hstat {
+        display: flex;
+        gap: clamp(18px, 2.8vw, 42px);
+      }
+      .hstat .v {
+        font-size: clamp(18px, 1.7vw, 24px);
+        letter-spacing: -0.035em;
+        font-variant-numeric: tabular-nums;
+      }
+      .hstat .k {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--g45);
+        margin-top: 4px;
+      }
+
+      .hgrid {
+        display: grid;
+        grid-template-columns: 1.08fr 0.92fr;
+        gap: clamp(28px, 4.4vw, 72px);
+        align-items: center;
+      }
+      .hact {
+        display: flex;
+        gap: 0;
+        flex-wrap: wrap;
+        margin-top: clamp(26px, 3vw, 38px);
+        gap: 1rem;
+      }
+      .hact .btn + .btn {
+        margin-left: -1px;
+      }
+
+      /* --- hero video --- */
+      .vwrap {
+        position: relative;
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+        transition: 1.2s var(--ease2) 0.35s;
+      }
+      .vwrap.in {
+        opacity: 1;
+        transform: none;
+      }
+      .vstage {
+        position: relative;
+        aspect-ratio: 4/3.35;
+        overflow: hidden;
+        background: var(--ink);
+      }
+      .vstage video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.06);
+        transition: filter 0.9s ease;
+      }
+      .vstage:hover video {
+        filter: grayscale(0) contrast(1);
+      }
+      .vstage .grade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.22) 0%,
+          rgba(0, 0, 0, 0) 34%,
+          rgba(0, 0, 0, 0.55) 100%
+        );
+        pointer-events: none;
+      }
+      .vbar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px 18px;
+        color: #fff;
+      }
+      .vbar .lft {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .rec {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .rec i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #fff;
+        animation: blip 1.6s var(--ease) infinite;
+      }
+      .vbtn {
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        transition: 0.4s var(--ease2);
+        flex: none;
+      }
+      .vbtn:hover {
+        background: #fff;
+        color: var(--ink);
+        border-color: #fff;
+      }
+      .vmeta {
+        position: absolute;
+        top: 16px;
+        left: 18px;
+        z-index: 3;
+        color: #fff;
+      }
+      .vmeta .c {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        opacity: 0.75;
+      }
+      .vmeta .t {
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        margin-top: 5px;
+      }
+      .vtabs {
+        display: flex;
+        border: 1px solid var(--line);
+        border-top: none;
+      }
+      .vtab {
+        flex: 1;
+        padding: 13px 10px;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.03rem;
+        text-transform: uppercase;
+        color: var(--g45);
+        border-right: 1px solid var(--line);
+        position: relative;
+        transition: color 0.4s ease;
+        overflow: hidden;
+        font-weight: 500;
+      }
+      .vtab:last-child {
+        border-right: none;
+      }
+      .vtab::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 100%;
+        background: var(--ink);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s var(--ease2);
+      }
+      .vtab.on {
+        color: var(--ink);
+      }
+      .vtab.on::after {
+        transform: scaleX(1);
+      }
+      .dark .vtabs {
+        border-color: var(--lineinv);
+      }
+
+      /* ================= STRIP ================= */
+      .strip {
+        margin-top: clamp(40px, 5vw, 72px);
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        overflow: hidden;
+        background: var(--paper);
+        position: relative;
+        z-index: 2;
+      }
+      .strip-row {
+        display: flex;
+        width: max-content;
+        padding: 13px 0;
+      }
+      .strip-row.a {
+        animation: mvL 48s linear infinite;
+      }
+      .strip-row.b {
+        animation: mvR 48s linear infinite;
+        border-top: 1px solid var(--line);
+      }
+      @keyframes mvL {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes mvR {
+        from {
+          transform: translateX(-50%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+      .strip:hover .strip-row {
+        animation-play-state: paused;
+      }
+      .chip {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 0 20px;
+        white-space: nowrap;
+        flex: none;
+      }
+      .chip .t {
+        font-size: clamp(14px, 1.25vw, 17.5px);
+        letter-spacing: -0.025em;
+        color: var(--g45);
+        transition: color 0.4s ease;
+      }
+      .chip:hover .t {
+        color: var(--ink);
+      }
+      .chip .n {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--g25);
+        letter-spacing: 0.1em;
+      }
+      .chip .th {
+        width: 30px;
+        height: 40px;
+        overflow: hidden;
+        flex: none;
+        filter: grayscale(1) contrast(1.08);
+        transition: filter 0.5s ease;
+      }
+      .chip:hover .th {
+        filter: none;
+      }
+      .chip .th img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* ================= SHELL ================= */
+      section {
+        padding: clamp(80px, 9.5vw, 158px) 0;
+        position: relative;
+      }
+      .dark {
+        background: var(--ink);
+        color: var(--paper);
+      }
+      .dark .lede,
+      .dark .small {
+        color: var(--g45);
+      }
+      .dark .mono {
+        color: var(--g45);
+      }
+      .warm {
+        background: var(--paper-2);
+      }
+      .shead {
+        display: grid;
+        grid-template-columns: 1fr;
+        /*gap: clamp(20px, 4vw, 60px);*/
+        margin-bottom: clamp(30px, 2vw, 80px);
+        align-items: start;
+      }
+      /*
+      .shead .h-l {
+        max-width: 15ch;
+      }*/
+
+      /* ============ 01 SCOPE — split index / detail ============ */
+      .scope {
+        display: grid;
+        grid-template-columns: 0.86fr 1.14fr;
+        gap: clamp(24px, 3.4vw, 56px);
+        align-items: start;
+      }
+      .sidx {
+        border-top: 1px solid var(--line);
+      }
+      .sitem {
+        width: 100%;
+        text-align: left;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 16px;
+        align-items: center;
+        padding: clamp(15px, 1.5vw, 20px) 0;
+        border-bottom: 1px solid var(--line);
+        position: relative;
+        transition: padding-left 0.55s var(--ease2);
+      }
+      .sitem::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: -1px;
+        width: 2px;
+        background: var(--ink);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.55s var(--ease2);
+      }
+      .sitem .n {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.13em;
+        color: var(--g25);
+        transition: color 0.4s ease;
+      }
+      .sitem .l {
+        font-size: clamp(16px, 1.5vw, 21px);
+        letter-spacing: -0.028em;
+        font-weight: 400;
+        color: var(--g70);
+        transition: color 0.4s ease;
+      }
+      .sitem .d {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--ink);
+        opacity: 0;
+        transform: scale(0);
+        transition: 0.5s var(--ease2);
+      }
+      .sitem:hover .l {
+        color: var(--ink);
+      }
+      .sitem.on {
+        padding-left: 16px;
+      }
+      .sitem.on::before {
+        transform: scaleY(1);
+      }
+      .sitem.on .l {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .sitem.on .n {
+        color: var(--ink);
+      }
+      .sitem.on .d {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .spanel {
+        position: relative;
+        min-height: clamp(340px, 40vw, 470px);
+        border: 1px solid var(--line);
+      }
+      .sp {
+        position: absolute;
+        inset: 0;
+        padding: clamp(24px, 2.6vw, 40px);
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(14px);
+        transition:
+          opacity 0.55s var(--ease),
+          transform 0.65s var(--ease2),
+          visibility 0.55s;
+      }
+      .sp.on {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+      }
+      .sp .kv {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--g45);
+      }
+      .sp h3 {
+        margin: 14px 0 14px;
+      }
+      .sp p {
+        font-size: 15px;
+        line-height: 1.65;
+        color: var(--g70);
+        max-width: 46ch;
+      }
+      .sp .facts {
+        margin-top: auto;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .sp .facts div .v {
+        font-size: clamp(19px, 1.7vw, 25px);
+        font-weight: 400;
+        letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums;
+      }
+      .sp .facts div .k {
+        font-size: 10.5px;
+        letter-spacing: 0.01rem;
+        text-transform: uppercase;
+        color: #555454;
+        margin-top: 6px;
+        line-height: 1.5;
+        font-weight: 500;
+      }
+      .sp .own {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 13px;
+        color: var(--g70);
+      }
+      .sp .own .av {
+        width: 22px;
+        height: 22px;
+        overflow: hidden;
+        flex: none;
+        filter: grayscale(1);
+      }
+      .sp .own .av img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* ============ 02 CADENCE — vertical timeline ============ */
+      .cad {
+        display: grid;
+        grid-template-columns: 0.42fr 1.58fr;
+        gap: clamp(24px, 4vw, 74px);
+        align-items: start;
+      }
+
+      /* left: sticky dial */
+      .cad-dial {
+        position: sticky;
+        top: clamp(90px, 14vh, 130px);
+      }
+      .dialwrap {
+        position: relative;
+        width: clamp(150px, 15vw, 196px);
+        aspect-ratio: 1;
+      }
+      .dialwrap svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+        overflow: visible;
+      }
+      .dial-tr {
+        fill: none;
+        stroke: var(--lineinv);
+        stroke-width: 1;
+      }
+      .dial-pg {
+        fill: none;
+        stroke: var(--paper);
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.9s var(--ease2);
+      }
+      .dial-tick {
+        stroke: var(--lineinv);
+        stroke-width: 1;
+        transition: stroke 0.5s ease;
+      }
+      .dial-tick.on {
+        stroke: var(--paper);
+      }
+      .dial-c {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .dial-c .wk {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--g45);
+      }
+      .dial-c .no {
+        font-size: clamp(42px, 4.6vw, 64px);
+        font-weight: 200;
+        letter-spacing: -0.06em;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        margin-top: 6px;
+      }
+      .dial-c .of {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        color: var(--g45);
+        margin-top: 8px;
+      }
+      .cad-note {
+        margin-top: clamp(24px, 3vw, 38px);
+        max-width: 26ch;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--g45);
+      }
+      .cad-note b {
+        display: block;
+        color: var(--paper);
+        font-weight: 500;
+        font-size: 14.5px;
+        letter-spacing: -0.02em;
+        margin-bottom: 7px;
+      }
+
+      /* right: timeline rows */
+      .cad-line {
+        position: relative;
+        border-top: 1px solid var(--lineinv);
+      }
+      .crow {
+        position: relative;
+        display: grid;
+        grid-template-columns: clamp(56px, 6vw, 96px) 1fr;
+        gap: clamp(16px, 2.4vw, 40px);
+        align-items: start;
+        padding: clamp(26px, 3vw, 44px) 0;
+        border-bottom: 1px solid var(--lineinv);
+        transition: padding-left 0.7s var(--ease2);
+      }
+      .crow::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: -1px;
+        width: 1px;
+        background: var(--paper);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.8s var(--ease2);
+      }
+      .crow.on {
+        padding-left: clamp(14px, 1.6vw, 24px);
+      }
+      .crow.on::before {
+        transform: scaleY(1);
+      }
+      .crow .stamp {
+        padding-top: 5px;
+      }
+      .crow .stamp .w {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--g45);
+        transition: color 0.5s ease;
+      }
+      .crow.on .stamp .w {
+        color: var(--paper);
+      }
+      .crow .stamp .d {
+        font-size: clamp(26px, 2.6vw, 40px);
+        font-weight: 200;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        margin-top: 8px;
+        font-variant-numeric: tabular-nums;
+        color: var(--g45);
+        transition: color 0.5s ease;
+      }
+      .crow.on .stamp .d {
+        color: var(--paper);
+      }
+      .crow .body {
+        max-width: 60ch;
+      }
+      .crow .ttl {
+        font-size: clamp(21px, 2.4vw, 34px);
+        letter-spacing: -0.035em;
+        line-height: 1.12;
+        font-weight: 300;
+        color: var(--g45);
+        transition: color 0.55s ease;
+      }
+      .crow.on .ttl {
+        color: var(--paper);
+      }
+      .crow .txt {
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: var(--g45);
+        margin-top: 12px;
+        max-width: 46ch;
+      }
+      .crow .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(14px, 1.8vw, 28px);
+        margin-top: 22px;
+        padding-top: 20px;
+        border-top: 1px solid var(--lineinv);
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.85s var(--ease2),
+          opacity 0.6s ease,
+          margin 0.7s var(--ease2),
+          padding 0.7s var(--ease2);
+      }
+      .crow.on .split {
+        max-height: 260px;
+        opacity: 1;
+      }
+      .split .sc h6 {
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--g45);
+        font-weight: 300;
+        margin-bottom: 11px;
+      }
+      .split .sc ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .split .sc li {
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--g45);
+        padding-left: 16px;
+        position: relative;
+      }
+      .split .sc li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 7px;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.55;
+      }
+      .split .sc.you li {
+        color: var(--paper);
+      }
+      .split .sc.you li::before {
+        width: 5px;
+        height: 5px;
+        top: 6px;
+        border-radius: 50%;
+        background: var(--paper);
+        opacity: 1;
+      }
+      .cad-end {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
+        flex-wrap: wrap;
+        padding: clamp(24px, 2.8vw, 38px) 0;
+      }
+      .cad-end .lp {
+        font-size: clamp(17px, 1.8vw, 20px);
+        letter-spacing: -0.03em;
+        font-weight: 300;
+        max-width: 34ch;
+        line-height: 1.25;
+      }
+
+      /* ============ 03 NUMBERS ============ */
+
+      .nums {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--line);
+      }
+      .num {
+        padding: clamp(26px, 3.2vw, 50px) clamp(16px, 2vw, 32px);
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        position: relative;
+        overflow: hidden;
+      }
+      .num:last-child {
+        border-right: none;
+      }
+      .num::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 2px;
+        width: 100%;
+        background: var(--ink);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1.1s var(--ease2);
+      }
+      .num.in::before {
+        transform: scaleX(1);
+      }
+      .num .v {
+        font-size: clamp(38px, 5.1vw, 76px);
+        line-height: 1;
+        font-weight: 200;
+        letter-spacing: -0.055em;
+        font-variant-numeric: tabular-nums;
+        display: flex;
+        align-items: baseline;
+      }
+      .num .v .sf {
+        font-size: 0.4em;
+        margin-left: 3px;
+      }
+      .num .k {
+        margin-top: 15px;
+        font-size: 13.5px;
+        color: var(--g70);
+        line-height: 1.45;
+        max-width: 24ch;
+      }
+
+      /* ============ 04 REEL RAIL ============ */
+      .rail {
+        overflow: hidden;
+        position: relative;
+        padding: 4px 0;
+      }
+      .rail::before,
+      .rail::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: clamp(30px, 8vw, 130px);
+        z-index: 4;
+        pointer-events: none;
+      }
+      .rail::before {
+        left: 0;
+        background: linear-gradient(90deg, var(--paper), transparent);
+      }
+      .rail::after {
+        right: 0;
+        background: linear-gradient(270deg, var(--paper), transparent);
+      }
+      .dark .rail::before {
+        background: linear-gradient(90deg, var(--ink), transparent);
+      }
+      .dark .rail::after {
+        background: linear-gradient(270deg, var(--ink), transparent);
+      }
+      .rail-move {
+        display: flex;
+        gap: clamp(12px, 1.4vw, 20px);
+        width: max-content;
+        will-change: transform;
+      }
+      .reel {
+        flex: none;
+        width: clamp(190px, 17.5vw, 255px);
+        aspect-ratio: 9/16;
+        position: relative;
+        overflow: hidden;
+        background: var(--ink-2);
+        display: block;
+        transition: transform 0.7s var(--ease2);
+      }
+      .reel:hover {
+        transform: translateY(-8px);
+      }
+      .reel video,
+      .reel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.05);
+        transition:
+          filter 0.7s ease,
+          transform 1.4s var(--ease2);
+      }
+      .reel:hover video,
+      .reel:hover img {
+        filter: grayscale(0) contrast(1);
+        transform: scale(1.04);
+      }
+      .reel .veil {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.28) 0%,
+          rgba(0, 0, 0, 0) 30%,
+          rgba(0, 0, 0, 0.8) 100%
+        );
+      }
+      .reel .top {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .reel .plat {
+        font-size: 8.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        padding: 4px 8px;
+      }
+      .reel .kpi {
+        font-size: 9px;
+        letter-spacing: 0.11em;
+        background: rgba(252, 252, 250, 0.92);
+        color: var(--ink);
+        padding: 4px 8px;
+        font-weight: 500;
+      }
+      .reel .bot {
+        position: absolute;
+        left: 13px;
+        right: 13px;
+        bottom: 13px;
+        z-index: 2;
+        color: #fff;
+      }
+      .reel .bot .cat {
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        opacity: 0.72;
+      }
+      .reel .bot .t {
+        font-size: 15px;
+        letter-spacing: -0.025em;
+        margin-top: 6px;
+        line-height: 1.2;
+      }
+      .reel .bot .m {
+        font-size: 12px;
+        opacity: 0;
+        margin-top: 5px;
+        transform: translateY(6px);
+        transition: 0.55s var(--ease2);
+      }
+      .reel:hover .bot .m {
+        opacity: 0.78;
+        transform: none;
+      }
+      .railctl {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        margin-top: clamp(24px, 3vw, 40px);
+        flex-wrap: wrap;
+      }
+      .railbtns {
+        display: flex;
+      }
+      .rbtn {
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--lineinv);
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        transition: 0.4s var(--ease2);
+      }
+      .rbtn + .rbtn {
+        margin-left: -1px;
+      }
+      .rbtn:hover {
+        background: var(--paper);
+        color: var(--ink);
+        border-color: var(--paper);
+      }
+
+      /* ============ 05 CLIENTS — video carousel ============ */
+      .vc {
+        position: relative;
+      }
+      .vc-view {
+        overflow: hidden;
+        margin: 0 calc(var(--gut) * -1);
+        padding: 6px var(--gut) 8px;
+      }
+      .vc-move {
+        display: flex;
+        gap: var(--vc-gap, 18px);
+        will-change: transform;
+        transition: transform 0.85s var(--ease2);
+      }
+      .vc-move.drag {
+        transition: none;
+      }
+
+      .vt {
+        flex: none;
+        width: var(--vc-card, 320px);
+        position: relative;
+        background: var(--ink);
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.7s var(--ease2);
+      }
+      .vt-med {
+        position: relative;
+        aspect-ratio: 4/5;
+        overflow: hidden;
+        background: var(--ink-2);
+      }
+      .vt-med video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.05);
+        transition:
+          filter 0.8s ease,
+          transform 1.4s var(--ease2);
+      }
+      .vt.playing .vt-med video {
+        filter: grayscale(0) contrast(1);
+      }
+      .vt:hover .vt-med video {
+        transform: scale(1.03);
+      }
+      .vt-med .grade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.34) 0%,
+          rgba(0, 0, 0, 0) 30%,
+          rgba(0, 0, 0, 0.06) 52%,
+          rgba(0, 0, 0, 0.86) 100%
+        );
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* play control */
+      .vt-play {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        z-index: 3;
+        width: clamp(50px, 4.6vw, 62px);
+        height: clamp(50px, 4.6vw, 62px);
+        border-radius: 50%;
+        background: rgba(252, 252, 250, 0.94);
+        color: var(--ink);
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        padding-left: 3px;
+        transition:
+          transform 0.5s var(--ease2),
+          opacity 0.5s ease,
+          background 0.4s ease;
+      }
+      .vt:hover .vt-play {
+        transform: translate(-50%, -50%) scale(1.08);
+      }
+      .vt.playing .vt-play {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+        pointer-events: none;
+      }
+      .vt.playing:hover .vt-play {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+        padding-left: 0;
+      }
+      .vt-dur {
+        position: absolute;
+        top: 13px;
+        right: 13px;
+        z-index: 3;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.11em;
+        background: rgba(252, 252, 250, 0.92);
+        color: var(--ink);
+        padding: 4px 8px;
+        font-weight: 500;
+      }
+      .vt-cat {
+        position: absolute;
+        top: 13px;
+        left: 13px;
+        z-index: 3;
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        padding: 4px 8px;
+        font-weight: 500;
+      }
+      .vt-sound {
+        position: absolute;
+        bottom: 13px;
+        right: 13px;
+        z-index: 4;
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        color: #fff;
+        opacity: 0;
+        transition:
+          opacity 0.4s ease,
+          background 0.4s ease,
+          color 0.4s ease;
+      }
+      .vt.playing .vt-sound {
+        opacity: 1;
+      }
+      .vt-sound:hover {
+        background: #fff;
+        color: var(--ink);
+        border-color: #fff;
+      }
+      .vt-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.2);
+        z-index: 4;
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      .vt.playing .vt-line {
+        opacity: 1;
+      }
+      .vt-line i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: #fff;
+      }
+
+      /* caption */
+      .vt-cap {
+        padding: clamp(16px, 1.7vw, 22px);
+        border: 1px solid var(--line);
+        border-top: none;
+        background: var(--paper);
+      }
+      .vt-cap .q {
+        font-size: clamp(14px, 1.15vw, 16px);
+        line-height: 1.45;
+        letter-spacing: -0.022em;
+        font-weight: 400;
+        color: var(--ink);
+      }
+      .vt-cap .q em {
+        font-style: italic;
+        font-weight: 300;
+      }
+      .vt-cap .by {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        /*gap: 10px;*/
+        flex-wrap: wrap;
+        /*margin-top: 14px;
+        padding-top: 13px;
+        border-top: 1px solid var(--line);*/
+      }
+      .vt-cap .by .nm {
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+      .vt-cap .by .rl {
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        letter-spacing: 0.015rem;
+        color: #565454;
+        font-weight: 400;
+      }
+      .vt-cap .by .kpi {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.08em;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        padding: 4px 8px;
+        white-space: nowrap;
+      }
+
+      /* controls */
+      .vc-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: clamp(24px, 2.8vw, 38px);
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+      }
+      .vc-track {
+        display: flex;
+        flex: 1;
+        min-width: 130px;
+        max-width: 280px;
+        gap: 6px;
+      }
+      .vc-seg {
+        flex: 1;
+        height: 2px;
+        background: var(--line);
+        transition: background 0.5s ease;
+      }
+      .vc-seg.on {
+        background: var(--ink);
+      }
+      .vc-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .vc-count {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: var(--g45);
+        font-variant-numeric: tabular-nums;
+      }
+      .vc-arrows {
+        display: flex;
+      }
+      .vabtn {
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        transition: 0.4s var(--ease2);
+        background: transparent;
+      }
+      .vabtn + .vabtn {
+        margin-left: -1px;
+      }
+      .vabtn:hover:not(:disabled) {
+        background: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+      }
+      .vabtn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .vc-hint {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--g45);
+      }
+
+      /* ============ 06 WHAT LANDS ============ */
+
+      .deliver {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--lineinv);
+        border-left: 1px solid var(--lineinv);
+      }
+      .dcell {
+        padding: clamp(22px, 2.4vw, 36px);
+        border-right: 1px solid var(--lineinv);
+        border-bottom: 1px solid var(--lineinv);
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.55s var(--ease2);
+      }
+      .dcell:hover {
+        background: rgba(255, 255, 255, 0.045);
+      }
+      .dcell .ic {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: var(--g45);
+        margin-bottom: auto;
+      }
+      .dcell .t {
+        font-size: 16.5px;
+        font-weight: 400;
+        letter-spacing: 0.01rem;
+        margin: 28px 0 8px;
+        text-transform: uppercase;
+      }
+      .dcell .s {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--g45);
+      }
+
+      /* ============ 07 FAQ ============ */
+      .fq {
+        border-bottom: 1px solid var(--line);
+      }
+      .fq:first-child {
+        border-top: 1px solid var(--line);
+      }
+      .fq-q {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 26px;
+        padding: clamp(21px, 2.4vw, 30px) 1rem;
+        font-size: clamp(16.5px, 1.75vw, 20px);
+        font-weight: 400;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        transition: padding-left 0.6s var(--ease2);
+      }
+      .fq-q:hover {
+        padding-left: 12px;
+      }
+      .fq-q .pm {
+        flex: none;
+        width: 19px;
+        height: 19px;
+        position: relative;
+        margin-top: 5px;
+      }
+      .fq-q .pm::before,
+      .fq-q .pm::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background: currentColor;
+        transition: transform 0.55s var(--ease2);
+      }
+      .fq-q .pm::before {
+        width: 13px;
+        height: 1.3px;
+        transform: translate(-50%, -50%);
+      }
+      .fq-q .pm::after {
+        width: 1.3px;
+        height: 13px;
+        transform: translate(-50%, -50%);
+      }
+      .fq.open .fq-q {
+        padding-left: 12px;
+      }
+      .fq.open .pm::after {
+        transform: translate(-50%, -50%) rotate(90deg) scaleY(0);
+      }
+      .fq-a {
+        overflow: hidden;
+        height: 0;
+        transition: height 0.6s var(--ease2);
+      }
+      .fq-a .in {
+        padding: 0 0 30px 12px;
+        max-width: 90ch;
+        font-size: 15px;
+        line-height: 1.68;
+        color: var(--g70);
+      }
+
+      /* ============ 08 CTA ============ */
+      .cta {
+        padding: clamp(86px, 11vw, 180px) 0;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+      }
+      .cta-h {
+        position: relative;
+        z-index: 2;
+      }
+      .cta .btnrow {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: clamp(28px, 3.4vw, 46px);
+        gap: 2rem;
+      }
+      .cta .btnrow .btn + .btn {
+        margin-left: -1px;
+      }
+      .cta-ghost {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: clamp(110px, 24vw, 400px);
+        font-weight: 200;
+        letter-spacing: -0.07em;
+        color: rgba(255, 255, 255, 0.03);
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 1;
+        line-height: 1;
+      }
+
+      /* ============ FOOTER ============ */
+      footer {
+        border-top: 1px solid var(--lineinv);
+        padding: clamp(46px, 5.6vw, 70px) 0 32px;
+      }
+      .fgrid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr 1fr 1fr;
+        gap: 32px;
+        margin-bottom: clamp(44px, 5.6vw, 68px);
+      }
+      .fcol h5 {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--g70);
+        margin-bottom: 18px;
+        font-weight: 300;
+      }
+      .fcol a {
+        display: block;
+        font-size: 14.5px;
+        padding: 6px 0;
+        color: var(--g45);
+        transition:
+          color 0.35s ease,
+          transform 0.45s var(--ease2);
+      }
+      .fcol a:hover {
+        color: var(--paper);
+        transform: translateX(4px);
+      }
+      .fbot {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding-top: 26px;
+        border-top: 1px solid var(--lineinv);
+        font-size: 12.5px;
+        color: var(--g70);
+      }
+
+      .prog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: var(--ink);
+        z-index: 999;
+        width: 0;
+        mix-blend-mode: difference;
+      }
+      .cur {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #fff;
+        pointer-events: none;
+        z-index: 9500;
+        mix-blend-mode: difference;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.35s var(--ease),
+          height 0.35s var(--ease);
+      }
+      .cur.big {
+        width: 44px;
+        height: 44px;
+      }
+
+      /* ============ RESPONSIVE ============ */
+      @media (max-width: 1080px) {
+        .shead {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .hgrid {
+          grid-template-columns: 1fr;
+          gap: 34px;
+        }
+        .vstage {
+          aspect-ratio: 4/3.6;
+        }
+        .scope {
+          grid-template-columns: 1fr;
+          gap: 26px;
+        }
+        .spanel {
+          min-height: 340px;
+        }
+        .cad {
+          grid-template-columns: 1fr;
+          gap: 30px;
+        }
+        .cad-dial {
+          position: static;
+          display: flex;
+          align-items: center;
+          gap: 26px;
+          flex-wrap: wrap;
+        }
+        .cad-note {
+          margin-top: 0;
+        }
+        .vc-hint {
+          display: none;
+        }
+        .nums {
+          grid-template-columns: 1fr 1fr;
+        }
+        .num:nth-child(2n) {
+          border-right: none;
+        }
+        .deliver {
+          grid-template-columns: 1fr 1fr;
+        }
+        .nlinks,
+        .nav .btn {
+          display: none;
+        }
+        .burger {
+          display: block;
+        }
+        .fgrid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 600px) {
+        .nums {
+          grid-template-columns: 1fr;
+        }
+        .num {
+          border-right: none;
+        }
+        .deliver {
+          grid-template-columns: 1fr;
+        }
+        .fgrid {
+          grid-template-columns: 1fr;
+        }
+        .cur {
+          display: none;
+        }
+        .sp .facts {
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
+        }
+        .crow {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .crow .stamp {
+          display: flex;
+          align-items: baseline;
+          gap: 12px;
+          padding-top: 0;
+        }
+        .crow .stamp .d {
+          margin-top: 0;
+        }
+        .crow .split {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .crow.on .split {
+          max-height: 420px;
+        }
+        .vc-foot {
+          justify-content: space-between;
+          gap: 14px;
+        }
+        .vc-track {
+          max-width: none;
+          order: 3;
+          flex-basis: 100%;
+        }
+        .vt-cap .by {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .hact {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .hact .btn {
+          justify-content: center;
+          margin-left: 0 !important;
+        }
+        .hact .btn + .btn {
+          margin-top: -1px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .rv {
+          opacity: 1;
+          transform: none;
+        }
+        .ml > i {
+          transform: none;
+        }
+        .vwrap {
+          opacity: 1;
+          transform: none;
+        }
+        .rail-move {
+          transform: none !important;
+        }
+        .rail-move {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .crow .split {
+          max-height: none;
+          opacity: 1;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader"><div class="ld-mk"></div></div>
+    <div class="prog" id="prog"></div>
+    <!-- <div class="cur" id="cur"></div> -->
+
+    <header id="hdr">
+      <div class="wrap nav">
+        
+        <a href="#contact" class="btn b-dark"
+          >Start a slate <span class="ar">→</span></a
+        >
+        <button
+          class="burger"
+          id="burger"
+          aria-label="Menu"
+          aria-expanded="false"
+        >
+          <i></i><i></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="mob" id="mob">
+      <a href="#scope">Scope</a><a href="#process">Process</a
+      ><a href="#work">Work</a> <a href="#voices">Clients</a
+      ><a href="#faq">FAQ</a><a href="#contact">Start a slate</a>
+    </div>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+      <div class="wrap">
+        <div class="htop">
+          <div class="mono rv">Managed UGC · Est. 2021 · Remote</div>
+          <div class="hstat rv" data-d="1">
+            <div>
+              <div class="v">
+                <span class="ct" data-to="4200" data-sep="1">0</span>+
+              </div>
+              <div class="k">Assets shipped</div>
+            </div>
+            <div>
+              <div class="v"><span class="ct" data-to="180">0</span>+</div>
+              <div class="k">Brands run</div>
+            </div>
+            <div>
+              <div class="v"><span class="ct" data-to="14">0</span>d</div>
+              <div class="k">Brief to cut</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hgrid">
+          <div>
+            <h1 class="h-xl">
+              <span class="ml"><i>We run your</i></span>
+              <span class="ml"><i>creator content</i></span>
+              <span class="ml"><i class="ital thin">so you don't.</i></span>
+            </h1>
+            <p
+              class="lede rv"
+              data-d="3"
+              style="margin-top: clamp(22px, 2.6vw, 34px)"
+            >
+              Sourcing, briefs, contracts, revisions, rights, delivery. One
+              producer owns the whole chain and hands you edit-ready assets on a
+              fixed cadence. Your only job is one pass of comments.
+            </p>
+            <div class="hact rv" data-d="4">
+              <a href="#contact" class="btn b-dark"
+                >Start a slate <span class="ar">→</span></a
+              >
+              <a href="#work" class="btn b-line">See the work</a>
+            </div>
+          </div>
+
+          <div class="vwrap" id="vwrap">
+            <div class="vstage">
+              <video
+                id="hvid"
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=80"
+              >
+                <source
+                  id="hsrc"
+                  src="https://cdn.coverr.co/videos/coverr-a-woman-applying-cream-on-her-face-9975/1080p.mp4"
+                  type="video/mp4"
+                />
+              </video>
+              <div class="grade"></div>
+              <div class="vmeta">
+                <div class="c" id="vcat">Skincare · Meta</div>
+                <div class="t" id="vttl">Routine-first hook set</div>
+              </div>
+              <div class="vbar">
+                <div class="lft">
+                  <span class="rec"><i></i>Slate 041</span>
+                </div>
+                <div style="display: flex; gap: 0">
+                  <button class="vbtn" id="vmute" aria-label="Toggle sound">
+                    ♪
+                  </button>
+                  <button
+                    class="vbtn"
+                    id="vplay"
+                    aria-label="Pause video"
+                    style="margin-left: -1px"
+                  >
+                    ❚❚
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="vtabs" id="vtabs">
+              <button
+                class="vtab on"
+                data-cat="Skincare · Meta"
+                data-ttl="Routine-first hook set"
+                data-src="https://cdn.coverr.co/videos/coverr-a-woman-applying-cream-on-her-face-9975/1080p.mp4"
+                data-poster="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=80"
+              >
+                Skincare
+              </button>
+              <button
+                class="vtab"
+                data-cat="Fitness · Reels"
+                data-ttl="Founder + creator pairing"
+                data-src="https://cdn.coverr.co/videos/coverr-woman-doing-yoga-at-home-5244/1080p.mp4"
+                data-poster="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80"
+              >
+                Fitness
+              </button>
+              <button
+                class="vtab"
+                data-cat="Home · TikTok"
+                data-ttl="Unboxing to problem-solve"
+                data-src="https://cdn.coverr.co/videos/coverr-opening-a-package-4381/1080p.mp4"
+                data-poster="https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=900&q=80"
+              >
+                Home
+              </button>
+              <button
+                class="vtab"
+                data-cat="Apparel · Meta"
+                data-ttl="Fit-check to occasion"
+                data-src="https://cdn.coverr.co/videos/coverr-a-woman-in-a-white-dress-3266/1080p.mp4"
+                data-poster="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&q=80"
+              >
+                Apparel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="strip-row a" id="sr1"></div>
+        <div class="strip-row b" id="sr2"></div>
+      </div>
+    </section>
+
+    <!-- ============ 01 SCOPE ============ -->
+    <section id="scope">
+      <div class="wrap">
+        <div class="shead">
+          <div>
+            <div class="mono rv">01 / Scope</div>
+            <div class="rule" style="margin-top: 14px"></div>
+          </div>
+          <div>
+            <h2 class="h-l">
+              <span class="ml"><i>Six jobs.</i></span
+              ><span class="ml"
+                ><i class="ital thin">One Person Accountable.</i></span
+              >
+            </h2>
+            <p class="lede rv" data-d="2" style="margin-top: 24px">
+              Most brands don't need more creators — they need someone owning
+              the part where creators, briefs, revisions, rights and deadlines
+              all have to line up at once.
+            </p>
+          </div>
+        </div>
+
+        <div class="scope">
+          <div class="sidx" id="sidx">
+            <button class="sitem on" data-i="0">
+              <span class="n">A01</span
+              ><span class="l">Creator sourcing &amp; vetting</span
+              ><span class="d"></span>
+            </button>
+            <button class="sitem" data-i="1">
+              <span class="n">A02</span
+              ><span class="l">Concepts &amp; hook writing</span
+              ><span class="d"></span>
+            </button>
+            <button class="sitem" data-i="2">
+              <span class="n">A03</span
+              ><span class="l">Contracts &amp; usage rights</span
+              ><span class="d"></span>
+            </button>
+            <button class="sitem" data-i="3">
+              <span class="n">A04</span><span class="l">Production chase</span
+              ><span class="d"></span>
+            </button>
+            <button class="sitem" data-i="4">
+              <span class="n">A05</span
+              ><span class="l">Edit &amp; ratio delivery</span
+              ><span class="d"></span>
+            </button>
+            <button class="sitem" data-i="5">
+              <span class="n">A06</span
+              ><span class="l">Performance read-back</span
+              ><span class="d"></span>
+            </button>
+          </div>
+
+          <div class="spanel" id="spanel">
+            <div class="sp on">
+              <div class="kv">A01 — Sourcing</div>
+              <h3 class="h-m">We shortlist on fit, not follower count.</h3>
+              <p>
+                Creators are matched to your category, price point and on-camera
+                range. Every one shoots a paid sample before they join a slate,
+                so nobody's first delivery is also their audition.
+              </p>
+              <div class="facts">
+                <div>
+                  <div class="v">40+</div>
+                  <div class="k">Shortlisted per slate</div>
+                </div>
+                <div>
+                  <div class="v">3</div>
+                  <div class="k">Sample rounds</div>
+                </div>
+                <div>
+                  <div class="v">9</div>
+                  <div class="k">Categories covered</div>
+                </div>
+              </div>
+              <div class="own">
+                <span class="av"
+                  ><img
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&q=70"
+                    alt=""
+                    loading="lazy" /></span
+                >Owned by your producer, start to finish
+              </div>
+            </div>
+            <div class="sp">
+              <div class="kv">A02 — Concepts</div>
+              <h3 class="h-m">Hooks written per concept, not per batch.</h3>
+              <p>
+                The first three seconds get drafted individually and kept as
+                variants of each other, so when one outperforms you learn
+                something instead of guessing which of six differences did it.
+              </p>
+              <div class="facts">
+                <div>
+                  <div class="v">4</div>
+                  <div class="k">Hooks per concept</div>
+                </div>
+                <div>
+                  <div class="v">2×</div>
+                  <div class="k">Angles per product</div>
+                </div>
+                <div>
+                  <div class="v">48h</div>
+                  <div class="k">Concept turnaround</div>
+                </div>
+              </div>
+              <div class="own">
+                <span class="av"
+                  ><img
+                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&q=70"
+                    alt=""
+                    loading="lazy" /></span
+                >Written in-house, reviewed with you
+              </div>
+            </div>
+            <div class="sp">
+              <div class="kv">A03 — Rights</div>
+              <h3 class="h-m">Licences cleared before shoot day.</h3>
+              <p>
+                Paid-media rights, whitelisting permission and renewal dates are
+                signed before a camera turns on — not chased once an asset is
+                already spending. Renewals get flagged 30 days out.
+              </p>
+              <div class="facts">
+                <div>
+                  <div class="v">12mo</div>
+                  <div class="k">Standard licence</div>
+                </div>
+                <div>
+                  <div class="v">30d</div>
+                  <div class="k">Renewal warning</div>
+                </div>
+                <div>
+                  <div class="v">0</div>
+                  <div class="k">Mid-flight takedowns</div>
+                </div>
+              </div>
+              <div class="own">
+                <span class="av"
+                  ><img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&q=70"
+                    alt=""
+                    loading="lazy" /></span
+                >Templates reviewed by counsel annually
+              </div>
+            </div>
+            <div class="sp">
+              <div class="kv">A04 — Production</div>
+              <h3 class="h-m">Nothing waits on an unanswered message.</h3>
+              <p>
+                Shoot dates, product dispatch, reshoots and revision rounds are
+                tracked daily against the calendar. If a creator goes quiet, a
+                backup is already briefed rather than sourced from scratch.
+              </p>
+              <div class="facts">
+                <div>
+                  <div class="v">2</div>
+                  <div class="k">Backups per slot</div>
+                </div>
+                <div>
+                  <div class="v">24h</div>
+                  <div class="k">Response SLA</div>
+                </div>
+                <div>
+                  <div class="v">96%</div>
+                  <div class="k">On-time delivery</div>
+                </div>
+              </div>
+              <div class="own">
+                <span class="av"
+                  ><img
+                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&q=70"
+                    alt=""
+                    loading="lazy" /></span
+                >Daily standup on active slates
+              </div>
+            </div>
+            <div class="sp">
+              <div class="kv">A05 — Delivery</div>
+              <h3 class="h-m">Files land ready to upload.</h3>
+              <p>
+                Raw plus cut, in 9:16, 4:5 and 1:1, captioned and named to your
+                ad account's convention. Nothing needs renaming, re-cropping or
+                re-captioning between the folder and the campaign.
+              </p>
+              <div class="facts">
+                <div>
+                  <div class="v">3</div>
+                  <div class="k">Ratios per asset</div>
+                </div>
+                <div>
+                  <div class="v">2</div>
+                  <div class="k">Caption styles</div>
+                </div>
+                <div>
+                  <div class="v">100%</div>
+                  <div class="k">Raw footage included</div>
+                </div>
+              </div>
+              <div class="own">
+                <span class="av"
+                  ><img
+                    src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=60&q=70"
+                    alt=""
+                    loading="lazy" /></span
+                >Delivered to your drive, not a portal
+              </div>
+            </div>
+            <div class="sp">
+              <div class="kv">A06 — Read-back</div>
+              <h3 class="h-m">The next brief starts from the last result.</h3>
+              <p>
+                Two weeks post-launch we read hook retention and thumb-stop from
+                your ad account, then brief the following slate off what
+                actually held attention — not off a blank page.
+              </p>
+              <div class="facts">
+                <div>
+                  <div class="v">14d</div>
+                  <div class="k">Post-launch read</div>
+                </div>
+                <div>
+                  <div class="v">3s</div>
+                  <div class="k">Retention window</div>
+                </div>
+                <div>
+                  <div class="v">1</div>
+                  <div class="k">Page, not a deck</div>
+                </div>
+              </div>
+              <div class="own">
+                <span class="av"
+                  ><img
+                    src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=60&q=70"
+                    alt=""
+                    loading="lazy" /></span
+                >Read from your account, shared as-is
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 CADENCE ============ -->
+    <div class="dark" id="process">
+      <section>
+        <div class="wrap">
+          <div class="shead">
+            <div>
+              <div class="mono rv">02 / Cadence</div>
+              <div class="rule" style="margin-top: 14px"></div>
+            </div>
+            <div>
+              <h2 class="h-l">
+                <span class="ml"><i>Four Weeks In,</i></span
+                ><span class="ml"
+                  ><i class="ital thin">Four Weeks Out.</i></span
+                >
+              </h2>
+              <p class="lede rv" data-d="2" style="margin-top: 24px">
+                The same loop every month. Two of these weeks need something
+                from you — the other two don't. Here's exactly which.
+              </p>
+            </div>
+          </div>
+
+          <div class="cad">
+            <div class="cad-dial">
+              <div class="dialwrap">
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+                  <circle class="dial-tr" cx="50" cy="50" r="42"></circle>
+                  <circle
+                    class="dial-pg"
+                    id="dialpg"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke-dasharray="263.9"
+                    stroke-dashoffset="263.9"
+                  ></circle>
+                  <line
+                    class="dial-tick"
+                    data-t="0"
+                    x1="50"
+                    y1="4"
+                    x2="50"
+                    y2="12"
+                  ></line>
+                  <line
+                    class="dial-tick"
+                    data-t="1"
+                    x1="96"
+                    y1="50"
+                    x2="88"
+                    y2="50"
+                  ></line>
+                  <line
+                    class="dial-tick"
+                    data-t="2"
+                    x1="50"
+                    y1="96"
+                    x2="50"
+                    y2="88"
+                  ></line>
+                  <line
+                    class="dial-tick"
+                    data-t="3"
+                    x1="4"
+                    y1="50"
+                    x2="12"
+                    y2="50"
+                  ></line>
+                </svg>
+                <div class="dial-c">
+                  <div class="wk" id="dialwk">Week</div>
+                  <div class="no" id="dialno">01</div>
+                  <div class="of">of four</div>
+                </div>
+              </div>
+              <div class="cad-note">
+                <b id="dialside">Needs 40 minutes from you</b>
+                <span id="dialtxt"
+                  >A kickoff call and a product list. After that the week runs
+                  without you.</span
+                >
+              </div>
+            </div>
+
+            <div>
+              <div class="cad-line" id="cadline">
+                <article
+                  class="crow on"
+                  data-i="0"
+                  data-side="Needs 40 minutes from you"
+                  data-txt="A kickoff call and a product list. After that the week runs without you."
+                >
+                  <div class="stamp">
+                    <div class="w">Week</div>
+                    <div class="d">01</div>
+                  </div>
+                  <div class="body">
+                    <h3 class="ttl">Slate &amp; concept lock</h3>
+                    <p class="txt">
+                      You send products, past winners, and any claim we can't
+                      legally make. We come back with a creator slate and a
+                      concept board — angle, hook, format, and who shoots it.
+                    </p>
+                    <div class="split">
+                      <div class="sc you">
+                        <h6>You do</h6>
+                        <ul>
+                          <li>One 20-minute kickoff call</li>
+                          <li>Share past winners and claims to avoid</li>
+                          <li>Approve the concept board</li>
+                        </ul>
+                      </div>
+                      <div class="sc">
+                        <h6>We do</h6>
+                        <ul>
+                          <li>Shortlist 40+ creators, sample the top 8</li>
+                          <li>Draft angles and hooks per product</li>
+                          <li>Build the shoot calendar</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <article
+                  class="crow"
+                  data-i="1"
+                  data-side="Nothing needed from you"
+                  data-txt="Briefs are out and shoots are running. You'll hear from us only if a product hasn't reached a creator."
+                >
+                  <div class="stamp">
+                    <div class="w">Week</div>
+                    <div class="d">02</div>
+                  </div>
+                  <div class="body">
+                    <h3 class="ttl">Briefs out, shoots live</h3>
+                    <p class="txt">
+                      Each creator gets a written brief with the hook line, shot
+                      list and what not to say. Products ship, dates confirm,
+                      and we hold the calendar so you don't have to.
+                    </p>
+                    <div class="split">
+                      <div class="sc you">
+                        <h6>You do</h6>
+                        <ul>
+                          <li>
+                            Nothing — unless a product needs dispatching from
+                            your warehouse
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="sc">
+                        <h6>We do</h6>
+                        <ul>
+                          <li>Write and send every brief</li>
+                          <li>Confirm shoot dates, track dispatch</li>
+                          <li>Brief backups for any slot at risk</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <article
+                  class="crow"
+                  data-i="2"
+                  data-side="Needs one review pass"
+                  data-txt="Cuts land in a shared folder. One pass of timestamped comments from you, then we run the revisions."
+                >
+                  <div class="stamp">
+                    <div class="w">Week</div>
+                    <div class="d">03</div>
+                  </div>
+                  <div class="body">
+                    <h3 class="ttl">One review round</h3>
+                    <p class="txt">
+                      Cuts land in a shared folder with timestamped comments.
+                      You leave notes in a single pass; we run revisions with
+                      creators directly and close the loop.
+                    </p>
+                    <div class="split">
+                      <div class="sc you">
+                        <h6>You do</h6>
+                        <ul>
+                          <li>One pass of comments on the folder</li>
+                          <li>Flag anything legal needs to see</li>
+                        </ul>
+                      </div>
+                      <div class="sc">
+                        <h6>We do</h6>
+                        <ul>
+                          <li>Run every revision with creators</li>
+                          <li>Collect signed usage licences</li>
+                          <li>Reshoot anything that misses the brief</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <article
+                  class="crow"
+                  data-i="3"
+                  data-side="Nothing needed from you"
+                  data-txt="Files land ready to upload. Two weeks after launch we read what held attention and brief the next slate off it."
+                >
+                  <div class="stamp">
+                    <div class="w">Week</div>
+                    <div class="d">04</div>
+                  </div>
+                  <div class="body">
+                    <h3 class="ttl">Delivery &amp; read-back</h3>
+                    <p class="txt">
+                      Final files arrive named, captioned and cut to ratio. Two
+                      weeks post-launch we read retention from your account,
+                      then the next slate gets briefed off the result — not off
+                      a blank page.
+                    </p>
+                    <div class="split">
+                      <div class="sc you">
+                        <h6>You do</h6>
+                        <ul>
+                          <li>Nothing — upload when you're ready</li>
+                          <li>Read a one-page summary if you want to</li>
+                        </ul>
+                      </div>
+                      <div class="sc">
+                        <h6>We do</h6>
+                        <ul>
+                          <li>Deliver cuts, raw footage and captions</li>
+                          <li>Read hook retention and thumb-stop</li>
+                          <li>Draft next month's slate from the result</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="cad-end rv">
+                <div class="lp">
+                  Then it starts again — with a shorter brief, because we
+                  already know what worked.
+                </div>
+                <a href="#contact" class="btn b-lineinv"
+                  >Start a slate <span class="ar">→</span></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 03 NUMBERS ============ -->
+    <section>
+      <div class="wrap">
+        <div class="shead">
+          <div>
+            <div class="mono rv">03 / Record</div>
+            <div class="rule" style="margin-top: 14px"></div>
+          </div>
+          <h2 class="h-l">
+            <span class="ml"><i>Volume Matters —</i></span
+            ><span class="ml"
+              ><i class="ital thin">But Only What Ships.</i></span
+            >
+          </h2>
+        </div>
+        <div class="nums">
+          <div class="num rv">
+            <div class="v">
+              <span class="ct" data-to="4200" data-sep="1">0</span
+              ><span class="sf">+</span>
+            </div>
+            <div class="k">Creator assets delivered since 2021</div>
+          </div>
+          <div class="num rv" data-d="1">
+            <div class="v">
+              <span class="ct" data-to="180">0</span><span class="sf">+</span>
+            </div>
+            <div class="k">Brands managed across D2C and retail</div>
+          </div>
+          <div class="num rv" data-d="2">
+            <div class="v">
+              <span class="ct" data-to="14">0</span><span class="sf">d</span>
+            </div>
+            <div class="k">Median turnaround, brief to first cut</div>
+          </div>
+          <div class="num rv" data-d="3">
+            <div class="v">
+              <span class="ct" data-to="92">0</span><span class="sf">%</span>
+            </div>
+            <div class="k">Assets approved in the first review round</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 WORK — reel rail ============ -->
+    <div class="dark" id="work">
+      <section style="padding-bottom: clamp(60px, 7vw, 110px)">
+        <div class="wrap">
+          <div class="shead" style="margin-bottom: clamp(32px, 4vw, 60px)">
+            <div>
+              <div class="mono rv">04 / Selected work</div>
+              <div class="rule" style="margin-top: 14px"></div>
+            </div>
+            <h2 class="h-l">
+              <span class="ml"><i>Assets that ran,</i></span
+              ><span class="ml"
+                ><i class="ital thin">and what they moved.</i></span
+              >
+            </h2>
+          </div>
+        </div>
+
+        <div class="rail" id="rail">
+          <div class="rail-move" id="railmove"></div>
+        </div>
+
+        <div class="wrap railctl">
+          <div class="mono rv">Hover to pause · click to open the case</div>
+          <div class="railbtns rv" data-d="1">
+            <button class="rbtn" id="rprev" aria-label="Scroll left">←</button>
+            <button class="rbtn" id="rnext" aria-label="Scroll right">→</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 05 CLIENTS ============ -->
+    <section class="warm" id="voices">
+      <div class="wrap">
+        <div class="shead">
+          <div>
+            <div class="mono rv">05 / Clients</div>
+            <div class="rule" style="margin-top: 14px"></div>
+          </div>
+          <div>
+            <h2 class="h-l">
+              <span class="ml"><i>What Changed</i></span
+              ><span class="ml"><i class="ital thin">On Their Side.</i></span>
+            </h2>
+            <p class="lede rv" data-d="2" style="margin-top: 24px">
+              Four clients, in their own words. Tap any one to play with sound.
+            </p>
+          </div>
+        </div>
+
+        <div class="vc rv" id="vc">
+          <div class="vc-view" id="vcview">
+            <div class="vc-move" id="vcmove">
+              <article class="vt" data-i="0">
+                <div class="vt-med">
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/pooja-ps.png"
+                  >
+                    <source
+                      src="https://cdn.shopify.com/videos/c/o/v/4a803f50587d41db9a78c9f3cd1c4ec8.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
+                  <div class="grade"></div>
+                  <span class="vt-cat">Fashion</span>
+                  <span class="vt-dur">0:48</span>
+                  <button
+                    class="vt-play"
+                    aria-label="Play testimonial from Head of Growth"
+                  >
+                    &#9654;
+                  </button>
+                  <button class="vt-sound" aria-label="Unmute">&#9834;</button>
+                  <div class="vt-line"><i></i></div>
+                </div>
+                <div class="vt-cap">
+                  <!-- <div class="q">
+                    We went from briefing creators ourselves every fortnight to reviewing a folder once a month.
+                  </div> -->
+                  <div class="by">
+                    <span
+                      ><span class="nm">Dr. Pooja Malhotra</span 
+                      >
+                      <br><span class="rl">Founder</span></span>
+                  </div>
+                </div>
+              </article>
+              <article class="vt" data-i="1">
+                <div class="vt-med">
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/aayushi.png"
+                  >
+                    <source
+                      src="https://cdn.shopify.com/videos/c/o/v/3919a0774ab744acb272b5fb46764f3b.mov"
+                      type="video/mp4"
+                    />
+                  </video>
+                  <div class="grade"></div>
+                  <span class="vt-cat">Fashion</span>
+                  <span class="vt-dur">1:12</span>
+                  <button
+                    class="vt-play"
+                    aria-label="Play testimonial from Founder"
+                  >
+                    &#9654;
+                  </button>
+                  <button class="vt-sound" aria-label="Unmute">&#9834;</button>
+                  <div class="vt-line"><i></i></div>
+                </div>
+                <div class="vt-cap">
+                  <!-- <div class="q">
+                    Rights paperwork used to delay every launch. Now it's signed before the shoot.
+                  </div> -->
+                  <div class="by">
+                    <span
+                      ><span class="nm">Aayushi Jain</span
+                      ><br><span class="rl">Founder</span></span>
+                  </div>
+                </div>
+              </article>
+              <article class="vt" data-i="2">
+                <div class="vt-med">
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/adib_rais.png"
+                  >
+                    <source
+                      src="https://cdn.shopify.com/videos/c/o/v/d7649d4dc9ff4f20974fe9862cb263a3.mov"
+                      type="video/mp4"
+                    />
+                  </video>
+                  <div class="grade"></div>
+                  <span class="vt-cat">Fashion</span>
+                  <span class="vt-dur">0:56</span>
+                  <button
+                    class="vt-play"
+                    aria-label="Play testimonial from Performance Lead"
+                  >
+                    &#9654;
+                  </button>
+                  <button class="vt-sound" aria-label="Unmute">&#9834;</button>
+                  <div class="vt-line"><i></i></div>
+                </div>
+                <div class="vt-cap">
+                  <!-- <div class="q">
+                    Our old batches all looked the same. These are variants of each other, so the test tells us something.
+                  </div> -->
+                  <div class="by">
+                    <span
+                      ><span class="nm">Adeeb Rais</span
+                      ><br><span class="rl">Founder-Actor-Director, Love A Lot</span></span
+                    >
+                  </div>
+                </div>
+              </article>
+              <article class="vt" data-i="3">
+                <div class="vt-med">
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/yuti.png"
+                  >
+                    <source
+                      src="https://cdn.shopify.com/videos/c/o/v/4a803f50587d41db9a78c9f3cd1c4ec8.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
+                  <div class="grade"></div>
+                  <span class="vt-cat">Fashion</span>
+                  <span class="vt-dur">1:04</span>
+                  <button
+                    class="vt-play"
+                    aria-label="Play testimonial from Marketing Director"
+                  >
+                    &#9654;
+                  </button>
+                  <button class="vt-sound" aria-label="Unmute">&#9834;</button>
+                  <div class="vt-line"><i></i></div>
+                </div>
+                <div class="vt-cap">
+                  <!-- <div class="q">
+                    I stopped being the bottleneck. Two hours a month and the queue never runs dry.
+                  </div> -->
+                  <div class="by">
+                    <span
+                      ><span class="nm">Yuti Edward</span
+                      > <br><span class="rl"
+                        >Founder, Udd Studio</span
+                      ><br></span
+                    >
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="vc-foot">
+            <div class="vc-track" id="vctrack">
+              <span class="vc-seg on"></span><span class="vc-seg"></span
+              ><span class="vc-seg"></span><span class="vc-seg"></span>
+            </div>
+            <div class="vc-hint">Drag or use arrows</div>
+            <div class="vc-nav">
+              <span class="vc-count" id="vccount">01 / 04</span>
+              <span class="vc-arrows">
+                <button class="vabtn" id="vcprev" aria-label="Previous">
+                  &#8592;
+                </button>
+                <button class="vabtn" id="vcnext" aria-label="Next">
+                  &#8594;
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 WHAT LANDS ============ -->
+    <div class="dark">
+      <section>
+        <div class="wrap">
+          <div class="shead">
+            <div>
+              <div class="mono rv">06 / Delivery</div>
+              <div class="rule" style="margin-top: 14px"></div>
+            </div>
+            <div>
+              <h2 class="h-l">
+                <span class="ml"><i>What Actually Lands</i></span
+                ><span class="ml"
+                  ><i class="ital thin">In Your Folder.</i></span
+                >
+              </h2>
+              <p class="lede rv" data-d="2" style="margin-top: 24px">
+                Every slate delivers the same package, so nobody on your side
+                has to ask what's included this month.
+              </p>
+            </div>
+          </div>
+          <div class="deliver">
+            <div class="dcell rv">
+              <div class="ic">01</div>
+              <div class="t">Edited cuts</div>
+              <div class="s">
+                Colour-matched, captioned, cut to 9:16, 4:5 and 1:1.
+              </div>
+            </div>
+            <div class="dcell rv" data-d="1">
+              <div class="ic">02</div>
+              <div class="t">Raw footage</div>
+              <div class="s">
+                Every take, unedited, so your team can recut later.
+              </div>
+            </div>
+            <div class="dcell rv" data-d="2">
+              <div class="ic">03</div>
+              <div class="t">Hook variants</div>
+              <div class="s">
+                Alternate openers on the same body, ready to test.
+              </div>
+            </div>
+            <div class="dcell rv" data-d="3">
+              <div class="ic">04</div>
+              <div class="t">Signed licences</div>
+              <div class="s">
+                Usage terms and expiry dates, one PDF per creator.
+              </div>
+            </div>
+            <div class="dcell rv">
+              <div class="ic">05</div>
+              <div class="t">Caption files</div>
+              <div class="s">
+                Burned-in and .srt, in English plus one regional language.
+              </div>
+            </div>
+            <div class="dcell rv" data-d="1">
+              <div class="ic">06</div>
+              <div class="t">Naming convention</div>
+              <div class="s">
+                Files named to your ad account so uploads need no renaming.
+              </div>
+            </div>
+            <div class="dcell rv" data-d="2">
+              <div class="ic">07</div>
+              <div class="t">Thumbnail frames</div>
+              <div class="s">
+                Three stills pulled per asset for static and carousel use.
+              </div>
+            </div>
+            <div class="dcell rv" data-d="3">
+              <div class="ic">08</div>
+              <div class="t">Read-back page</div>
+              <div class="s">
+                One page on what held attention. Not a forty-slide deck.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 07 FAQ ============ -->
+    <section id="faq">
+      <div class="wrap">
+        <div class="shead">
+          <div>
+            <div class="mono rv">07 / Questions</div>
+            <div class="rule" style="margin-top: 14px"></div>
+          </div>
+          <h2 class="h-l">
+            <span class="ml"><i>Answered Before You Ask.</i></span
+          </h2>
+        </div>
+        <div class="rv" data-d="1">
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              Do we own the footage after delivery?<span class="pm"></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                You own the delivered cuts and the raw files outright. What
+                varies is the creator's usage licence for paid media — twelve
+                months is standard, and perpetual rights can be bought per
+                creator at booking. Organic reposting on your own channels is
+                unrestricted.
+              </div>
+            </div>
+          </div>
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              What if a creator's footage doesn't work?<span class="pm"></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                Every asset includes one revision round. If a cut still misses
+                after revisions, we reshoot with a different creator at no cost
+                — the brief was ours, so the miss is ours. Reshoots caused by a
+                changed brief on your side get quoted separately.
+              </div>
+            </div>
+          </div>
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              Can you work with creators we already use?<span class="pm"></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                Yes. We take over briefing, scheduling, contracts and revisions
+                for creators already on your roster and blend them into the same
+                slate as new ones. Their rates stay whatever you agreed — we
+                manage the relationship rather than re-negotiate it.
+              </div>
+            </div>
+          </div>
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              Do you run the ads too, or only make the content?<span
+                class="pm"
+              ></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                We deliver edit-ready assets and read performance back from
+                whichever ad account they run in. Media buying is a separate
+                engagement — plenty of clients keep it in house and use the
+                read-back to brief the next slate themselves.
+              </div>
+            </div>
+          </div>
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              How much of our time does this actually take?<span
+                class="pm"
+              ></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                Roughly two hours a month: a kickoff call, one pass of comments
+                on the review folder, and a look at the read-back. Everything
+                between those three points sits with the producer running your
+                slate.
+              </div>
+            </div>
+          </div>
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              How soon can a slate start?<span class="pm"></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                We open a new slate roughly every fortnight. From signed brief
+                to first cut in your folder is fourteen days at median —
+                sourcing runs in parallel with concept lock, so the calendar
+                never waits on casting.
+              </div>
+            </div>
+          </div>
+          <div class="fq">
+            <button class="fq-q" aria-expanded="false">
+              What does it cost?<span class="pm"></span>
+            </button>
+            <div class="fq-a">
+              <div class="in">
+                Cost moves with creator rates in your category, how long you
+                need the usage rights, and whether you need regional language
+                variants — so an average would mislead more than it helps. Tell
+                us the product and the spend you're working with, and you'll
+                have a real number in two working days.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 CTA ============ -->
+    <div class="dark" id="contact">
+      <div class="cta">
+        <div class="cta-ghost" aria-hidden="true">SLATE</div>
+        <div class="wrap cta-h">
+          <div class="mono rv" style="margin-bottom: 24px">
+            Next slate opens in 9 days
+          </div>
+          <h2 class="h-l" style="max-width: 16ch; margin: 0 auto">
+            <span class="ml"><i>Send one product.</i></span>
+            <span class="ml"><i class="ital thin">Get a slate back.</i></span>
+          </h2>
+          <p
+            class="lede rv"
+            data-d="2"
+            style="margin: 24px auto 0; color: var(--g45)"
+          >
+            A 20-minute call, a concept board within three days, a quote in two.
+            No commitment until you've seen all three.
+          </p>
+          <div class="btnrow rv" data-d="3">
+            <a href="mailto:hello@loopstudio.co" class="btn b-inv"
+              >Get a quote <span class="ar">→</span></a
+            >
+            <a href="#work" class="btn b-lineinv">See the work first</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      (function () {
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var desktop = matchMedia("(min-width:1081px)").matches;
+
+        /* ---------- loader (no counter) ---------- */
+        var loader = document.getElementById("loader");
+        function boot() {
+          loader.classList.add("done");
+          document.body.classList.remove("lock");
+          setTimeout(function () {
+            loader.style.display = "none";
+          }, 1500);
+          document
+            .querySelectorAll(".hero .rv,.hero .ml")
+            .forEach(function (el, i) {
+              setTimeout(function () {
+                el.classList.add("in");
+              }, 60 * i);
+            });
+          document.getElementById("vwrap").classList.add("in");
+          var v = document.getElementById("hvid");
+          if (v && !reduce) {
+            v.play().catch(function () {});
+          }
+        }
+        if (reduce) {
+          boot();
+        } else {
+          document.body.classList.add("lock");
+          setTimeout(boot, 700);
+        }
+
+        /* ---------- header ---------- */
+        var hdr = document.getElementById("hdr"),
+          prog = document.getElementById("prog");
+        var darks = [].slice.call(document.querySelectorAll(".dark"));
+        function onScroll() {
+          var y = scrollY;
+          hdr.classList.toggle("solid", y > 30);
+          var h = document.documentElement.scrollHeight - innerHeight;
+          prog.style.width = (h > 0 ? (y / h) * 100 : 0) + "%";
+          var mid = y + 36;
+          hdr.classList.toggle(
+            "inv",
+            darks.some(function (d) {
+              var r = d.getBoundingClientRect(),
+                top = r.top + y;
+              return mid > top && mid < top + r.height;
+            }),
+          );
+        }
+        addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+
+        /* ---------- mobile menu ---------- */
+        var burger = document.getElementById("burger"),
+          mob = document.getElementById("mob");
+        burger.addEventListener("click", function () {
+          var on = mob.classList.toggle("on");
+          burger.classList.toggle("on", on);
+          burger.setAttribute("aria-expanded", on);
+          document.body.classList.toggle("lock", on);
+        });
+        mob.querySelectorAll("a").forEach(function (a) {
+          a.addEventListener("click", function () {
+            mob.classList.remove("on");
+            burger.classList.remove("on");
+            burger.setAttribute("aria-expanded", "false");
+            document.body.classList.remove("lock");
+          });
+        });
+
+        /* ---------- reveal ---------- */
+        var io = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (e.isIntersecting) {
+                e.target.classList.add("in");
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+        );
+        document.querySelectorAll(".rv,.ml,.rule,.num").forEach(function (el) {
+          io.observe(el);
+        });
+
+        /* ---------- counters ---------- */
+        var cio = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (!e.isIntersecting) return;
+              var el = e.target,
+                to = +el.dataset.to,
+                sep = el.dataset.sep,
+                t0 = null;
+              if (reduce) {
+                el.textContent = sep ? to.toLocaleString("en-IN") : to;
+                cio.unobserve(el);
+                return;
+              }
+              requestAnimationFrame(function tick(t) {
+                if (!t0) t0 = t;
+                var p = Math.min((t - t0) / 1600, 1),
+                  v = Math.round(to * (1 - Math.pow(1 - p, 4)));
+                el.textContent = sep ? v.toLocaleString("en-IN") : v;
+                if (p < 1) requestAnimationFrame(tick);
+              });
+              cio.unobserve(el);
+            });
+          },
+          { threshold: 0.5 },
+        );
+        document.querySelectorAll(".ct").forEach(function (el) {
+          cio.observe(el);
+        });
+
+        /* ---------- hero video ---------- */
+        var hvid = document.getElementById("hvid"),
+          hsrc = document.getElementById("hsrc");
+        var vcat = document.getElementById("vcat"),
+          vttl = document.getElementById("vttl");
+        document.querySelectorAll(".vtab").forEach(function (tab) {
+          tab.addEventListener("click", function () {
+            document.querySelectorAll(".vtab").forEach(function (t) {
+              t.classList.remove("on");
+            });
+            tab.classList.add("on");
+            vcat.textContent = tab.dataset.cat;
+            vttl.textContent = tab.dataset.ttl;
+            hvid.poster = tab.dataset.poster;
+            hsrc.src = tab.dataset.src;
+            hvid.load();
+            if (!reduce) hvid.play().catch(function () {});
+          });
+        });
+        var vplay = document.getElementById("vplay"),
+          vmute = document.getElementById("vmute");
+        vplay.addEventListener("click", function () {
+          if (hvid.paused) {
+            hvid.play();
+            vplay.textContent = "❚❚";
+            vplay.setAttribute("aria-label", "Pause video");
+          } else {
+            hvid.pause();
+            vplay.textContent = "▶";
+            vplay.setAttribute("aria-label", "Play video");
+          }
+        });
+        vmute.addEventListener("click", function () {
+          hvid.muted = !hvid.muted;
+          vmute.style.opacity = hvid.muted ? "1" : ".5";
+          vmute.setAttribute(
+            "aria-label",
+            hvid.muted ? "Unmute video" : "Mute video",
+          );
+        });
+
+        /* ---------- ticker strip ---------- */
+        var cats = [
+          ["Skincare", "24", "photo-1556228720-195a672e8a03"],
+          ["Supplements", "18", "photo-1594824476967-48c8b964273f"],
+          ["Kidswear", "31", "photo-1519238263530-99bdd11df2ea"],
+          ["Home & kitchen", "12", "photo-1556909212-d5b604d0c90d"],
+          ["Occasion wear", "27", "photo-1483985988355-763728e1935b"],
+          ["Coffee", "09", "photo-1495474472287-4d71bcdd2085"],
+          ["Fitness", "22", "photo-1571019613454-1cb2f99b2d8b"],
+          ["Pet care", "15", "photo-1543466835-00a7907e9de1"],
+          ["Jewellery", "11", "photo-1515562141207-7a88fb7ce338"],
+        ];
+        function buildRow(el, rev) {
+          var list = rev ? cats.slice().reverse() : cats;
+          var html = list
+            .map(function (c) {
+              return (
+                '<span class="chip"><span class="th"><img src="https://images.unsplash.com/' +
+                c[2] +
+                '?w=90&q=70" alt="" loading="lazy"></span><span class="t">' +
+                c[0] +
+                '</span><span class="n">' +
+                c[1] +
+                " assets</span></span>"
+              );
+            })
+            .join("");
+          el.innerHTML = html + html;
+        }
+        buildRow(document.getElementById("sr1"), false);
+        buildRow(document.getElementById("sr2"), true);
+
+        /* ---------- scope panel ---------- */
+        var sitems = [].slice.call(document.querySelectorAll(".sitem"));
+        var spanels = [].slice.call(document.querySelectorAll(".sp"));
+        function setScope(i) {
+          sitems.forEach(function (b, j) {
+            b.classList.toggle("on", j === i);
+          });
+          spanels.forEach(function (p, j) {
+            p.classList.toggle("on", j === i);
+          });
+        }
+        sitems.forEach(function (b, i) {
+          b.addEventListener("click", function () {
+            setScope(i);
+          });
+          b.addEventListener("mouseenter", function () {
+            if (desktop) setScope(i);
+          });
+        });
+
+        /* ---------- cadence timeline ---------- */
+        var crows = [].slice.call(document.querySelectorAll(".crow"));
+        var dialpg = document.getElementById("dialpg"),
+          dialno = document.getElementById("dialno");
+        var dialside = document.getElementById("dialside"),
+          dialtxt = document.getElementById("dialtxt");
+        var ticks = [].slice.call(document.querySelectorAll(".dial-tick"));
+        var CIRC = 263.9,
+          ci = -1;
+        function setCad(i) {
+          if (i === ci) return;
+          ci = i;
+          crows.forEach(function (r, j) {
+            r.classList.toggle("on", j === i);
+          });
+          ticks.forEach(function (t, j) {
+            t.classList.toggle("on", j <= i);
+          });
+          dialpg.style.strokeDashoffset =
+            CIRC - CIRC * ((i + 1) / crows.length);
+          dialno.textContent = String(i + 1).padStart(2, "0");
+          dialside.textContent = crows[i].dataset.side;
+          dialtxt.textContent = crows[i].dataset.txt;
+        }
+        var cadio = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (e.isIntersecting) setCad(crows.indexOf(e.target));
+            });
+          },
+          { threshold: 0.45, rootMargin: "-14% 0px -34% 0px" },
+        );
+        crows.forEach(function (r, i) {
+          cadio.observe(r);
+          r.addEventListener("mouseenter", function () {
+            if (desktop) setCad(i);
+          });
+          r.addEventListener("click", function () {
+            setCad(i);
+          });
+        });
+        setCad(0);
+
+        /* ---------- reel rail (auto-scroll) ---------- */
+        var reels = [
+          [
+            "Skincare",
+            "Meta",
+            "Routine-first hook set",
+            "6 creators · 24 assets",
+            "CPA −31%",
+            "https://cdn.coverr.co/videos/coverr-a-woman-applying-cream-on-her-face-9975/1080p.mp4",
+            "photo-1522337360788-8b13dee7a37e",
+          ],
+          [
+            "Fitness",
+            "Reels",
+            "Founder + creator pairing",
+            "4 creators · 18 assets",
+            "3.1× stop",
+            "https://cdn.coverr.co/videos/coverr-woman-doing-yoga-at-home-5244/1080p.mp4",
+            "photo-1571019613454-1cb2f99b2d8b",
+          ],
+          [
+            "Home",
+            "TikTok",
+            "Unboxing to problem-solve",
+            "9 creators · 36 assets",
+            "CTR 2.4×",
+            "https://cdn.coverr.co/videos/coverr-opening-a-package-4381/1080p.mp4",
+            "photo-1607083206869-4c7672e72a8a",
+          ],
+          [
+            "Apparel",
+            "Meta",
+            "Fit-check to occasion",
+            "12 creators · 48 assets",
+            "ROAS 1.8×",
+            "https://cdn.coverr.co/videos/coverr-a-woman-in-a-white-dress-3266/1080p.mp4",
+            "photo-1483985988355-763728e1935b",
+          ],
+          [
+            "Supplements",
+            "Reels",
+            "Doctor-led explainer",
+            "3 creators · 15 assets",
+            "CPA −22%",
+            "https://cdn.coverr.co/videos/coverr-a-woman-drinking-a-smoothie-4266/1080p.mp4",
+            "photo-1594824476967-48c8b964273f",
+          ],
+          [
+            "Coffee",
+            "Meta",
+            "Morning-ritual set",
+            "5 creators · 20 assets",
+            "CTR 1.9×",
+            "https://cdn.coverr.co/videos/coverr-pouring-coffee-into-a-cup-2549/1080p.mp4",
+            "photo-1495474472287-4d71bcdd2085",
+          ],
+        ];
+        var railmove = document.getElementById("railmove");
+        function reelHTML(r) {
+          return (
+            '<a class="reel" href="#contact">' +
+            '<video muted loop playsinline preload="none" poster="https://images.unsplash.com/' +
+            r[6] +
+            '?w=500&q=75"><source src="' +
+            r[5] +
+            '" type="video/mp4"></video>' +
+            '<div class="veil"></div>' +
+            '<div class="top"><span class="plat">' +
+            r[1] +
+            '</span><span class="kpi">' +
+            r[4] +
+            "</span></div>" +
+            '<div class="bot"><div class="cat">' +
+            r[0] +
+            '</div><div class="t">' +
+            r[2] +
+            '</div><div class="m">' +
+            r[3] +
+            "</div></div>" +
+            "</a>"
+          );
+        }
+        var setHTML = reels.map(reelHTML).join("");
+        railmove.innerHTML = setHTML + setHTML;
+
+        var railX = 0,
+          railSpeed = 0.45,
+          railPaused = false,
+          halfW = 0;
+        function measure() {
+          halfW = railmove.scrollWidth / 2;
+        }
+        setTimeout(measure, 200);
+        addEventListener("resize", measure);
+        railmove.addEventListener("mouseenter", function () {
+          railPaused = true;
+        });
+        railmove.addEventListener("mouseleave", function () {
+          railPaused = false;
+        });
+        document.getElementById("rprev").addEventListener("click", function () {
+          railX += 280;
+        });
+        document.getElementById("rnext").addEventListener("click", function () {
+          railX -= 280;
+        });
+        (function railLoop() {
+          if (!reduce) {
+            if (!railPaused) railX -= railSpeed;
+            if (halfW > 0) {
+              if (railX <= -halfW) railX += halfW;
+              if (railX > 0) railX -= halfW;
+            }
+            railmove.style.transform = "translate3d(" + railX + "px,0,0)";
+          }
+          requestAnimationFrame(railLoop);
+        })();
+
+        /* play reel videos only while visible */
+        var rio = new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              var v = e.target.querySelector("video");
+              if (!v) return;
+              if (e.isIntersecting && !reduce) {
+                v.play().catch(function () {});
+              } else {
+                v.pause();
+              }
+            });
+          },
+          { threshold: 0.25 },
+        );
+        railmove.querySelectorAll(".reel").forEach(function (r) {
+          rio.observe(r);
+        });
+
+        /* ---------- clients: video carousel ---------- */
+        var vcmove = document.getElementById("vcmove"),
+          vcview = document.getElementById("vcview");
+        var vts = [].slice.call(document.querySelectorAll(".vt"));
+        var vsegs = [].slice.call(document.querySelectorAll(".vc-seg"));
+        var vccount = document.getElementById("vccount");
+        var vcprev = document.getElementById("vcprev"),
+          vcnext = document.getElementById("vcnext");
+        var vidx = 0,
+          maxIdx = 0,
+          cardW = 0,
+          gapW = 18;
+
+        function vcLayout() {
+          var w = vcview.clientWidth;
+          var per; /* cards visible at once */
+          if (w >= 1180) per = 3.5;
+          else if (w >= 900) per = 2.5;
+          else if (w >= 620) per = 1.8;
+          else per = 1.12;
+          gapW = w >= 900 ? 18 : 12;
+          cardW = (w - gapW * Math.floor(per)) / per;
+          document.documentElement.style.setProperty("--vc-card", cardW + "px");
+          document.documentElement.style.setProperty("--vc-gap", gapW + "px");
+          maxIdx = Math.max(0, vts.length - Math.floor(per));
+          if (vidx > maxIdx) vidx = maxIdx;
+          vcGo(vidx, true);
+        }
+        function vcGo(i, silent) {
+          vidx = Math.min(Math.max(i, 0), maxIdx);
+          vcmove.style.transform =
+            "translate3d(" + -vidx * (cardW + gapW) + "px,0,0)";
+          vsegs.forEach(function (sg, j) {
+            sg.classList.toggle("on", j <= vidx);
+          });
+          vccount.textContent =
+            String(vidx + 1).padStart(2, "0") +
+            " / " +
+            String(vts.length).padStart(2, "0");
+          vcprev.disabled = vidx <= 0;
+          vcnext.disabled = vidx >= maxIdx;
+        }
+        vcprev.addEventListener("click", function () {
+          vcGo(vidx - 1);
+        });
+        vcnext.addEventListener("click", function () {
+          vcGo(vidx + 1);
+        });
+        addEventListener("resize", vcLayout);
+        setTimeout(vcLayout, 60);
+        vcLayout();
+
+        /* keyboard */
+        document.getElementById("vc").addEventListener("keydown", function (e) {
+          if (e.key === "ArrowLeft") vcGo(vidx - 1);
+          if (e.key === "ArrowRight") vcGo(vidx + 1);
+        });
+
+        /* drag / swipe */
+        var dx0 = 0,
+          dxCur = 0,
+          dragging = false,
+          startT = 0;
+        function dStart(x) {
+          dragging = true;
+          dx0 = x;
+          dxCur = 0;
+          startT = Date.now();
+          vcmove.classList.add("drag");
+        }
+        function dMove(x) {
+          if (!dragging) return;
+          dxCur = x - dx0;
+          vcmove.style.transform =
+            "translate3d(" + (-vidx * (cardW + gapW) + dxCur) + "px,0,0)";
+        }
+        function dEnd() {
+          if (!dragging) return;
+          dragging = false;
+          vcmove.classList.remove("drag");
+          var fast = Date.now() - startT < 300 && Math.abs(dxCur) > 40;
+          if (dxCur < -(cardW / 3) || (fast && dxCur < 0)) vcGo(vidx + 1);
+          else if (dxCur > cardW / 3 || (fast && dxCur > 0)) vcGo(vidx - 1);
+          else vcGo(vidx);
+        }
+        vcview.addEventListener(
+          "touchstart",
+          function (e) {
+            dStart(e.touches[0].clientX);
+          },
+          { passive: true },
+        );
+        vcview.addEventListener(
+          "touchmove",
+          function (e) {
+            dMove(e.touches[0].clientX);
+          },
+          { passive: true },
+        );
+        vcview.addEventListener("touchend", dEnd);
+        vcview.addEventListener("mousedown", function (e) {
+          e.preventDefault();
+          dStart(e.clientX);
+        });
+        addEventListener("mousemove", function (e) {
+          dMove(e.clientX);
+        });
+        addEventListener("mouseup", dEnd);
+
+        /* playback: one at a time, sound on */
+        function stopAll(except) {
+          vts.forEach(function (c) {
+            if (c === except) return;
+            var v = c.querySelector("video");
+            v.pause();
+            v.muted = true;
+            v.currentTime = 0;
+            c.classList.remove("playing");
+            c.querySelector(".vt-line i").style.width = "0";
+            c.querySelector(".vt-sound").innerHTML = "&#9834;";
+          });
+        }
+        vts.forEach(function (card) {
+          var v = card.querySelector("video"),
+            line = card.querySelector(".vt-line i");
+          var snd = card.querySelector(".vt-sound"),
+            play = card.querySelector(".vt-play");
+          function toggle() {
+            if (Math.abs(dxCur) > 6) return; /* ignore click after drag */
+            if (v.paused) {
+              stopAll(card);
+              v.muted = false;
+              v.play()
+                .then(function () {
+                  card.classList.add("playing");
+                })
+                .catch(function () {
+                  v.muted = true;
+                  v.play().catch(function () {});
+                  card.classList.add("playing");
+                });
+            } else {
+              v.pause();
+              card.classList.remove("playing");
+            }
+          }
+          play.addEventListener("click", function (e) {
+            e.stopPropagation();
+            toggle();
+          });
+          card.addEventListener("click", toggle);
+          snd.addEventListener("click", function (e) {
+            e.stopPropagation();
+            v.muted = !v.muted;
+            snd.innerHTML = v.muted ? "&#9834;" : "&#9835;";
+            snd.setAttribute("aria-label", v.muted ? "Unmute" : "Mute");
+          });
+          v.addEventListener("timeupdate", function () {
+            if (v.duration)
+              line.style.width = (v.currentTime / v.duration) * 100 + "%";
+          });
+          v.addEventListener("ended", function () {
+            card.classList.remove("playing");
+          });
+        });
+
+        /* pause everything when carousel scrolls out of view */
+        new IntersectionObserver(
+          function (es) {
+            es.forEach(function (e) {
+              if (!e.isIntersecting) stopAll(null);
+            });
+          },
+          { threshold: 0 },
+        ).observe(document.getElementById("vc"));
+
+        /* ---------- FAQ ---------- */
+        document.querySelectorAll(".fq").forEach(function (item) {
+          var q = item.querySelector(".fq-q"),
+            a = item.querySelector(".fq-a");
+          q.addEventListener("click", function () {
+            var open = item.classList.contains("open");
+            document.querySelectorAll(".fq.open").forEach(function (o) {
+              o.classList.remove("open");
+              o.querySelector(".fq-a").style.height = "0px";
+              o.querySelector(".fq-q").setAttribute("aria-expanded", "false");
+            });
+            if (!open) {
+              item.classList.add("open");
+              a.style.height = a.firstElementChild.offsetHeight + "px";
+              q.setAttribute("aria-expanded", "true");
+            }
+          });
+        });
+        addEventListener("resize", function () {
+          desktop = matchMedia("(min-width:1081px)").matches;
+          var o = document.querySelector(".fq.open");
+          if (o) {
+            var a = o.querySelector(".fq-a");
+            a.style.height = a.firstElementChild.offsetHeight + "px";
+          }
+        });
+
+        /* ---------- cursor ---------- */
+        var cur = document.getElementById("cur");
+        if (
+          matchMedia("(hover:hover) and (min-width:900px)").matches &&
+          !reduce
+        ) {
+          var cx = 0,
+            cy = 0,
+            tx = 0,
+            ty = 0;
+          addEventListener(
+            "mousemove",
+            function (e) {
+              tx = e.clientX;
+              ty = e.clientY;
+            },
+            { passive: true },
+          );
+          (function l() {
+            cx += (tx - cx) * 0.19;
+            cy += (ty - cy) * 0.19;
+            cur.style.transform =
+              "translate(" + cx + "px," + cy + "px) translate(-50%,-50%)";
+            requestAnimationFrame(l);
+          })();
+          document
+            .querySelectorAll("a,button,.reel,.sitem,.crow,.vt,.dcell")
+            .forEach(function (el) {
+              el.addEventListener("mouseenter", function () {
+                cur.classList.add("big");
+              });
+              el.addEventListener("mouseleave", function () {
+                cur.classList.remove("big");
+              });
+            });
+        } else {
+          cur.style.display = "none";
+        }
+
+        /* ---------- anchors ---------- */
+        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+          a.addEventListener("click", function (e) {
+            var id = a.getAttribute("href");
+            if (id.length < 2) return;
+            var t = document.querySelector(id);
+            if (!t) return;
+            e.preventDefault();
+            scrollTo({
+              top: t.getBoundingClientRect().top + scrollY - 70,
+              behavior: reduce ? "auto" : "smooth",
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
