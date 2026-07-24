@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Work — MESSOLD | Premium Shopify & Performance Marketing Agency</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap">
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500,600,700&display=swap" rel="stylesheet">
+    <style>
+        /* --- BRAND DESIGN TOKENS & SYSTEM --- */
+        :root {
+            --bg-pure: #000000;
+            --bg-secondary: #050505;
+            --bg-light: #FAFAFA;
+            --bg-card: #111111;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B8B8B8;
+            --border-alpha: rgba(255, 255, 255, 0.08);
+            --font-actual: "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+            --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* CORE COMPONENT RESET & RULES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-pure);
+            color: var(--text-primary);
+            font-family: var(--font-actual);
+            overflow-x: hidden;
+            width: 100%;
+            letter-spacing: -0.01em;
+        }
+
+        /* TYPOGRAPHY COMPONENTS */
+        .ms-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .ms-heading-large {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .ms-paragraph-editorial {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 580px;
+        }
+
+        /* RESPONSIVE LAYOUT MATRIX CONSTRAINTS */
+        .ms-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 80px;
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .ms-container { padding: 0 40px; }
+        }
+        @media (max-width: 768px) {
+            .ms-container { padding: 0 20px; }
+        }
+
+        /* CUSTOM MOUSE CURSOR */
+        .ms-custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: var(--text-primary);
+            color: var(--bg-pure);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.4s var(--ease-luxury);
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* BUTTON UNDERLINE SYSTEM */
+        .ms-link-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-actual);
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .ms-link-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--text-primary);
+            transform: scaleX(0.3);
+            transform-origin: left;
+            transition: transform 0.4s var(--ease-luxury);
+        }
+
+        .ms-link-btn:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* ========================================== */
+        /* HERO – STICKY FEATURED CASE STUDIES */
+        /* ========================================== */
+        .ms-hero-viewport-track {
+            position: relative;
+            height: 500vh;
+            background-color: var(--bg-pure);
+            width: 100%;
+        }
+
+        .ms-hero-sticky-stage {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-alpha);
+            transition: background-color 1s var(--ease-luxury);
+        }
+
+        .ms-hero-split-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .ms-hero-left-interface {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .ms-hero-metrics-scroller {
+            height: 30px;
+            overflow: hidden;
+            margin-top: 24px;
+            position: relative;
+        }
+
+        .ms-hero-metric-line {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 30px;
+            transition: transform 0.6s var(--ease-luxury);
+        }
+
+        .ms-hero-names-scroller {
+            height: clamp(3.2rem, 6vw, 5.5rem);
+            overflow: hidden;
+            margin: 16px 0 40px 0;
+            position: relative;
+        }
+
+        .ms-hero-name-line {
+            font-size: clamp(2.8rem, 5.5vw, 5rem);
+            font-weight: 300;
+            line-height: clamp(3.2rem, 6vw, 5.5rem);
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            transition: transform 0.6s var(--ease-luxury);
+        }
+
+        .ms-hero-brand-list-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid var(--border-alpha);
+            padding-top: 24px;
+            margin-bottom: 40px;
+        }
+
+        .ms-hero-nav-item-indicator {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            transition: opacity 0.4s ease, transform 0.4s var(--ease-luxury);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ms-hero-nav-item-indicator.is-active {
+            opacity: 1;
+            transform: translateX(10px);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .ms-hero-nav-item-indicator::before {
+            content: '→';
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ms-hero-nav-item-indicator.is-active::before {
+            opacity: 1;
+        }
+
+        .ms-explore-cta-wrap {
+            padding-top: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ms-hero-right-visuals {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ms-hero-panel-deck {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-alpha);
+        }
+
+        .ms-hero-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px) scale(0.98);
+            transition: transform 0.8s var(--ease-luxury), opacity 0.6s ease, filter 0.8s ease;
+            filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ms-hero-panel.is-active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+            filter: blur(0px);
+        }
+
+        .ms-panel-media {
+            width: 100%;
+            height: 60%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ms-panel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 12s var(--ease-luxury);
+        }
+
+        .ms-hero-panel.is-active .ms-panel-img {
+            transform: scale(1.08);
+        }
+
+        .ms-panel-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .ms-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .ms-panel-metric {
+            font-size: 2.2rem;
+            font-weight: 200;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .ms-panel-summary {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin: 16px 0 24px 0;
+            line-height: 1.5;
+        }
+
+        /* ========================================== */
+        /* UNIFIED WORK SPACE & MATURED ARCHIVE GRID */
+        /* ========================================== */
+        .ms-portfolio-exhibition {
+            background-color: var(--bg-pure);
+            padding: 140px 0;
+            border-top: 1px solid var(--border-alpha);
+            width: 100%;
+        }
+
+        .ms-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .ms-controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            padding-bottom: 32px;
+            margin-bottom: 48px;
+            border-bottom: 1px solid var(--border-alpha);
+        }
+
+        .ms-filter-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ms-filter-btn {
+            background: none;
+            border: 1px solid var(--border-alpha);
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            font-family: var(--font-actual);
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ms-filter-btn:hover, .ms-filter-btn.is-active {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            background-color: rgba(255,255,255,0.03);
+        }
+
+        .ms-sort-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ms-sort-select {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-alpha);
+            padding: 10px 20px;
+            font-family: var(--font-actual);
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* PREMIUM DYNAMIC 6-COLUMN GRID BASE (Enables clean 3 & 2 spans) */
+        .ms-asymmetric-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 40px;
+            width: 100%;
+            align-items: stretch; /* Forces matching height per row block */
+            transition: opacity 0.4s ease;
+        }
+
+        .ms-case-card-anchor {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            width: 100%;
+        }
+
+        .ms-case-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-alpha);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            transition: border-color 0.4s ease;
+        }
+
+        .ms-case-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* LAYOUT SPAN ASSIGNMENTS (3 per row -> 2 per row) */
+        .ms-case-card-anchor.span-3-col {
+            grid-column: span 2; /* 6 / 2 = 3 Cards per Row */
+        }
+
+        .ms-case-card-anchor.span-2-col {
+            grid-column: span 3; /* 6 / 3 = 2 Cards per Row */
+        }
+
+        .ms-card-media {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            background-color: #0b0b0b;
+        }
+
+        /* STRICT ASPECT RATIO ENFORCEMENT BASED ON RHYTHM ROW */
+        .ms-case-card-anchor.span-3-col .ms-card-media {
+            aspect-ratio: 1 / 1; /* Perfect Square Canvas for 3 in a row */
+        }
+
+        .ms-case-card-anchor.span-2-col .ms-card-media {
+            aspect-ratio: 5 / 4; /* Standard Elegant Landscape-Portrait blend for 2 in a row */
+        }
+
+        .ms-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease-luxury);
+        }
+
+        .ms-case-card:hover .ms-card-img {
+            transform: scale(1.04);
+        }
+
+        .ms-card-hover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 100%);
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 32px;
+            z-index: 2;
+            transition: opacity 0.4s ease;
+        }
+
+        .ms-case-card:hover .ms-card-hover-overlay {
+            opacity: 1;
+        }
+
+        .ms-overlay-metric {
+            font-size: 2rem;
+            font-weight: 200;
+            letter-spacing: -0.03em;
+            margin-top: 12px;
+            transform: translateY(15px);
+            transition: transform 0.5s var(--ease-luxury);
+        }
+
+        .ms-case-card:hover .ms-overlay-metric {
+            transform: translateY(0);
+        }
+
+        .ms-card-static-meta {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-alpha);
+            z-index: 3;
+            margin-top: auto; /* Pushes content down ensuring baseline text synchronization */
+        }
+
+        /* RESPONSIVE RESPONSIVENESS MATRIX */
+        @media (max-width: 1024px) {
+            .ms-hero-split-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding-top: 80px;
+            }
+            .ms-hero-sticky-stage {
+                height: auto;
+                min-height: 100vh;
+                align-items: flex-start;
+                overflow-y: auto;
+            }
+            .ms-hero-right-visuals {
+                height: 50vh;
+                margin-bottom: 40px;
+            }
+            .ms-asymmetric-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+            .ms-case-card-anchor.span-3-col,
+            .ms-case-card-anchor.span-2-col {
+                grid-column: span 1 !important;
+            }
+            .ms-case-card-anchor .ms-card-media {
+                aspect-ratio: 1 / 1 !important; /* Standardizes scaling on tablets */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ms-asymmetric-grid {
+                grid-template-columns: 1fr;
+            }
+            .ms-case-card-anchor.span-3-col,
+            .ms-case-card-anchor.span-2-col {
+                grid-column: span 1 !important;
+            }
+            .ms-case-card-anchor .ms-card-media {
+                aspect-ratio: 4 / 3 !important; /* Clean cinematic viewports for mobile screens */
+            }
+            .ms-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            .ms-controls-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .ms-filter-group {
+                width: 100%;
+            }
+            .ms-filter-btn {
+                flex-grow: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ms-custom-cursor" id="customCursor">VIEW CASE</div>
+
+    <!-- FEATURED PURE TOP 5 SECTION -->
+    <section class="ms-hero-viewport-track" id="featured-section">
+        <div class="ms-hero-sticky-stage" id="stickyStage">
+            <div class="ms-container ms-hero-split-layout">
+                
+                <div class="ms-hero-left-interface">
+                    <span class="ms-label">FEATURED CASE STUDIES</span>
+                    
+                    <div class="ms-hero-metrics-scroller">
+                        <div class="ms-hero-metric-line" id="metricScroller"></div>
+                    </div>
+
+                    <div class="ms-hero-names-scroller">
+                        <div class="ms-hero-name-line" id="nameScroller"></div>
+                    </div>
+
+                    <div class="ms-hero-brand-list-nav" id="brandNavList"></div>
+
+                    <!-- CTA SCROLL TRACKER LINK -->
+                    <div class="ms-explore-cta-wrap">
+                        <button class="ms-link-btn" onclick="scrollToGridSection()">Explore More Below ↓</button>
+                    </div>
+                </div>
+
+                <div class="ms-hero-right-visuals">
+                    <div class="ms-hero-panel-deck" id="heroPanelDeck"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- UNIFIED WORK MATRIX SECTION -->
+    <section class="ms-portfolio-exhibition" id="portfolio-grid-section">
+        <div class="ms-container">
+            <div class="ms-section-header">
+                <div>
+                    <span class="ms-label">ARCHIVE & EXPERT INDEX</span>
+                    <h2 class="ms-heading-large" style="margin-top: 16px;">Bespoke Solutions.<br>Quantifiable Scale.</h2>
+                </div>
+                <p class="ms-paragraph-editorial">
+                    Explore our integrated systems. Whether optimizing data routing parameters or custom building Liquid layers, we develop for ultimate real-world scaling.
+                </p>
+            </div>
+
+            <!-- CONTROLS ROW -->
+            <div class="ms-controls-row">
+                <div class="ms-filter-group" id="filterButtonGroup">
+                    <button class="ms-filter-btn is-active" data-filter="all">All Case Studies</button>
+                    <button class="ms-filter-btn" data-filter="marketing">Performance Marketing</button>
+                    <button class="ms-filter-btn" data-filter="shopify">Shopify Development</button>
+                </div>
+                <div class="ms-sort-wrapper">
+                    <span class="ms-label" style="color: var(--text-secondary);">Sort By:</span>
+                    <select class="ms-sort-select" id="sortSelect">
+                        <option value="default">Default Framework</option>
+                        <option value="roas">High ROAS Metric</option>
+                        <option value="newest">Chronological: New to Old</option>
+                        <option value="oldest">Chronological: Old to New</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ARRANGE MATRIX GRID -->
+            <div class="ms-asymmetric-grid" id="unifiedPortfolioGrid"></div>
+        </div>
+    </section>
+
+    <script>
+        /* ========================================== */
+        /* TRUE TOP 5 FEATURED PROJECTS MATRIX */
+        /* ========================================== */
+        const FEATURED_PROJECTS = [
+            {
+                id: "feat-1",
+                brand: "Powersutra",
+                subtitle: "PREMIUM APPAREL ACQUISITION",
+                metric: "+212% Conversion Scale",
+                summary: "Complete layout optimization and re-architecture of native checkout sequences to remove transactional friction.",
+                img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/powersutra_1.png",
+                color: "#050505"
+            },
+            {
+                id: "feat-2",
+                brand: "Leaf Studio",
+                subtitle: "AUDIO GEAR RETENTION SYSTEMS",
+                metric: "4.8x Scaled ROAS",
+                summary: "Algorithmic data routing and programmatic audience targeting connected straight to specialized funnel landing views.",
+                img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/leaf-green.png",
+                color: "#090909"
+            },
+            {
+                id: "feat-3",
+                brand: "Noise",
+                subtitle: "SMART WEARABLE SCALE METRICS",
+                metric: "120Cr Funnel Value",
+                summary: "Comprehensive platform-level scale optimizations and integrated tracking setups built to eliminate conversion loss.",
+                img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/go_noise.png",
+                color: "#0c0c0c"
+            },
+            {
+                id: "feat-4",
+                brand: "Kraftsmith",
+                subtitle: "ARTISANAL JEWELRY",
+                metric: "60 FPS Responsive Setup",
+                summary: "Bespoke presentation layouts styled with generous whitespace structures designed to convey luxury identity.",
+                img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/kraft_f61b0bf4-afe9-4cd8-821c-76e3b944ac48.png",
+                color: "#030303"
+            },
+            {
+                id: "feat-5",
+                brand: "Udd Studio",
+                subtitle: "PREMIUM CLOTHING",
+                metric: "88% Retention Spike",
+                summary: "Custom built headless Shopify implementation designed for lightning fast performance layers across desktop and mobile storefront interfaces.",
+                img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/Udd_Studio.webp",
+                color: "#070707"
+            }
+        ];
+
+        /* ========================================== */
+        /* VOLUMINOUS WORK INDEX ARRAY DATA */
+        /* ========================================== */
+        const COMBINED_PORTFOLIO_DATA = [
+            { id: "p-1", brand: "Janasya Pure", type: "marketing", industry: "Ethnic Lifestyle", category: "Paid Social Scale", metric: "5.2x ROAS Metric", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=80&w=1000", roas: 5.2, date: "2026-04-15" },
+            { id: "p-2", brand: "Reprise", type: "marketing", industry: "Athletic Wear", category: "Attribution Setup", metric: "+114% Conversion Lift", img: "https://www.reprise.co.in/cdn/shop/files/1_60ff4748-0883-46ec-a2e2-18dfc73d6bf4.jpg", roas: 3.1, date: "2025-11-20" },
+            { id: "p-3", brand: "Esme Crystals", type: "shopify", industry: "Luxury Goods", category: "Bespoke Architecture", metric: "0.8s Load Velocity", img: "https://www.esmecrystal.com/cdn/shop/files/50_665ebffe-8747-4f40-a77a-66ab90c5415d.jpg", roas: 4.2, date: "2026-06-01" },
+            { id: "p-4", brand: "Sila Atelier", type: "marketing", industry: "Luxury Accessories", category: "Retention Engine", metric: "42Cr Direct Tracking", img: "https://silaatelier.com/cdn/shop/files/DSC01633.jpg", roas: 6.5, date: "2026-02-10" },
+            { id: "p-5", brand: "Clazep", type: "shopify", industry: "Sports Performance", category: "UX Engineering", metric: "1.2s Load Velocity", img: "https://clazep.in/cdn/shop/files/2J7A0286_9c60fe4a-5a87-4c57-891f-1d252d9d5440.jpg", roas: 2.8, date: "2025-08-05" },
+            { id: "p-6", brand: "Buna Studio", type: "marketing", industry: "Gourmet Provisions", category: "Local SEO Scale", metric: "-35% Client Costs", img: "https://cdn.shopify.com/s/files/1/0522/6178/1673/files/buna_b7c3475b-fe87-4eee-9484-a7345a065124.jpg", roas: 3.8, date: "2025-05-14" },
+            { id: "p-7", brand: "Theme My Party", type: "shopify", industry: "Event Planning", category: "Customization System", metric: "0.9s Load Velocity", img: "https://thememyparty.ca/cdn/shop/files/1_43_136d3a58-7592-4f18-8c0c-5f9e7a455de7.jpg", roas: 4.0, date: "2026-05-18" },
+            { id: "p-8", brand: "Weaving Cult", type: "shopify", industry: "Premium Clothing", category: "Headless System", metric: "0.6s Speed Layer", img: "https://www.weavingcult.com/cdn/shop/files/AF8EBA71-1387-4778-9588-8F47008FCB79.jpg", roas: 4.9, date: "2026-01-22" },
+            { id: "p-9", brand: "Bloom Up", type: "marketing", industry: "Kids Clothing", category: "Funnel Scaling", metric: "6.1x Scale Attained", img: "https://www.bloomup.in/cdn/shop/files/Group_1686557056.png", roas: 6.1, date: "2025-12-04" }
+        ];
+
+        /* ========================================== */
+        /* HERO SCROLL STAGE LOGIC */
+        /* ========================================== */
+        function initStickyHeroEngine() {
+            const track = document.getElementById("featured-section");
+            const stage = document.getElementById("stickyStage");
+            const nameScroller = document.getElementById("nameScroller");
+            const metricScroller = document.getElementById("metricScroller");
+            const brandNavList = document.getElementById("brandNavList");
+            const panelDeck = document.getElementById("heroPanelDeck");
+
+            FEATURED_PROJECTS.forEach((proj, idx) => {
+                const navItem = document.createElement("div");
+                navItem.className = `ms-hero-nav-item-indicator ${idx === 0 ? 'is-active' : ''}`;
+                navItem.setAttribute("data-index", idx);
+                navItem.innerHTML = `<span style="font-size:0.75rem; margin-right:8px; opacity:0.5;">0${idx+1}</span> ${proj.brand}`;
+                brandNavList.appendChild(navItem);
+
+                navItem.addEventListener("click", () => {
+                    const scrollTarget = track.offsetTop + (idx * window.innerHeight);
+                    window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+                });
+
+                const panel = document.createElement("div");
+                panel.className = `ms-hero-panel ${idx === 0 ? 'is-active' : ''}`;
+                panel.innerHTML = `
+                    <div class="ms-panel-media">
+                        <img class="ms-panel-img" src="${proj.img}" alt="${proj.brand}">
+                    </div>
+                    <div class="ms-panel-content">
+                        <div class="ms-panel-header">
+                            <div>
+                                <span class="ms-label" style="color:var(--text-secondary);">${proj.subtitle}</span>
+                                <h3 style="font-size:1.4rem; font-weight:400; margin-top:8px;">${proj.brand}</h3>
+                            </div>
+                            <div class="ms-panel-metric">${proj.metric.split(" ")[0]}</div>
+                        </div>
+                        <p class="ms-panel-summary">${proj.summary}</p>
+                        <div style="text-align:right;">
+                            <a href="#" class="ms-link-btn">Case Lock</a>
+                        </div>
+                    </div>
+                `;
+                panelDeck.appendChild(panel);
+            });
+
+            nameScroller.innerHTML = FEATURED_PROJECTS.map(p => `<div style="height: clamp(3.2rem, 6vw, 5.5rem);">${p.brand}</div>`).join('');
+            metricScroller.innerHTML = FEATURED_PROJECTS.map(p => `<div style="height:30px;">${p.metric}</div>`).join('');
+
+            function updateScrollVisuals() {
+                const rect = track.getBoundingClientRect();
+                const totalHeight = track.offsetHeight - window.innerHeight;
+                const progress = Math.max(0, Math.min(1, -rect.top / totalHeight));
+
+                const step = 1 / (FEATURED_PROJECTS.length - 1);
+                let activeIndex = Math.round(progress / step);
+                if (activeIndex >= FEATURED_PROJECTS.length) activeIndex = FEATURED_PROJECTS.length - 1;
+
+                const activeProj = FEATURED_PROJECTS[activeIndex];
+                if(activeProj) {
+                    stage.style.backgroundColor = activeProj.color;
+                }
+
+                const itemHeight = nameScroller.firstElementChild.offsetHeight;
+                nameScroller.style.transform = `translateY(-${activeIndex * itemHeight}px)`;
+                metricScroller.style.transform = `translateY(-${activeIndex * 30}px)`;
+
+                document.querySelectorAll(".ms-hero-nav-item-indicator").forEach((el, index) => {
+                    el.classList.toggle("is-active", index === activeIndex);
+                });
+
+                document.querySelectorAll(".ms-hero-panel").forEach((panel, index) => {
+                    panel.classList.toggle("is-active", index === activeIndex);
+                });
+            }
+
+            window.addEventListener("scroll", () => {
+                requestAnimationFrame(updateScrollVisuals);
+            });
+        }
+
+        function scrollToGridSection() {
+            document.getElementById("portfolio-grid-section").scrollIntoView({ behavior: "smooth" });
+        }
+
+        /* ========================================== */
+        /* DYNAMIC SPAN & ASPECT MATRIX GRID CONTROLLER ENGINE */
+        /* ========================================== */
+        let activeFilter = "all";
+        let activeSort = "default";
+
+        function initUnifiedGridEngine() {
+            const filterButtons = document.querySelectorAll(".ms-filter-btn");
+            const sortSelect = document.getElementById("sortSelect");
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    filterButtons.forEach(b => b.classList.remove("is-active"));
+                    e.target.classList.add("is-active");
+                    activeFilter = e.target.getAttribute("data-filter");
+                    renderUnifiedPortfolio();
+                });
+            });
+
+            sortSelect.addEventListener("change", (e) => {
+                activeSort = e.target.value;
+                renderUnifiedPortfolio();
+            });
+
+            renderUnifiedPortfolio();
+        }
+
+        function renderUnifiedPortfolio() {
+            const grid = document.getElementById("unifiedPortfolioGrid");
+            grid.style.opacity = 0;
+
+            setTimeout(() => {
+                let workspaceData = [...COMBINED_PORTFOLIO_DATA];
+                if (activeFilter !== "all") {
+                    workspaceData = workspaceData.filter(item => item.type === activeFilter);
+                }
+
+                if (activeSort === "roas") {
+                    workspaceData.sort((a, b) => b.roas - a.roas);
+                } else if (activeSort === "newest") {
+                    workspaceData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                } else if (activeSort === "oldest") {
+                    workspaceData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                }
+
+                if (workspaceData.length === 0) {
+                    grid.innerHTML = `<div style="grid-column: span 6; text-align:center; padding: 80px 0; color:var(--text-secondary);">No custom architectures match the selected metrics filters.</div>`;
+                } else {
+                    let virtualIndex = 0;
+                    grid.innerHTML = workspaceData.map((proj) => {
+                        let spanClass = "";
+                        
+                        // Alternating rhythmic loop logic: Row 1 = 3 cards (span-3-col), Row 2 = 2 cards (span-2-col)
+                        if (virtualIndex % 5 < 3) {
+                            spanClass = "span-3-col"; // 3 per row (each takes 2 slots out of 6) -> Aspect Ratio 1:1
+                        } else {
+                            spanClass = "span-2-col"; // 2 per row (each takes 3 slots out of 6) -> Aspect Ratio 5:4
+                        }
+                        
+                        virtualIndex++;
+                        
+                        return `
+                            <a href="#" class="ms-case-card-anchor ${spanClass}">
+                                <div class="ms-case-card">
+                                    <div class="ms-card-media">
+                                        <img class="ms-card-img" src="${proj.img}" alt="${proj.brand}">
+                                        <div class="ms-card-hover-overlay">
+                                            <span class="ms-label" style="color:#FFF;">${proj.category}</span>
+                                            <div class="ms-overlay-metric">${proj.metric}</div>
+                                        </div>
+                                    </div>
+                                    <div class="ms-card-static-meta">
+                                        <div>
+                                            <span class="ms-label" style="font-size:0.65rem;">${proj.industry}</span>
+                                            <h4 style="font-size:1.1rem; font-weight:400; margin-top:4px; color:var(--text-primary);">${proj.brand}</h4>
+                                        </div>
+                                        <span class="ms-link-btn" style="font-size:0.75rem;">Explore Build</span>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+                }
+                grid.style.opacity = 1;
+            }, 300);
+        }
+
+        /* ========================================== */
+        /* MOUSE HOVER CURSOR ENGINE */
+        /* ========================================== */
+        function initLuxuryCursorEngine() {
+            const cursor = document.getElementById("customCursor");
+
+            window.addEventListener("mousemove", (e) => {
+                cursor.style.left = e.clientX + "px";
+                cursor.style.top = e.clientY + "px";
+            });
+
+            document.body.addEventListener("mouseenter", (e) => {
+                if (e.target.closest && e.target.closest(".ms-case-card")) {
+                    cursor.style.transform = "translate(-50%, -50%) scale(1)";
+                }
+            }, true);
+
+            document.body.addEventListener("mouseleave", (e) => {
+                if (e.target.closest && e.target.closest(".ms-case-card")) {
+                    cursor.style.transform = "translate(-50%, -50%) scale(0)";
+                }
+            }, true);
+        }
+
+        /* RUNTIME AGENT EXECUTION */
+        window.addEventListener("DOMContentLoaded", () => {
+            initStickyHeroEngine();
+            initUnifiedGridEngine();
+            initLuxuryCursorEngine();
+        });
+    </script>
+</body>
+</html>
