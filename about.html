@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us — MESSOLD Technologies</title>
+    <style>
+        /* --- BRAND DESIGN SYSTEM LOGIC --- */
+        :root {
+            --clr-black: #000000;
+            --clr-charcoal: #111111;
+            --clr-darkgray: #161616;
+            --clr-white: #FFFFFF;
+            --clr-warmwhite: #F9F9F6;
+            
+            --txt-primary-dark: #FFFFFF;
+            --txt-secondary-dark: #8E8E8E;
+            --txt-primary-light: #1A1A1A;
+            --txt-secondary-light: #7A7A7A;
+
+            --layout-border-dark: rgba(255, 255, 255, 0.06);
+            --layout-border-light: rgba(0, 0, 0, 0.06);
+
+            --font-editorial: "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+            --ease-fluid: cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* --- FRAMEWORK BASE STYLES --- */
+        .ms-v2-frame {
+            font-family: var(--font-editorial);
+            background-color: var(--clr-black);
+            color: var(--txt-primary-dark);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 1.2s var(--ease-fluid), color 1.2s var(--ease-fluid);
+        }
+
+        /* --- THEMATIC INTERPOLATION CLASSIFICATIONS --- */
+        .ms-v2-frame.theme-black { background-color: var(--clr-black); color: var(--txt-primary-dark); }
+        .ms-v2-frame.theme-charcoal { background-color: var(--clr-charcoal); color: var(--txt-primary-dark); }
+        .ms-v2-frame.theme-white { background-color: var(--clr-white); color: var(--txt-primary-light); }
+        .ms-v2-frame.theme-warmwhite { background-color: var(--clr-warmwhite); color: var(--txt-primary-light); }
+
+        /* --- MASTER LAYOUT WRAPPERS --- */
+        .ms-v2-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 5%;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* COMPRESSED SPACING ACROSS SECTIONS */
+        .ms-v2-section {
+            padding: 7vh 0;
+            border-bottom: 1px solid var(--layout-border-dark);
+            position: relative;
+            box-sizing: border-box;
+            transition: border-color 1.2s var(--ease-fluid);
+        }
+        
+        .theme-white .ms-v2-section, .theme-warmwhite .ms-v2-section {
+            border-bottom: 1px solid var(--layout-border-light);
+        }
+
+        /* --- ADVANCED EDITORIAL TYPOGRAPHY --- */
+        .ms-v2-meta-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-weight: 500;
+            opacity: 0.5;
+            display: inline-block;
+            margin-bottom: 1.2rem;
+        }
+
+        .ms-v2-jumbo-title {
+            font-size: clamp(2.3rem, 6vw, 5rem);
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .ms-v2-section-title {
+            font-size: clamp(1.8rem, 4vw, 3.2rem);
+            font-weight: 300;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin: 0 0 2rem 0;
+        }
+
+        .ms-v2-body-lead {
+            font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+            font-weight: 300;
+            line-height: 1.6;
+            opacity: 0.85;
+            max-width: 800px;
+        }
+
+        .ms-v2-body-text {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        /* --- PREMIUM STRUCTURAL BUTTON LAYERS --- */
+        .ms-v2-action-trigger {
+            font-family: var(--font-editorial);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+            color: inherit;
+            background: transparent;
+            border: 1px solid currentColor;
+            padding: 1.1rem 2.2rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+
+        .ms-v2-action-trigger:hover {
+            transform: translateY(-2px);
+            opacity: 0.8;
+        }
+
+        /* --- KINETIC SCROLL ANIMATION SHIELDS --- */
+        .ms-v2-fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s var(--ease-fluid), transform 1.2s var(--ease-fluid);
+        }
+
+        .ms-v2-fade-in.triggered {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HERO LAYOUT CONTEXT --- */
+        .ms-v2-hero-layout {
+            min-height: 55vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 4vh;
+            box-sizing: border-box;
+        }
+
+        .ms-v2-hero-meta-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            border-top: 1px solid var(--layout-border-dark);
+            margin-top: 4vh;
+            padding-top: 2rem;
+            transition: border-color 1.2s var(--ease-fluid);
+        }
+
+        @media (max-width: 768px) {
+            .ms-v2-hero-meta-strip { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        }
+
+        /* --- SECTION 2: ASYMMETRIC STORYTELLING --- */
+        .ms-v2-asymmetric-split {
+            display: grid;
+            grid-template-columns: 3fr 9fr;
+            gap: 4%;
+        }
+
+        @media (max-width: 968px) {
+            .ms-v2-asymmetric-split { grid-template-columns: 1fr; gap: 2rem; }
+        }
+
+        .ms-v2-narrative-block {
+            padding-left: 6%;
+            border-left: 1px solid var(--layout-border-dark);
+            transition: border-color 1.2s var(--ease-fluid);
+        }
+
+        @media (max-width: 968px) {
+            .ms-v2-narrative-block { padding-left: 0; border-left: none; }
+        }
+
+        /* --- SECTION 3: SYSTEM VALUES MASONRY MATRIX WITH HIGHER VISIBILITY --- */
+        .ms-v2-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.75rem;
+            margin-top: 2.5rem;
+        }
+
+        .ms-v2-matrix-cell {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 240px;
+            box-sizing: border-box;
+            transition: all 0.8s var(--ease-fluid);
+            
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .theme-white .ms-v2-matrix-cell, .theme-warmwhite .ms-v2-matrix-cell {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.04);
+        }
+
+        .ms-v2-matrix-cell:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .theme-white .ms-v2-matrix-cell:hover, .theme-warmwhite .ms-v2-matrix-cell:hover {
+            border-color: rgba(0, 0, 0, 0.15);
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .mc-large { grid-column: span 7; }
+        .mc-small { grid-column: span 5; }
+        .mc-full { grid-column: span 12; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+
+        @media (max-width: 968px) {
+            .ms-v2-matrix-cell { grid-column: span 12 !important; grid-template-columns: 1fr !important; gap: 1rem; }
+        }
+
+        /* --- NEW INFINITE INFINITELY SMOOTH SCROLL PROCESS CONTAINER --- */
+        .ms-v2-marquee-viewport {
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            overflow: hidden;
+            position: relative;
+            margin-top: 2rem;
+            padding: 1.5rem 0;
+        }
+
+        .ms-v2-marquee-track {
+            display: flex;
+            width: max-content;
+            animation: msInfiniteMarquee 35s linear infinite;
+        }
+
+        .ms-v2-marquee-viewport:hover .ms-v2-marquee-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes msInfiniteMarquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+
+        .ms-v2-process-node {
+            width: 300px;
+            padding: 2rem;
+            margin-right: 2rem;
+            border: 1px solid var(--layout-border-dark);
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.02);
+            transition: border-color 1.2s var(--ease-fluid);
+        }
+
+        .theme-white .ms-v2-process-node, .theme-warmwhite .ms-v2-process-node {
+            border: 1px solid var(--layout-border-light);
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .ms-v2-process-glyph {
+            font-size: 2.5rem;
+            font-weight: 200;
+            opacity: 0.2;
+            display: block;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        /* --- SECTION 5: ADVANTAGE ROW ALIGNMENT --- */
+        .ms-v2-benefit-row {
+            display: grid;
+            grid-template-columns: 4fr 8fr;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--layout-border-dark);
+            transition: border-color 1.2s var(--ease-fluid);
+        }
+
+        .theme-white .ms-v2-benefit-row, .theme-warmwhite .ms-v2-benefit-row {
+            border-bottom: 1px solid var(--layout-border-light);
+        }
+
+        @media (max-width: 768px) {
+            .ms-v2-benefit-row { grid-template-columns: 1fr; gap: 0.5rem; }
+        }
+
+        /* --- SECTION 6: MAGAZINE WALL STAGGERED TEAM EDITORIAL (6 PEOPLE) --- */
+        .ms-v2-magazine-team-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            align-items: flex-start;
+        }
+
+        .ms-v2-magazine-profile-card {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .ms-v2-mag-photo-shield {
+            width: 100%;
+            background-color: var(--clr-darkgray);
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .ms-v2-mag-photo-shield img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.6s var(--ease-fluid), transform 0.8s var(--ease-fluid);
+        }
+
+        .ms-v2-magazine-profile-card:hover .ms-v2-mag-photo-shield img {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+        }
+
+        .mt-1 { grid-column: span 4; } .mt-1 .ms-v2-mag-photo-shield { aspect-ratio: 4/5; }
+        .mt-2 { grid-column: span 4; margin-top: 4vh; } .mt-2 .ms-v2-mag-photo-shield { aspect-ratio: 3/4; }
+        .mt-3 { grid-column: span 4; } .mt-3 .ms-v2-mag-photo-shield { aspect-ratio: 4/5; }
+        .mt-4 { grid-column: span 4; margin-top: 2vh; } .mt-4 .ms-v2-mag-photo-shield { aspect-ratio: 3/4; }
+        .mt-5 { grid-column: span 4; } .mt-5 .ms-v2-mag-photo-shield { aspect-ratio: 4/5; }
+        .mt-6 { grid-column: span 4; margin-top: 4vh; } .mt-6 .ms-v2-mag-photo-shield { aspect-ratio: 3/4; }
+
+        @media (max-width: 968px) {
+            .ms-v2-magazine-team-grid > div { grid-column: span 6 !important; margin-top: 0 !important; }
+        }
+        @media (max-width: 568px) {
+            .ms-v2-magazine-team-grid > div { grid-column: span 12 !important; }
+        }
+
+        /* --- CINEMATIC MODAL OVERLAY --- */
+        .ms-v2-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(4, 4, 4, 0.75);
+            backdrop-filter: blur(25px) saturate(160%);
+            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .ms-v2-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* --- REDUCED POPUP SIZE (-20% PROPORTIONS) --- */
+        .ms-v2-asymmetric-popup-card {
+            background: #090909;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 928px; /* Down from 1160px (-20%) */
+            width: 100%;
+            height: 100%;
+            max-height: 600px; /* Down from 750px (-20%) */
+            display: grid;
+            grid-template-columns: 9fr 11fr;
+            box-sizing: border-box;
+            position: relative;
+            transform: scale(0.97) translateY(25px);
+            transition: transform 0.6s var(--ease-fluid);
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+        }
+
+        .ms-v2-modal-overlay.active .ms-v2-asymmetric-popup-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .ms-v2-popup-media-zone {
+            width: 100%;
+            height: 100%;
+            background: #111;
+            position: relative;
+        }
+
+        .ms-v2-popup-media-zone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        .ms-v2-popup-content-zone {
+            padding: 4rem 3.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #ffffff;
+            overflow-y: auto;
+            position: relative;
+            background: linear-gradient(135deg, #0d0d0d 0%, #080808 100%);
+        }
+
+        .ms-v2-popup-content-zone p.bio-paragraph {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            opacity: 0.75;
+            color: #d1d1d1;
+            margin: 0 0 1.2rem 0;
+            font-weight: 400;
+        }
+        
+        .ms-v2-popup-content-zone p.bio-paragraph:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- HIGH VISIBILITY CLOSE ICON SETUP --- */
+        .ms-v2-popup-close-icon-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #161616;
+            border: none;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.85); /* Boosted contrast opacity */
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.25); /* Stronger outline frame */
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .ms-v2-popup-close-icon-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 3; /* Increased stroke thickness for visibility */
+            stroke-linecap: round;
+        }
+
+        .ms-v2-popup-close-icon-btn:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: #ffffff;
+            color: #000000;
+            transform: rotate(90deg) scale(1.05);
+        }
+
+        /* --- RESPONSIVE ADAPTATIONS --- */
+        @media (max-width: 920px) {
+            .ms-v2-section {
+                padding: 4vh 0;
+            }
+            .ms-v2-asymmetric-popup-card {
+                grid-template-columns: 1fr;
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+            .ms-v2-popup-media-zone {
+                height: 280px;
+            }
+            .ms-v2-popup-content-zone {
+                padding: 3.5rem 2.25rem 2.5rem 2.25rem;
+                overflow-y: visible;
+            }
+            .ms-v2-popup-close-icon-btn {
+                background: #090909;
+                top: 1.25rem;
+                right: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .ms-v2-modal-overlay { padding: 1rem; }
+            .ms-v2-popup-media-zone { height: 220px; }
+            .ms-v2-popup-content-zone { padding: 3rem 1.5rem 2rem 1.5rem; }
+        }
+
+        /* --- IMMERSIVE CONVERSION FOOTER --- */
+        .ms-v2-immersive-footer {
+            padding: 14vh 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="ms-v2-frame" id="msV2GlobalAppShell">
+
+    <header class="ms-v2-section" data-theme="black" style="padding-top: 6vh;">
+        <div class="ms-v2-container ms-v2-hero-layout">
+            <span class="ms-v2-meta-tag">MESSOLD TECHNOLOGIES</span>
+            <h1 class="ms-v2-jumbo-title">We engineer digital storefronts that define market leaders.</h1>
+            
+            <div class="ms-v2-hero-meta-strip">
+                <div>
+                    <span style="font-size: 0.75rem; opacity: 0.4; display:block; margin-bottom: 0.3rem;">FOUNDED BY</span>
+                    <span style="font-size: 0.95rem; font-weight: 400;">IIT Alumni Elite</span>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; opacity: 0.4; display:block; margin-bottom: 0.3rem;">FOCUS ENVIRONMENT</span>
+                    <span style="font-size: 0.95rem; font-weight: 400;">Shopify Architecture</span>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; opacity: 0.4; display:block; margin-bottom: 0.3rem;">MISSION TARGET</span>
+                    <span style="font-size: 0.95rem; font-weight: 400;">Unified Growth Velocity</span>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; opacity: 0.4; display:block; margin-bottom: 0.3rem;">CORE VECTOR</span>
+                    <span style="font-size: 0.95rem; font-weight: 400;">Performance Symphony</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="ms-v2-section" data-theme="charcoal">
+        <div class="ms-v2-container ms-v2-asymmetric-split ms-v2-fade-in">
+            <div>
+                <span class="ms-v2-meta-tag">Who We Are</span>
+            </div>
+            <div class="ms-v2-narrative-block">
+                <h2 class="ms-v2-section-title">A targeted advertising symphony driven by technological precision.</h2>
+                <p class="ms-v2-body-lead" style="margin-bottom: 2rem;">Born in 2016 from a collaborative core of passionate IIT alumni, Messold Technologies set out to fundamentally reinvent the performance advertising landscape.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+                    <p class="ms-v2-body-text">We recognized that standard operations treated marketing and system engineering as separate elements. Messold bridges this gap, establishing a unified ecosystem where pure data analysis coordinates perfectly with low-latency platform optimization.</p>
+                    <p class="ms-v2-body-text">Equipped with academic rigor and pure digital curiosity, we introduced high-performing structural blueprints that set ablaze traditional agency limitations, allowing modern direct-to-consumer operations to capture maximized market margins.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ms-v2-section" data-theme="white">
+        <div class="ms-v2-container">
+            <span class="ms-v2-meta-tag" style="color: inherit;">Tenets & Driving Focus</span>
+            <h2 class="ms-v2-section-title" style="color: inherit;">The Principles That Shape Our Focus</h2>
+            
+            <div class="ms-v2-matrix-grid" id="v2ValuesGridTarget"></div>
+        </div>
+    </section>
+
+    <section class="ms-v2-section" data-theme="warmwhite">
+        <div class="ms-v2-container">
+            <span class="ms-v2-meta-tag">The Workflow Matrix</span>
+            <h2 class="ms-v2-section-title">Our 6-Step Process Architecture</h2>
+            <p class="ms-v2-body-lead" style="margin-bottom: 1rem;">Continuous operational pipeline built to run infinite times. Hover over the items to pause.</p>
+        </div>
+        
+        <div class="ms-v2-marquee-viewport">
+            <div class="ms-v2-marquee-track" id="v2ProcessTrackTarget"></div>
+        </div>
+    </section>
+
+    <section class="ms-v2-section" data-theme="warmwhite">
+        <div class="ms-v2-container">
+            <span class="ms-v2-meta-tag">Strategic Advantages</span>
+            <h2 class="ms-v2-section-title">Why Enterprise Operations Choose Messold</h2>
+            <div style="margin-top: 2rem;" id="v2BenefitsTarget"></div>
+        </div>
+    </section>
+
+    <section class="ms-v2-section" data-theme="black">
+        <div class="ms-v2-container">
+            <span class="ms-v2-meta-tag">The Core Capital</span>
+            <h2 class="ms-v2-section-title">Meet Our Structural Architects</h2>
+            
+            <div class="ms-v2-magazine-team-grid" id="v2TeamMagazineTarget"></div>
+        </div>
+    </section>
+
+    <footer class="ms-v2-section ms-v2-immersive-footer" data-theme="black">
+        <div class="ms-v2-container ms-v2-fade-in">
+            <span class="ms-v2-meta-tag">Intake Coordination</span>
+            <h2 class="ms-v2-jumbo-title" style="margin-bottom: 2.5rem; max-width: 1100px;">Let's build a digital ecosystem that commands authority.</h2>
+            <button class="ms-v2-action-trigger">Book An Architectural Strategy Call</button>
+        </div>
+    </footer>
+
+    <div class="ms-v2-modal-overlay" id="v2TeamModalWindow">
+        <div class="ms-v2-asymmetric-popup-card">
+            <div class="ms-v2-popup-media-zone">
+                <img src="" alt="" id="v2ModalImage">
+            </div>
+            <div class="ms-v2-popup-content-zone">
+                <button class="ms-v2-popup-close-icon-btn" id="v2ModalCloseBtn" aria-label="Close Profile">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+                <div>
+                    <span class="ms-v2-meta-tag" id="v2ModalRole" style="margin-bottom: 0.5rem; opacity: 0.5;">ROLE</span>
+                    <h3 id="v2ModalName" style="font-size: 2.2rem; font-weight: 300; margin: 0 0 1.5rem 0; letter-spacing: -0.02em;">MEMBER NAME</h3>
+                    
+                    <div id="v2ModalBioContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MESSOLD_V2_DATA = {
+            values: [
+                { title: "Innovation", desc: "We never stop exploring, ensuring exceptional outcomes for every integrated store system.", size: "mc-large" },
+                { title: "Collaboration", desc: "Combining precise liquid layout strategies with conversion analytics maps.", size: "mc-small" },
+                { title: "Our Mission", desc: "We inject warmth, deep analytical clarity, and operational security into a digital economy that often feels cold and transactional. We forge lasting connections that allow native commerce setups to scale securely without technological performance gaps.", size: "mc-full" },
+                { title: "Creativity", desc: "We design entirely outside standard frameworks, separating your presence completely.", size: "mc-small" },
+                { title: "Agility", desc: "Immediate responses to shifting consumer dynamics and backend platform variations.", size: "mc-large" }
+            ],
+            process: [
+                { num: "01", phase: "Research", title: "In-Depth Telemetry Mapping", text: "Isolating dropped performance buckets, audience interaction pathways, and baseline brand challenges clean." },
+                { num: "02", phase: "Discovery", title: "Decoupled Architecture Verification", text: "Reviewing tech ecosystems to construct low-weight server strategies tailored precisely to application layers." },
+                { num: "03", phase: "Design", title: "Frictionless UI Layouts", text: "Creating high-fidelity editorial layouts engineered to decrease user load drop-offs." },
+                { num: "04", phase: "Content", title: "Strategic Positioning Pipelines", text: "Formatting precise value messaging scripts that build long-term transactional trust instantly." },
+                { num: "05", phase: "Development", title: "Clean System Logic Build", text: "Transforming high-fidelity mockups into fast, performant Liquid modules built without excess app weights." },
+                { num: "06", phase: "Optimization", title: "Target Matrix Verification", text: "Comprehensive scale audits, fast image caching setups, and tracking parameter adjustments for clear growth logs." }
+            ],
+            benefits: [
+                { title: "Integrated Performance Strategy", context: "One unified cross-channel media system powered by premium visual logic assets." },
+                { title: "Systemic Thought Leadership", context: "Deep, continuous consumer framework analysis ensuring your storefront remains on the cutting edge." },
+                { title: "Custom Metric Forecasting", context: "Proprietary software modules configured using historical data models to map scalable margins safely." },
+                { title: "Decoupled Communication Pathways", context: "Direct engineering support lines synced cleanly with your in-house operations via real-time Slack integrations." }
+            ],
+            team: [
+                { 
+                    name: "Anuj Agarwal", 
+                    role: "Founder • CMO • CTO", 
+                    cls: "mt-1", 
+                    src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80", 
+                    bio: "Greetings! I'm the multitalented Anuj Agarwal, the magical maestro at Messold, rocking the titles of Co-Founder, CTO, CMO, and the ultimate project wizard. \n\nPicture me as the ringmaster of our growth circus, turning every opportunity into a jaw-dropping reality. Juggling Data Science and AI like a seasoned pro, I'm the one who sprinkles a touch of tech magic to transform complexities into sleek, elegant solutions.\n\nIn this tech symphony, I'm not just playing a few instruments; I'm conducting a whole orchestra of innovation. My passion lies in unraveling the intricacies of technology, turning them into a harmonious melody that resonates with success. When others see challenges, I see opportunities for digital stardom." 
+                },
+                { 
+                    name: "Christina Castillo", 
+                    role: "Founder • CEO • CTO", 
+                    cls: "mt-2", 
+                    src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=500&q=80", 
+                    bio: "Hey there! I'm Christina Castillo, the Founder, CEO, and CTO at Messold, all wrapped up in one tech-savvy, quirky package! \n\nI'm the brainiac behind our cutting-edge digital strategies, and yes, you'll often catch me steering the ship in witty t-shirts because why be ordinary when you can be extraordinary, right? \n\nAt Messold, we're not just rewriting the digital playbook; we're infusing it with a dose of cheeky brilliance. Join us on this tech-fueled adventure, where innovation meets style, and together, we'll redefine the digital landscape! Ready to make waves? Let's do this!" 
+                },
+                { 
+                    name: "Shikha Singhal", 
+                    role: "Founder • CEO", 
+                    cls: "mt-3", 
+                    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80", 
+                    bio: "Hey, lovely folks! I'm Shikha Singhal, the heart and soul behind Messold, proudly wearing the hats of founder and CEO.\n\nPicture this: a fusion of creativity and strategic brilliance, that's what I bring to the table. Crafting success stories isn't just a job; it's a passion project for me. Leading this incredible team, I'm all about turning visions into vibrant realities. " 
+                },
+                { 
+                    name: "Leena Fernandes", 
+                    role: "Human Resource Associate", 
+                    cls: "mt-4", 
+                    src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80", 
+                    bio: "Hi, I'm Leena, the Human Resource Curator at Messold! My mission is to uncover exceptional talent and ensure they thrive in our organization. From orchestrating seamless onboarding experiences to managing essential documentation, I'm dedicated to supporting every employee's journey.\n\nWhen I'm not at work, you'll find me glued to the latest thriller series or lost in the pages of a gripping novel. I’m passionate about stories that keep you on the edge of your seat, much like my approach to ensuring our team at Messold is always engaged and inspired!" 
+                },
+                { 
+                    name: "Nidhi Doshi", 
+                    role: "Digital Marketing Manager", 
+                    cls: "mt-5", 
+                    src: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=500&q=80", 
+                    bio: "Hello! I'm Nidhi, In my role as Facebook Ads Ninja at Messold Technologies, I focus on crafting and executing data-driven advertising campaigns, optimizing ad performance, and leveraging analytics to drive conversions and ROI for our clients.\n\nOutside the digital world, travel is integral to my life, offering continuous inspiration as I venture into new places and immerse myself in diverse cultures." 
+                },
+                { 
+                    name: "Justin Pulikodan", 
+                    role: "Business Development Executive", 
+                    cls: "mt-6", 
+                    src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80", 
+                    bio: "As a Business Development Executive, my passion lies in building genuine connections with prospects and exploring how, as a team, we can create real value for their organizations. I don't just sell — I partner. My goal is always to ensure that every client is not only satisfied with our services but also sees measurable results that fuel their growth.\n\nI’m also an avid traveler, always eager to explore new places and cuisines. And when it's game time, I enjoy playing table tennis, cricket, and football— because whether it’s work or life, I believe in playing with passion." 
+                }
+            ]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const shell = document.getElementById("msV2GlobalAppShell");
+
+            // 1. Matrix Grid Construction
+            const valuesGrid = document.getElementById("v2ValuesGridTarget");
+            MESSOLD_V2_DATA.values.forEach(val => {
+                const cell = document.createElement("div");
+                cell.className = `ms-v2-matrix-cell ${val.size} ms-v2-fade-in`;
+                if(val.size === "mc-full") {
+                    cell.innerHTML = `
+                        <div>
+                            <span class="ms-v2-meta-tag" style="margin-bottom:0.5rem; color:inherit;">System Mission</span>
+                            <h3 style="font-size:1.6rem; font-weight:300; margin:0; color:inherit;">${val.title}</h3>
+                        </div>
+                        <p class="ms-v2-body-text" style="margin:0; font-size:1.05rem; color:inherit;">${val.desc}</p>
+                    `;
+                } else {
+                    cell.innerHTML = `
+                        <h3 style="font-size:1.25rem; font-weight:400; margin:0; color:inherit;">${val.title}</h3>
+                        <p class="ms-v2-body-text" style="margin:0; color:inherit;">${val.desc}</p>
+                    `;
+                }
+                valuesGrid.appendChild(cell);
+            });
+
+            // 2. Infinite Marquee Creation Logic
+            const processTrack = document.getElementById("v2ProcessTrackTarget");
+            const renderMarqueeNodes = (dataArray) => {
+                dataArray.forEach(proc => {
+                    const stepNode = document.createElement("div");
+                    stepNode.className = "ms-v2-process-node";
+                    stepNode.innerHTML = `
+                        <span class="ms-v2-process-glyph">${proc.num}</span>
+                        <span class="ms-v2-meta-tag" style="margin-bottom:0.3rem; color:inherit;">Phase: ${proc.phase}</span>
+                        <h4 style="font-size:1.1rem; font-weight:400; margin:0 0 0.8rem 0; color:inherit;">${proc.title}</h4>
+                        <p class="ms-v2-body-text" style="color:inherit; margin:0; font-size:0.88rem;">${proc.text}</p>
+                    `;
+                    processTrack.appendChild(stepNode);
+                });
+            };
+            renderMarqueeNodes(MESSOLD_V2_DATA.process);
+            renderMarqueeNodes(MESSOLD_V2_DATA.process); 
+
+            // 3. Advantage Row Matrix Deployment
+            const benefitsContainer = document.getElementById("v2BenefitsTarget");
+            MESSOLD_V2_DATA.benefits.forEach(ben => {
+                const row = document.createElement("div");
+                row.className = "ms-v2-benefit-row ms-v2-fade-in";
+                row.innerHTML = `
+                    <h3 style="font-size:1.2rem; font-weight:400; margin:0; color:inherit;">${ben.title}</h3>
+                    <p class="ms-v2-body-text" style="color:inherit; margin:0; font-size:1rem;">${ben.context}</p>
+                `;
+                benefitsContainer.appendChild(row);
+            });
+
+            // 4. Staggered Magazine Style Team Architecture Mapping (6 People)
+            const teamContainer = document.getElementById("v2TeamMagazineTarget");
+            MESSOLD_V2_DATA.team.forEach((mem, index) => {
+                const profileCard = document.createElement("div");
+                profileCard.className = `ms-v2-magazine-profile-card ${mem.cls} ms-v2-fade-in`;
+                profileCard.setAttribute("data-member-idx", index);
+                profileCard.innerHTML = `
+                    <div class="ms-v2-mag-photo-shield">
+                        <img src="${mem.src}" alt="${mem.name}">
+                    </div>
+                    <h4 style="font-size:1.05rem; font-weight:400; margin:0 0 0.2rem 0;">${mem.name}</h4>
+                    <span style="font-size:0.75rem; opacity:0.5; text-transform:uppercase; letter-spacing:0.05em;">${mem.role}</span>
+                `;
+                teamContainer.appendChild(profileCard);
+            });
+
+            // --- ANIMATION INTERSECTION ENGINE ---
+            const revealNodes = document.querySelectorAll(".ms-v2-fade-in");
+            const animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) entry.target.classList.add("triggered");
+                });
+            }, { threshold: 0.02, rootMargin: "0px 0px -20px 0px" });
+            revealNodes.forEach(node => animationObserver.observe(node));
+
+            // Dynamic Scroll Interpolation Color Tracking Systems Mapping
+            window.addEventListener("scroll", () => {
+                const viewHeight = window.innerHeight;
+                document.querySelectorAll("header, section, footer").forEach(section => {
+                    const boundingBox = section.getBoundingClientRect();
+                    if(boundingBox.top <= viewHeight * 0.45 && boundingBox.bottom >= viewHeight * 0.45) {
+                        const switchTheme = section.getAttribute("data-theme");
+                        if(switchTheme) shell.className = `ms-v2-frame theme-${switchTheme}`;
+                    }
+                });
+            }, { passive: true });
+
+            // --- POPUP HANDLERS WITH GLASS EFFECTS & PARAGRAPH PARSING ---
+            const targetModal = document.getElementById("v2TeamModalWindow");
+            const modalCloseTrigger = document.getElementById("v2ModalCloseBtn");
+            const bioContainer = document.getElementById("v2ModalBioContainer");
+
+            document.querySelectorAll(".ms-v2-magazine-profile-card").forEach(card => {
+                card.addEventListener("click", () => {
+                    const extractedIndex = card.getAttribute("data-member-idx");
+                    const profileData = MESSOLD_V2_DATA.team[extractedIndex];
+                    if(profileData) {
+                        document.getElementById("v2ModalImage").src = profileData.src;
+                        document.getElementById("v2ModalName").textContent = profileData.name;
+                        document.getElementById("v2ModalRole").textContent = profileData.role;
+                        
+                        // Parse multiline string into distinct semantic paragraphs
+                        bioContainer.innerHTML = '';
+                        const paragraphs = profileData.bio.split('\n\n');
+                        paragraphs.forEach(pText => {
+                            const pTag = document.createElement('p');
+                            pTag.className = 'bio-paragraph';
+                            pTag.textContent = pText;
+                            bioContainer.appendChild(pTag);
+                        });
+
+                        targetModal.classList.add("active");
+                        document.body.style.overflow = 'hidden'; 
+                    }
+                });
+            });
+
+            const closeModal = () => {
+                targetModal.classList.remove("active");
+                document.body.style.overflow = '';
+            };
+
+            modalCloseTrigger.addEventListener("click", closeModal);
+            
+            targetModal.addEventListener("click", (e) => {
+                if(e.target === targetModal) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>
