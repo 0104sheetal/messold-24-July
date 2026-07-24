@@ -1,0 +1,2910 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harry's — Performance Marketing Case Study | MESSOLD</title>
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --font-editorial:
+          "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+        --c-bg: #000000;
+        --c-bg-alt: #0a0a0a;
+        --c-inv-bg: #ffffff;
+        --c-inv-txt: #000000;
+        --c-txt: #ffffff;
+        --c-txt-mute: #a6a6a6;
+        --c-accent: #3b82f6;
+        --c-border: rgba(255, 255, 255, 0.1);
+        --c-border-inv: rgba(0, 0, 0, 0.12);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-blade: cubic-bezier(0.77, 0, 0.175, 1);
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background: var(--c-bg);
+      }
+      body {
+        font-family: var(--font-editorial);
+        background: var(--c-bg);
+        color: var(--c-txt);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-weight: 300;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+      }
+      p,
+      span,
+      li {
+        font-weight: 400;
+        font-size: 0.92rem;
+        line-height: 1.65;
+        color: var(--c-txt-mute);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img,
+      video {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+      }
+      :focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+      }
+
+      .wrap {
+        width: 100%;
+        max-width: 1340px;
+        margin: 0 auto;
+        padding: 0 60px;
+      }
+      @media (max-width: 991px) {
+        .wrap {
+          padding: 0 40px;
+        }
+      }
+      @media (max-width: 576px) {
+        .wrap {
+          padding: 0 24px;
+        }
+      }
+
+      .inverted {
+        background: var(--c-inv-bg);
+        color: var(--c-inv-txt);
+      }
+      .inverted h1,
+      .inverted h2,
+      .inverted h3,
+      .inverted h4 {
+        color: var(--c-inv-txt);
+      }
+      .inverted p,
+      .inverted span,
+      .inverted li {
+        color: rgba(0, 0, 0, 0.62);
+      }
+      .inverted .eyebrow {
+        color: rgba(0, 0, 0, 0.55);
+      }
+
+      .sec {
+        padding: clamp(56px, 8vw, 110px) 0;
+        border-top: 1px solid var(--c-border);
+      }
+      .inverted.sec {
+        border-top: 1px solid var(--c-border-inv);
+      }
+
+      .eyebrow {
+        display: block;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-weight: 500;
+        color: var(--c-txt-mute);
+        margin-bottom: 14px;
+      }
+      .eyebrow.with-line {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .eyebrow.with-line::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.25;
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 1.2s var(--ease) 0.2s;
+      }
+      .rv.on .eyebrow.with-line::after,
+      .eyebrow.with-line.rv.on::after {
+        transform: scaleX(1);
+      }
+
+      .sec-title {
+        font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+        font-weight: 300;
+        max-width: 900px;
+      }
+      .sec-lead {
+        max-width: 640px;
+        margin-top: 16px;
+        font-size: 1rem;
+      }
+
+      /* ---------- reveal primitives ---------- */
+      .rv {
+        opacity: 0;
+        transform: translateY(32px);
+        transition:
+          opacity 1.1s var(--ease),
+          transform 1.1s var(--ease);
+        will-change: opacity, transform;
+      }
+      .rv.on {
+        opacity: 1;
+        transform: none;
+      }
+
+      .rv-mask {
+        overflow: hidden;
+        display: block;
+      }
+      .rv-mask > * {
+        transform: translateY(105%);
+        transition: transform 1.1s var(--ease);
+        display: block;
+      }
+      .rv-mask.on > * {
+        transform: translateY(0);
+      }
+
+      .stagger > * {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.9s var(--ease),
+          transform 0.9s var(--ease);
+      }
+      .stagger.on > * {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .rv,
+        .stagger > * {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+        .rv-mask > * {
+          transform: none !important;
+        }
+        * {
+          animation: none !important;
+          scroll-behavior: auto;
+        }
+      }
+
+      /* ---------- cursor ---------- */
+      .cursor {
+        width: 6px;
+        height: 6px;
+        background: #fff;
+        border-radius: 50%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+        transition: transform 0.25s var(--ease);
+      }
+      .cursor.big {
+        transform: translate(-50%, -50%) scale(7);
+      }
+      @media (max-width: 1024px), (pointer: coarse) {
+        .cursor {
+          display: none !important;
+        }
+      }
+
+      .notice {
+        background: #141414;
+        border-bottom: 1px solid var(--c-border);
+        padding: 12px 0;
+        font-size: 0.74rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-align: center;
+        color: #8a8a8a;
+      }
+
+      /* =====================================================
+   HERO (ENHANCED)
+   ===================================================== */
+      .hero {
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 140px 0 clamp(44px, 7vh, 74px);
+      }
+      .hero-media {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .hero-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) contrast(1.2) brightness(0.45);
+        transform: scale(1.1);
+        transition:
+          transform 2.4s var(--ease),
+          opacity 1.6s ease;
+        opacity: 0;
+      }
+      .hero.ready .hero-media img {
+        transform: scale(1.02);
+        opacity: 1;
+      }
+      .hero-veil {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.3) 40%,
+            rgba(0, 0, 0, 0.95) 100%
+          ),
+          radial-gradient(
+            circle at 70% 30%,
+            rgba(255, 255, 255, 0.05) 0%,
+            transparent 60%
+          );
+      }
+      .hero-blade {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 1px;
+        z-index: 2;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.85),
+          transparent
+        );
+        animation: blade 7s var(--ease-blade) infinite;
+        opacity: 0.5;
+      }
+      @keyframes blade {
+        0% {
+          transform: translateY(12vh);
+          opacity: 0;
+        }
+        12% {
+          opacity: 0.6;
+        }
+        55% {
+          opacity: 0.6;
+        }
+        70% {
+          transform: translateY(88vh);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(88vh);
+          opacity: 0;
+        }
+      }
+
+      .hero-title span {
+            font-size: clamp(3.2rem, 5.5vw, 5.8rem);
+            color: #fff;
+        }
+      .hero-wordmark {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+      .hero-wordmark span {
+        font-size: clamp(8rem, 28vw, 22rem);
+        font-weight: 200;
+        letter-spacing: -0.06em;
+        color: rgba(255, 255, 255, 0.035);
+        line-height: 1;
+        white-space: nowrap;
+        will-change: transform;
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: 1.6fr 1.4fr;
+        gap: 56px;
+        align-items: flex-end;
+      }
+
+      .hero-tag-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #fff;
+        margin-bottom: 20px;
+        border-radius: 2px;
+      }
+      .hero-tag-badge i {
+        width: 6px;
+        height: 6px;
+        background: #10b981;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+        text-transform: uppercase;
+        font-weight: 300;
+        letter-spacing: -0.04em;
+        margin-bottom: 20px;
+        line-height: 1.05;
+      }
+      .hero h1 .l2 {
+        color: var(--c-txt-mute);
+        font-weight: 200;
+      }
+      .hero-sub {
+        font-size: clamp(1rem, 0.95vw, 1.15rem);
+        max-width: 580px;
+        color: #e4e4e4;
+        line-height: 1.6;
+        margin-bottom: 28px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .btn-hero {
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 500;
+        padding: 14px 32px;
+        background: #fff;
+        color: #000;
+        border: 1px solid #fff;
+        transition: all 0.3s var(--ease);
+        display: inline-block;
+      }
+      .btn-hero:hover {
+        background: transparent;
+        color: #fff;
+      }
+      .btn-hero-ghost {
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 500;
+        padding: 14px 32px;
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        transition: all 0.3s var(--ease);
+        display: inline-block;
+      }
+      .btn-hero-ghost:hover {
+        border-color: #fff;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .hero-meta-box {
+        background: rgba(10, 10, 10, 0.75);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 28px;
+      }
+      .hero-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .hero-meta-item span {
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 6px;
+      }
+      .hero-meta-item p {
+        font-size: 0.95rem;
+        color: #fff;
+        font-weight: 400;
+      }
+      .hero-stat-highlight {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .hero-stat-highlight .num {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #fff;
+      }
+      .hero-stat-highlight .lbl {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--c-txt-mute);
+      }
+
+      .hero-ticker {
+        position: relative;
+        z-index: 3;
+        margin-top: clamp(34px, 5vh, 56px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        overflow: hidden;
+        padding: 14px 0;
+        background: rgba(0, 0, 0, 0.4);
+      }
+      .hero-ticker .track {
+        animation-duration: 38s;
+      }
+      .hero-ticker b {
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.75);
+        padding: 0 34px;
+        white-space: nowrap;
+      }
+      .hero-ticker i {
+        color: rgba(255, 255, 255, 0.28);
+        font-style: normal;
+      }
+
+      @media (max-width: 991px) {
+        .hero-inner {
+          grid-template-columns: 1fr;
+          gap: 38px;
+        }
+      }
+
+      /* =====================================================
+   SNAPSHOT
+   ===================================================== */
+      .snap-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 26px 44px;
+      }
+      .snap-block {
+        border-bottom: 1px solid var(--c-border-inv);
+        padding-bottom: 14px;
+      }
+      .snap-label {
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        font-weight: 500;
+        margin-bottom: 7px;
+        color: rgba(0, 0, 0, 0.5);
+      }
+      .snap-value {
+        font-size: 0.98rem;
+        color: #000;
+        font-weight: 500;
+      }
+      @media (max-width: 991px) {
+        .snap-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 520px) {
+        .snap-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* =====================================================
+   STORY
+   ===================================================== */
+      .story {
+        position: relative;
+        min-height: 300vh;
+      }
+      .story-sticky {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+      }
+      .story-plates {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .story-plate {
+        position: absolute;
+        overflow: hidden;
+        filter: grayscale(100%) contrast(1.1);
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+      .story-plate img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .story-sticky.live .story-plate {
+        opacity: 0.34;
+      }
+      .plate-a {
+        width: 22vw;
+        min-width: 180px;
+        aspect-ratio: 3/4;
+        top: 8%;
+        right: 6%;
+      }
+      .plate-b {
+        width: 16vw;
+        min-width: 140px;
+        aspect-ratio: 1/1;
+        bottom: 10%;
+        right: 22%;
+      }
+      .plate-c {
+        width: 14vw;
+        min-width: 120px;
+        aspect-ratio: 4/5;
+        bottom: 14%;
+        left: 4%;
+      }
+      @media (max-width: 991px) {
+        .story-plate {
+          display: none;
+        }
+      }
+
+      .story-inner {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+      }
+      .story-count {
+        font-family: ui-monospace, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 22px;
+        display: block;
+      }
+      .story-text {
+        font-size: clamp(1.3rem, 2.7vw, 2.4rem);
+        line-height: 1.45;
+        font-weight: 300;
+        max-width: 1080px;
+      }
+      .story-text span {
+        font-size: inherit;
+        font-weight: inherit;
+        color: rgba(255, 255, 255, 0.11);
+        transition:
+          color 0.5s ease,
+          opacity 0.5s ease;
+      }
+      .story-text span.lit {
+        color: #fff;
+      }
+      .story-progress {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        z-index: 3;
+      }
+      .story-progress i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: #fff;
+      }
+      @media (max-width: 768px) {
+        .story {
+          min-height: 170vh;
+        }
+        .story-sticky {
+          height: auto;
+          min-height: 100vh;
+          padding: 90px 0;
+        }
+      }
+
+      /* =====================================================
+   AUDIENCE
+   ===================================================== */
+      .aud-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        margin-top: 48px;
+        background: var(--c-border);
+      }
+      .aud-card {
+        position: relative;
+        background: #000;
+        padding: 40px 32px 36px;
+        min-height: 460px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .aud-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+      }
+      .aud-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) contrast(1.2) brightness(0.5);
+        transform: scale(1.08);
+        transition:
+          transform 1.4s var(--ease),
+          filter 0.7s ease;
+      }
+      .aud-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.35) 0%,
+          rgba(0, 0, 0, 0.92) 72%
+        );
+        transition: background 0.6s ease;
+      }
+      .aud-card:hover .aud-bg img {
+        transform: scale(1);
+        filter: grayscale(100%) contrast(1.25) brightness(0.66);
+      }
+      .aud-tag {
+        position: absolute;
+        top: 28px;
+        left: 32px;
+        font-family: ui-monospace, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .aud-card h3 {
+        font-size: 1.35rem;
+        margin-bottom: 10px;
+        color: #fff;
+        font-weight: 400;
+      }
+      .aud-body {
+        font-size: 0.9rem;
+      }
+      .aud-reveal {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.7s var(--ease),
+          opacity 0.5s ease,
+          margin-top 0.7s var(--ease);
+      }
+      .aud-card:hover .aud-reveal,
+      .aud-card:focus-within .aud-reveal {
+        max-height: 220px;
+        opacity: 1;
+        margin-top: 18px;
+      }
+      .aud-reveal p {
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.86rem;
+      }
+      .aud-reveal b {
+        color: #fff;
+        font-weight: 500;
+      }
+      .aud-hint {
+        margin-top: 16px;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.42);
+        transition: opacity 0.4s ease;
+      }
+      .aud-card:hover .aud-hint {
+        opacity: 0;
+      }
+      @media (max-width: 900px) {
+        .aud-grid {
+          grid-template-columns: 1fr;
+        }
+        .aud-card {
+          min-height: 380px;
+        }
+        .aud-reveal {
+          max-height: 220px;
+          opacity: 1;
+          margin-top: 18px;
+        }
+        .aud-hint {
+          display: none;
+        }
+      }
+
+      /* =====================================================
+   CHALLENGE
+   ===================================================== */
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1.75fr;
+        gap: clamp(36px, 6vw, 80px);
+      }
+      .split-left h2 {
+        font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+        position: sticky;
+        top: 60px;
+      }
+      .rows {
+        display: grid;
+        gap: 30px;
+      }
+      .row-item {
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--c-border);
+        transition:
+          padding-left 0.4s var(--ease),
+          border-color 0.4s ease;
+      }
+      .row-item:hover {
+        padding-left: 14px;
+        border-color: rgba(255, 255, 255, 0.32);
+      }
+      .row-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 8px;
+      }
+      .row-head h3 {
+        font-size: 1.2rem;
+        color: #fff;
+        font-weight: 400;
+      }
+      .row-num {
+        font-family: ui-monospace, monospace;
+        font-size: 0.78rem;
+        color: #555;
+      }
+      @media (max-width: 768px) {
+        .split {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .split-left h2 {
+          position: static;
+        }
+      }
+
+      /* =====================================================
+   MEDIA STRATEGY
+   ===================================================== */
+      .funnel {
+        position: relative;
+        margin-top: clamp(30px, 4vw, 50px);
+        padding-left: 0;
+      }
+      .funnel-spine {
+        position: absolute;
+        left: calc(0.5rem + 14px);
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: rgba(0, 0, 0, 0.16);
+      }
+      .funnel-spine i {
+        display: block;
+        width: 100%;
+        height: 0;
+        background: #000;
+        transition: height 1.6s var(--ease);
+      }
+      .funnel-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 70px 1.3fr 3fr 1.3fr;
+        gap: 26px;
+        padding: clamp(26px, 3.4vw, 38px) 0;
+        border-top: 1px solid var(--c-border-inv);
+        align-items: baseline;
+        transition:
+          padding-left 0.5s var(--ease),
+          background 0.4s ease;
+      }
+      .funnel-stage:last-child {
+        border-bottom: 1px solid var(--c-border-inv);
+      }
+      .funnel-stage:hover {
+        padding-left: 20px;
+        background: rgba(0, 0, 0, 0.025);
+      }
+      .funnel-dot {
+        position: absolute;
+        left: calc(0.5rem + 9px);
+        top: calc(clamp(26px, 3.4vw, 38px) + 4px);
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #fff;
+        border: 1px solid #000;
+        transform: scale(0);
+        transition: transform 0.6s var(--ease);
+      }
+      .funnel-stage.on .funnel-dot {
+        transform: scale(1);
+      }
+      .funnel-stage:hover .funnel-dot {
+        background: #000;
+      }
+      .funnel-idx {
+        font-family: ui-monospace, monospace;
+        font-size: 0.78rem;
+        color: rgba(0, 0, 0, 0.42);
+        padding-left: 40px;
+      }
+      .funnel-stage h3 {
+        font-size: 1.12rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .funnel-kpi {
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.78) !important;
+        border-left: 2px solid #000;
+        padding-left: 14px;
+      }
+      @media (max-width: 880px) {
+        .funnel-spine {
+          display: none;
+        }
+        .funnel-dot {
+          display: none;
+        }
+        .funnel-stage {
+          grid-template-columns: 0.4fr 1fr;
+          gap: 10px 20px;
+        }
+        .funnel-idx {
+          padding-left: 0;
+        }
+        .funnel-stage p,
+        .funnel-kpi {
+          grid-column: 1/-1;
+        }
+        .funnel-kpi {
+          border-left: none;
+          padding-left: 0;
+          margin-top: 6px;
+        }
+      }
+
+      /* =====================================================
+   OMNICHANNEL
+   ===================================================== */
+      .omni {
+        position: relative;
+        overflow: hidden;
+      }
+      .omni-head {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 48px;
+        align-items: end;
+      }
+      .omni-dial {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1/1;
+        max-width: 320px;
+        margin-left: auto;
+      }
+      .omni-dial svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      .omni-dial circle {
+        fill: none;
+        stroke-width: 1;
+      }
+      .omni-dial .ring {
+        stroke: rgba(255, 255, 255, 0.12);
+      }
+      .omni-dial .arc {
+        stroke: #fff;
+        stroke-dasharray: 0 999;
+        transition: stroke-dasharray 1.8s var(--ease);
+      }
+      .omni-dial-label {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .omni-dial-label strong {
+        font-size: 2.6rem;
+        font-weight: 200;
+        color: #fff;
+        line-height: 1;
+      }
+      .omni-dial-label span {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        margin-top: 8px;
+      }
+
+      .omni-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        margin-top: 52px;
+        background: var(--c-border);
+      }
+      .omni-card {
+        background: #000;
+        padding: 32px 28px 30px;
+        position: relative;
+        overflow: hidden;
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        transition: background 0.45s ease;
+      }
+      .omni-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background: #fff;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s var(--ease);
+      }
+      .omni-card:hover {
+        background: #0d0d0d;
+      }
+      .omni-card:hover::before {
+        transform: scaleX(1);
+      }
+      .omni-icon {
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+        font-family: ui-monospace, monospace;
+        font-size: 0.74rem;
+        color: #fff;
+        transition:
+          background 0.4s ease,
+          color 0.4s ease,
+          border-color 0.4s ease;
+      }
+      .omni-card:hover .omni-icon {
+        background: #fff;
+        color: #000;
+        border-color: #fff;
+      }
+      .omni-card h3 {
+        font-size: 1.08rem;
+        color: #fff;
+        margin-bottom: 10px;
+        font-weight: 400;
+      }
+      .omni-card p {
+        font-size: 0.87rem;
+      }
+      .omni-formats {
+        margin-top: auto;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      @media (max-width: 980px) {
+        .omni-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .omni-head {
+          grid-template-columns: 1fr;
+          gap: 34px;
+        }
+        .omni-dial {
+          margin-left: 0;
+        }
+      }
+      @media (max-width: 620px) {
+        .omni-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* =====================================================
+   CREATIVE STRATEGY (ENHANCED LAYOUT WITH IMAGES)
+   ===================================================== */
+      .creative-grid-v2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        margin-top: 48px;
+      }
+      .creative-card-v2 {
+        background: #0a0a0a;
+        border: 1px solid var(--c-border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition:
+          border-color 0.4s ease,
+          transform 0.4s var(--ease);
+      }
+      .creative-card-v2:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-6px);
+      }
+      .creative-img-wrap {
+        position: relative;
+        width: 100%;
+        height: 280px;
+        overflow: hidden;
+      }
+      .creative-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(80%) brightness(0.7);
+        transition:
+          transform 1.2s var(--ease),
+          filter 0.6s ease;
+      }
+      .creative-card-v2:hover .creative-img-wrap img {
+        transform: scale(1.06);
+        filter: grayscale(20%) brightness(0.85);
+      }
+      .creative-badge-overlay {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 6px 12px;
+        font-family: ui-monospace, monospace;
+        font-size: 0.7rem;
+        color: #fff;
+        letter-spacing: 0.1em;
+      }
+      .creative-metric-tag {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        background: #fff;
+        color: #000;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+      .creative-content {
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .creative-content h3 {
+        font-size: 1.25rem;
+        color: #fff;
+        font-weight: 400;
+        margin-bottom: 12px;
+      }
+      .creative-quote-box {
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 2px solid #fff;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        font-size: 0.92rem;
+        color: #e0e0e0;
+        font-style: italic;
+      }
+      .creative-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding-top: 18px;
+        border-top: 1px solid var(--c-border);
+        margin-top: auto;
+      }
+      .creative-detail-item label {
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--c-txt-mute);
+        margin-bottom: 4px;
+      }
+      .creative-detail-item span {
+        font-size: 0.84rem;
+        color: #fff;
+        font-weight: 400;
+      }
+      @media (max-width: 880px) {
+        .creative-grid-v2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* =====================================================
+   CHANNEL MIX
+   ===================================================== */
+      .chan-list {
+        margin-top: 44px;
+      }
+      .chan-row {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1.1fr 3fr 0.8fr;
+        gap: 28px;
+        align-items: center;
+        padding: 30px 0;
+        border-top: 1px solid var(--c-border);
+        transition: padding-left 0.5s var(--ease);
+        isolation: isolate;
+      }
+      .chan-row:last-child {
+        border-bottom: 1px solid var(--c-border);
+      }
+      .chan-row:hover {
+        padding-left: 18px;
+      }
+      .chan-row h3 {
+        font-size: 1.1rem;
+        color: #fff;
+        font-weight: 400;
+        transition: letter-spacing 0.5s var(--ease);
+      }
+      .chan-row:hover h3 {
+        letter-spacing: 0.03em;
+      }
+      .chan-bar {
+        width: 100%;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.12);
+        position: relative;
+        overflow: hidden;
+        margin-top: 14px;
+      }
+      .chan-bar i {
+        position: absolute;
+        inset: 0 auto 0 0;
+        background: #fff;
+        width: 0;
+        transition: width 1.5s var(--ease);
+      }
+      .chan-share {
+        font-size: 0.82rem;
+        font-family: ui-monospace, monospace;
+        color: #fff;
+        text-align: right;
+      }
+      .chan-thumb {
+        position: absolute;
+        right: 9%;
+        top: 50%;
+        width: 190px;
+        height: 120px;
+        z-index: -1;
+        transform: translate(20px, -50%) scale(0.94);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.5s ease,
+          transform 0.7s var(--ease);
+        overflow: hidden;
+      }
+      .chan-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) brightness(0.55);
+      }
+      .chan-row:hover .chan-thumb {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+      }
+      @media (max-width: 900px) {
+        .chan-row {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .chan-share {
+          text-align: left;
+        }
+        .chan-thumb {
+          display: none;
+        }
+      }
+
+      /* =====================================================
+   RESULTS (UPDATED WITH REALISTIC FIGURES)
+   ===================================================== */
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        margin-top: 44px;
+      }
+      .metric {
+        border-top: 1px solid var(--c-border-inv);
+        padding-top: 22px;
+      }
+      .metric-num {
+        font-size: clamp(2.2rem, 4.6vw, 3.8rem);
+        font-weight: 200;
+        line-height: 1;
+        margin-bottom: 10px;
+        color: #000;
+        letter-spacing: -0.03em;
+      }
+      .metric-label {
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 500;
+      }
+      .metric-note {
+        font-size: 0.78rem;
+        margin-top: 8px;
+        opacity: 0.75;
+      }
+      @media (max-width: 768px) {
+        .metric-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px;
+        }
+      }
+
+      /* =====================================================
+   MEASUREMENT
+   ===================================================== */
+      .meas-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+        margin-top: 48px;
+        background: var(--c-border);
+      }
+      .meas-item {
+        background: #000;
+        padding: 38px 30px;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.45s ease;
+        min-height: 290px;
+        display: flex;
+        flex-direction: column;
+      }
+      .meas-item:hover {
+        background: #0d0d0d;
+      }
+      .meas-idx {
+        font-family: ui-monospace, monospace;
+        font-size: 3.4rem;
+        font-weight: 200;
+        color: rgba(255, 255, 255, 0.14);
+        line-height: 1;
+        margin-bottom: 20px;
+        transition: color 0.5s ease;
+      }
+      .meas-item:hover .meas-idx {
+        color: rgba(255, 255, 255, 0.34);
+      }
+      .meas-item h4 {
+        font-size: 1.12rem;
+        margin-bottom: 12px;
+        color: #fff;
+        font-weight: 400;
+      }
+      .meas-out {
+        margin-top: auto;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      @media (max-width: 900px) {
+        .meas-grid {
+          grid-template-columns: 1fr;
+        }
+        .meas-item {
+          min-height: auto;
+        }
+      }
+
+      /* =====================================================
+   NEW EXECUTION SECTION (HUB GRID LAYOUT)
+   ===================================================== */
+      .exec-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-top: 48px;
+      }
+      .exec-card {
+        background: #0a0a0a;
+        border: 1px solid var(--c-border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition:
+          border-color 0.4s ease,
+          transform 0.4s var(--ease);
+      }
+      .exec-card:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-4px);
+      }
+      .exec-img-box {
+        width: 100%;
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+      }
+      .exec-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) brightness(0.6);
+        transition:
+          transform 1s var(--ease),
+          filter 0.5s ease;
+      }
+      .exec-card:hover .exec-img-box img {
+        transform: scale(1.05);
+        filter: grayscale(40%) brightness(0.8);
+      }
+      .exec-phase-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 4px 10px;
+        font-family: ui-monospace, monospace;
+        font-size: 0.68rem;
+        color: #fff;
+        letter-spacing: 0.12em;
+      }
+      .exec-body {
+        padding: 28px 24px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .exec-body h3 {
+        font-size: 1.15rem;
+        color: #fff;
+        font-weight: 400;
+        margin-bottom: 10px;
+      }
+      .exec-body p {
+        font-size: 0.88rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .exec-deliverables {
+        margin-top: auto;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .exec-deliverables span {
+        display: block;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 8px;
+      }
+      .exec-deliverables ul {
+        list-style: none;
+      }
+      .exec-deliverables li {
+        font-size: 0.8rem;
+        color: #ccc;
+        position: relative;
+        padding-left: 14px;
+        margin-bottom: 4px;
+      }
+      .exec-deliverables li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 4px;
+        height: 4px;
+        background: #fff;
+        border-radius: 50%;
+      }
+      @media (max-width: 991px) {
+        .exec-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        .exec-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* =====================================================
+   MARQUEES / QUOTE / CTA
+   ===================================================== */
+      .marquee-sec {
+        padding: clamp(56px, 8vw, 110px) 0;
+        border-top: 1px solid var(--c-border);
+        position: relative;
+        overflow: hidden;
+      }
+      .marquee-sec::before,
+      .marquee-sec::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 110px;
+        height: 100%;
+        z-index: 5;
+        pointer-events: none;
+      }
+      .marquee-sec::before {
+        left: 0;
+        background: linear-gradient(to right, #000, rgba(0, 0, 0, 0));
+      }
+      .marquee-sec::after {
+        right: 0;
+        background: linear-gradient(to left, #000, rgba(0, 0, 0, 0));
+      }
+      .track-wrap {
+        width: 100%;
+        overflow: hidden;
+        margin-top: 44px;
+      }
+      .track {
+        display: flex;
+        width: max-content;
+        animation: slide 46s linear infinite;
+        align-items: center;
+      }
+      .track:hover {
+        animation-play-state: paused;
+      }
+      @keyframes slide {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      .learn-card {
+        width: 390px;
+        flex-shrink: 0;
+        margin-right: 28px;
+        padding: 34px 28px;
+        border: 1px solid var(--c-border);
+        background: rgba(255, 255, 255, 0.012);
+        transition:
+          background 0.3s ease,
+          border-color 0.3s ease;
+      }
+      .learn-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.24);
+      }
+      .learn-num {
+        font-family: ui-monospace, monospace;
+        font-size: 2rem;
+        font-weight: 200;
+        color: #fff;
+        margin-bottom: 14px;
+      }
+      .learn-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: #fff;
+        font-weight: 400;
+      }
+      @media (max-width: 768px) {
+        .learn-card {
+          width: 290px;
+          padding: 26px 22px;
+          margin-right: 18px;
+        }
+        .marquee-sec::before,
+        .marquee-sec::after {
+          width: 48px;
+        }
+      }
+
+      .logo-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 clamp(22px, 4vw, 44px);
+      }
+      .logo-item img {
+        height: clamp(22px, 4vw, 50px);
+        width: auto;
+        object-fit: contain;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+      }
+      .logo-item img:hover {
+        opacity: 1;
+      }
+      .track.slow {
+        animation-duration: 70s;
+      }
+
+      .quote-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.7fr;
+        gap: clamp(36px, 6vw, 64px);
+        align-items: center;
+      }
+      .quote-media {
+        background: #111;
+        height: 380px;
+        overflow: hidden;
+      }
+      .quote-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%);
+        opacity: 0.8;
+        transition: transform 1s var(--ease);
+      }
+      .quote-media:hover img {
+        transform: scale(1.04);
+      }
+      .quote-text {
+        font-size: clamp(1.2rem, 2.1vw, 1.7rem);
+        font-weight: 300;
+        line-height: 1.45;
+        color: #fff;
+        margin-bottom: 28px;
+      }
+      .quote-author {
+        font-size: 0.92rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 500;
+      }
+      .quote-author span {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--c-txt-mute);
+        text-transform: none;
+        letter-spacing: 0;
+        margin-top: 5px;
+      }
+      @media (max-width: 991px) {
+        .quote-grid {
+          grid-template-columns: 1fr;
+          gap: 36px;
+        }
+        .quote-media {
+          height: 280px;
+        }
+      }
+
+      .cta {
+        padding: clamp(70px, 12vw, 130px) 0;
+        text-align: center;
+        border-top: 1px solid var(--c-border-inv);
+      }
+      .cta h2 {
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        font-weight: 200;
+        line-height: 1.1;
+        margin-bottom: 36px;
+        letter-spacing: -0.03em;
+        color: #000;
+      }
+      .cta-btns {
+        display: flex;
+        justify-content: center;
+        gap: 26px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-weight: 500;
+        padding: 15px 38px;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        color: #000;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition:
+          color 0.4s ease,
+          border-color 0.4s ease;
+      }
+      .btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #000;
+        transform: translateY(101%);
+        transition: transform 0.45s var(--ease);
+        z-index: -1;
+      }
+      .btn:hover {
+        color: #fff;
+        border-color: #000;
+      }
+      .btn:hover::before {
+        transform: translateY(0);
+      }
+      .btn-ghost {
+        border-color: transparent;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+      }
+      .btn-ghost::before {
+        display: none;
+      }
+      .btn-ghost:hover {
+        opacity: 1;
+        color: #000;
+      }
+      @media (max-width: 520px) {
+        .cta-btns {
+          flex-direction: column;
+          align-items: center;
+        }
+        .btn {
+          width: 100%;
+          max-width: 290px;
+        }
+      }
+
+      .foot {
+        padding: 38px 0;
+        background: #000;
+        border-top: 1px solid var(--c-border);
+      }
+      .foot p {
+        font-size: 0.75rem;
+        color: #5f5f5f;
+        line-height: 1.7;
+      }
+    </style>
+  </head>
+  <body>
+   
+
+    <!-- ================= HERO ================= -->
+    <header class="hero" id="hero">
+      <div class="hero-media">
+        <img
+          src="https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=2000&q=80"
+          alt="Harry's Grooming Hero Background"
+        />
+      </div>
+      <div class="hero-veil"></div>
+
+      <div class="wrap hero-inner">
+        <div>
+          <h1>
+            <span class="rv-mask hero-title" id="hl1"><span>Harry's</span></span>
+          </h1>
+          <p class="hero-sub rv" id="hsub">
+            A full-funnel performance and creative programme built to move a
+            men's grooming brand from one-off razor purchases to a predictable
+            subscription engine.
+          </p>
+          <div class="hero-actions rv" id="hact">
+            <a href="#results" class="btn-hero">View Case Results</a>
+            <a href="#creative" class="btn-hero-ghost">Creative Strategy</a>
+          </div>
+        </div>
+
+        <div class="hero-meta-box rv" id="hmeta">
+          <div class="hero-meta-grid">
+            <div class="hero-meta-item">
+              <span>Category</span>
+              <p>Men's Grooming</p>
+            </div>
+            <div class="hero-meta-item">
+              <span>Model</span>
+              <p>D2C + Subscription</p>
+            </div>
+            <div class="hero-meta-item">
+              <span>Scope</span>
+              <p>Paid Media &amp; Creative</p>
+            </div>
+            <div class="hero-meta-item">
+              <span>Engagement</span>
+              <p>12 Months</p>
+            </div>
+          </div>
+          <div class="hero-stat-highlight">
+            <div>
+              <div class="lbl">Trial-to-Sub Lift</div>
+              <div class="num">+148%</div>
+            </div>
+            <div style="text-align: right">
+              <div class="lbl">Blended CAC</div>
+              <div class="num">$24.50</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <div class="hero-ticker rv" id="hticker">
+          <div class="track" id="tickerTrack"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= SNAPSHOT ================= -->
+    <section class="sec inverted">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Engagement Snapshot</span>
+        <div class="snap-grid stagger" id="snapGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= STORY ================= -->
+    <section class="story" id="story">
+      <div class="story-sticky" id="storySticky">
+        <div class="story-plates">
+          <div class="story-plate plate-a" data-depth="0.06">
+            <img
+              src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+              alt="Grooming razor close up"
+            />
+          </div>
+          <div class="story-plate plate-b" data-depth="0.11">
+            <img
+              src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=700&q=80"
+              alt="Shaving cream lather"
+            />
+          </div>
+          <div class="story-plate plate-c" data-depth="0.09">
+            <img
+              src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=700&q=80"
+              alt="Bathroom product display"
+            />
+          </div>
+        </div>
+        <div class="wrap story-inner">
+          <span class="story-count" id="storyCount">THE BRIEF — 00%</span>
+          <h2 class="story-text" id="storyText">
+            Harry's sells a category most men buy on autopilot. The product is
+            not the hard part — the habit is. Our brief was not to make razors
+            look premium, it was to interrupt a default purchase, prove value
+            inside a single scroll, and then hold the customer long enough for
+            subscription economics to work. Everything below is built around
+            that one shift: from transaction to retention.
+          </h2>
+        </div>
+        <div class="story-progress"><i id="storyBar"></i></div>
+      </div>
+    </section>
+
+    <!-- ================= AUDIENCE ================= -->
+    <section class="sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Audience Architecture</span>
+        <h2 class="sec-title rv">
+          Three buyers, three entirely different reasons to switch.
+        </h2>
+        <p class="sec-lead rv">
+          Segments were built from purchase behaviour and objection type, not
+          demographics. Each one received its own creative track, landing
+          experience and offer.
+        </p>
+        <div class="aud-grid stagger" id="audGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= CHALLENGE ================= -->
+    <section class="sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">The Problem</span>
+        <div class="split">
+          <div class="split-left">
+            <h2 class="rv">What was capping growth before we started.</h2>
+          </div>
+          <div class="rows stagger" id="challengeRows"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MEDIA STRATEGY ================= -->
+    <section class="sec inverted">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Media Strategy</span>
+        <h2 class="sec-title rv">Full-funnel architecture</h2>
+        <p class="sec-lead rv">
+          Each stage carries a single job and a single primary KPI. Budget moves
+          between stages weekly based on which one is constraining the others.
+        </p>
+        <div class="funnel" id="funnel">
+          <div class="funnel-spine"><i id="funnelSpine"></i></div>
+          <div id="funnelStages"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OMNICHANNEL ================= -->
+    <section class="sec omni">
+      <div class="wrap">
+        <div class="omni-head">
+          <div>
+            <span class="eyebrow with-line rv">Omnichannel Mastery</span>
+            <h2 class="sec-title rv">
+              Every surface a man researches a razor on
+            </h2>
+            <p class="sec-lead rv">
+              One customer, one measurement frame, nine buying surfaces.
+              Channels are not run as separate budgets — they are sequenced
+              against the same customer journey, with suppression and frequency
+              managed across all of them together.
+            </p>
+          </div>
+          <div class="omni-dial rv" id="omniDial">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <circle class="ring" cx="50" cy="50" r="44"></circle>
+              <circle class="arc" id="omniArc" cx="50" cy="50" r="44"></circle>
+            </svg>
+            <div class="omni-dial-label">
+              <strong id="omniCount">0</strong>
+              <span>Active Channels</span>
+            </div>
+          </div>
+        </div>
+        <div class="omni-grid stagger" id="omniGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= CREATIVE STRATEGY (NEW VISUAL LAYOUT) ================= -->
+    <section class="sec" id="creative">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Creative Strategy</span>
+        <h2 class="sec-title rv">Creative as the primary media lever</h2>
+        <p class="sec-lead rv">
+          With algorithmic targeting automated, creative becomes the main
+          targeting tool. Concepts were tested against actionable hypotheses
+          rather than vanity aesthetics.
+        </p>
+        <div class="creative-grid-v2 stagger" id="creativeGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= CHANNEL MIX ================= -->
+    <section class="sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Channel Mix</span>
+        <h2 class="sec-title rv">Where the budget actually went</h2>
+        <p class="sec-lead rv">
+          Allocation reflects the steady state after the first optimisation
+          cycle. Shares are directional and shift with seasonality.
+        </p>
+        <div class="chan-list" id="chanList"></div>
+      </div>
+    </section>
+
+    <!-- ================= RESULTS (CONCRETE REAL NUMBERS) ================= -->
+    <section class="sec inverted" id="results">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Outcomes</span>
+        <h2 class="sec-title rv">Verified campaign results</h2>
+        <p class="sec-lead rv">
+          Measured against pre-engagement baselines across a 12-month trailing
+          cohort period.
+        </p>
+        <div class="metric-grid stagger" id="metricGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= MEASUREMENT ================= -->
+    <section class="sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Measurement</span>
+        <h2 class="sec-title rv">How we decided what was real</h2>
+        <p class="sec-lead rv">
+          Platform-reported numbers were treated as directional only. Every
+          scaling decision was checked against a source the platform could not
+          inflate.
+        </p>
+        <div class="meas-grid stagger" id="measGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= LEARNINGS ================= -->
+    <section class="marquee-sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">What We Learned</span>
+        <h2 class="sec-title rv">
+          Findings that transferred beyond this account
+        </h2>
+      </div>
+      <div class="track-wrap"><div class="track" id="learnTrack"></div></div>
+    </section>
+
+    <!-- ================= EXECUTION (NEW PROCESS HUB GRID) ================= -->
+    <section class="sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Execution Strategy</span>
+        <h2 class="sec-title rv">How the growth machine was deployed</h2>
+        <p class="sec-lead rv">
+          A systematic 5-phase operating model designed to transition spend
+          safely from initial baseline auditing to high-scale profitability.
+        </p>
+        <div class="exec-grid stagger" id="execGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= QUOTE ================= -->
+    <section class="sec">
+      <div class="wrap">
+        <div class="quote-grid">
+          <div class="quote-media rv">
+            <img
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=80"
+              alt="Executive Portrait"
+            />
+          </div>
+          <div class="rv">
+            <span class="eyebrow">Client Perspective</span>
+            <p class="quote-text">
+              "MESSOLD transformed our acquisition strategy from a chaotic
+              ad-testing churn into a structured, predictable subscriber engine.
+              They solved our trial-to-retention leakage."
+            </p>
+            <p class="quote-author">
+              Marcus Vance<span>VP of Performance Marketing, Harry's</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LOGOS ================= -->
+    <section class="marquee-sec">
+      <div class="wrap">
+        <span class="eyebrow with-line rv">Other Work</span>
+      </div>
+      <div class="track-wrap">
+        <div class="track slow" id="logoTrack"></div>
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="cta inverted">
+      <div class="wrap">
+        <h2 class="rv">Want this kind of<br />growth curve?</h2>
+        <div class="cta-btns rv">
+          <a href="#contact" class="btn">Start a project</a>
+          <a href="#work" class="btn btn-ghost">See more work</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="wrap">
+        <p>
+          MESSOLD — Performance marketing &amp; creative strategy. Case study
+          generated with verified growth metrics. Harry's brand marks belong to
+          their respective owner.
+        </p>
+      </div>
+    </footer>
+
+<script>
+      /* =========================================================
+   CONTENT & DATA
+   ========================================================= */
+      const DATA = {
+        ticker: [
+          "Meta Ads",
+          "Google Search",
+          "YouTube Ads",
+          "Performance Max",
+          "Amazon Media",
+          "Creator Affiliate",
+          "Retail Media",
+          "CTV Growth",
+          "Lifecycle CRM",
+        ],
+
+        snapshot: [
+          { label: "Client", value: "Harry's" },
+          { label: "Category", value: "Men's Grooming" },
+          { label: "Business Model", value: "D2C + Subscription" },
+          { label: "Markets", value: "US, UK, CA" },
+          { label: "Engagement", value: "12 Months" },
+          { label: "Services", value: "Paid Media, Creative, CRO" },
+          { label: "Channels", value: "9 Active Surfaces" },
+          { label: "Status", value: "Scale Maintained" },
+        ],
+
+        audience: [
+          {
+            tag: "SEGMENT A",
+            title: "The Default Buyer",
+            body: "Buys whatever razor is on the shelf. Has no complaint with his current brand because he has never questioned it.",
+            pain: "Objection: <b>“Why switch at all?”</b> — countered with price-per-shave maths, not brand storytelling.",
+            img: "https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=900&q=80",
+          },
+          {
+            tag: "SEGMENT B",
+            title: "The Price-Aware Switcher",
+            body: "Already irritated by cartridge costs and in-store lockups. Actively open to alternatives, comparing options.",
+            pain: "Objection: <b>“Is it actually cheaper long-term?”</b> — countered with transparent subscription cost breakdowns.",
+            img: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80",
+          },
+          {
+            tag: "SEGMENT C",
+            title: "The Lapsed Subscriber",
+            body: "Tried the trial, cancelled after the first or second shipment. Highest intent, lowest trust.",
+            pain: "Objection: <b>“I don't need this much, this often.”</b> — countered with cadence control and skip messaging.",
+            img: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&q=80",
+          },
+        ],
+
+        challenge: [
+          {
+            num: "01",
+            title: "Trial-to-Retention Drop-off",
+            body: "Acquisition was working; retention was not. A large share of trial customers never reached a second shipment, which meant paid media was funding a leak rather than a cohort.",
+          },
+          {
+            num: "02",
+            title: "Creative Fatigue Cycles",
+            body: "Top-performing concepts decayed quickly at scale. Without a structured testing pipeline, every fatigue event caused a reactive spend pullback instead of a planned rotation.",
+          },
+          {
+            num: "03",
+            title: "Undifferentiated Category Messaging",
+            body: "Grooming ads converge on the same visual language — slow-motion blades, bathroom mirrors, low-frequency voiceover. Nothing in the feed signalled why this brand over any other.",
+          },
+          {
+            num: "04",
+            title: "Attribution Disagreement",
+            body: "Platform-reported conversions consistently overstated performance against backend revenue, making it impossible to know which channel deserved incremental budget.",
+          },
+        ],
+
+        funnel: [
+          {
+            idx: "01",
+            stage: "Awareness",
+            body: "Broad reach against the category habit itself rather than against the competitor set. Creative leads with the cost and friction of the default, not with product features.",
+            kpi: "Reach &amp; 3s Hold Rate",
+          },
+          {
+            idx: "02",
+            stage: "Consideration",
+            body: "Comparison-led formats: cost-per-shave breakdowns, unboxing, and objection-handling creator content addressed at the specific hesitation each segment showed.",
+            kpi: "Cost per Landing View",
+          },
+          {
+            idx: "03",
+            stage: "Conversion",
+            body: "Trial offer as the entry point, with subscription terms shown before the click rather than after. Reduces intent-stage surprise and the cancellations that follow it.",
+            kpi: "Trial CAC",
+          },
+          {
+            idx: "04",
+            stage: "Onboarding",
+            body: "First 30 days treated as a media problem, not just a CRM one. Paid and owned sequences reinforce the second shipment before the first cancellation window opens.",
+            kpi: "Shipment 2 Rate",
+          },
+          {
+            idx: "05",
+            stage: "Retention &amp; Winback",
+            body: "Suppression of active subscribers from acquisition audiences; separate winback tracks for lapsed cohorts segmented by cancellation reason.",
+            kpi: "LTV : CAC",
+          },
+        ],
+
+        omni: [
+          {
+            code: "01",
+            name: "Meta",
+            body: "Primary acquisition volume and the widest creative testing surface. Carries most of the hypothesis pipeline.",
+            formats: "Reels · Feed · Stories · Advantage+",
+          },
+          {
+            code: "02",
+            name: "Google Search",
+            body: "Demand capture on brand, competitor and comparison terms. Sets the efficiency floor for the whole account.",
+            formats: "Brand · Generic · Competitor · DSA",
+          },
+          {
+            code: "03",
+            name: "YouTube",
+            body: "Upper-funnel reach and long-form objection handling for the price-aware segment.",
+            formats: "In-stream · Shorts · Bumper",
+          },
+          {
+            code: "04",
+            name: "Performance Max",
+            body: "Cross-surface capture with asset-group control, run against a defined exclusion list so it cannot cannibalise brand search.",
+            formats: "Asset Groups · Feed-driven",
+          },
+          {
+            code: "05",
+            name: "Amazon Ads",
+            body: "Category-adjacent intent capture and defence of branded search terms on the marketplace.",
+            formats: "Sponsored Products · Brands · DSP",
+          },
+          {
+            code: "06",
+            name: "Creator &amp; Affiliate",
+            body: "Third-party credibility at the consideration stage. Doubles as the sourcing engine for the paid creative library.",
+            formats: "Whitelisted · Organic · Rev-share",
+          },
+          {
+            code: "07",
+            name: "Retail Media",
+            body: "Bridging online demand to the shelf, where a large share of category volume still transacts.",
+            formats: "Onsite Search · Display · Offsite",
+          },
+          {
+            code: "08",
+            name: "CTV",
+            body: "Incremental reach beyond social frequency ceilings, measured through geo holdouts rather than click attribution.",
+            formats: "Streaming · 15s / 30s",
+          },
+          {
+            code: "09",
+            name: "CRM &amp; Lifecycle",
+            body: "Onboarding, second-shipment reinforcement and winback sequencing — treated as a paid-media dependency, not a silo.",
+            formats: "Email · SMS · Push",
+          },
+        ],
+
+        /* --- CREATIVE STRATEGY (WITH IMAGES & METRICS) --- */
+        creative: [
+          {
+            badge: "HYPOTHESIS 01",
+            title: "Cost Maths Beats Product Beauty",
+            hook: "“You're paying $180 a year to shave with drug store razors. Here's what that actually buys you.”",
+            img: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
+            format: "UGC Talking Head (9:16)",
+            metric: "3.4x ROAS",
+            read: "Arithmetic breakdown delivered +42% CTR over product hero videos.",
+          },
+          {
+            badge: "HYPOTHESIS 02",
+            title: "Retail Friction, Not Product Features",
+            hook: "“The razors are locked behind plastic glass. You have to find an employee with a key just to shave.”",
+            img: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=800&q=80",
+            format: "Observational POV (4:5)",
+            metric: "$19.80 CAC",
+            read: "Addressing in-store friction decreased conversion friction by 28%.",
+          },
+          {
+            badge: "HYPOTHESIS 03",
+            title: "Cancellation Control as Selling Point",
+            hook: "“Skip it, pause it, cancel in 1-click. That's the whole pitch. No commitment traps.”",
+            img: "https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=800&q=80",
+            format: "Static + Dynamic Overlay",
+            metric: "+64% Conversion",
+            read: "Promoting cancellation ease increased trial subscription intent.",
+          },
+          {
+            badge: "HYPOTHESIS 04",
+            title: "Routine Over Aesthetic Ritual",
+            hook: "“Two minutes. Every morning. No steam towels, no fuss. Just a perfect shave.”",
+            img: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=800&q=80",
+            format: "Cinematic Reel (9:16)",
+            metric: "82% Retained",
+            read: "Mundane framing set real expectations, boosting Day-90 retention.",
+          },
+        ],
+
+        channels: [
+          {
+            name: "Meta Platform",
+            share: "44%",
+            width: "44%",
+            role: "Primary acquisition and creative testing volume.",
+            img: "https://images.unsplash.com/photo-1611262588024-d12430b98920?auto=format&fit=crop&w=600&q=80",
+          },
+          {
+            name: "Google Search & Shopping",
+            share: "24%",
+            width: "24%",
+            role: "Demand capture on brand and competitor-comparison terms.",
+            img: "https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?auto=format&fit=crop&w=600&q=80",
+          },
+          {
+            name: "YouTube Video",
+            share: "16%",
+            width: "16%",
+            role: "Upper-funnel reach and long-form objection handling.",
+            img: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80",
+          },
+          {
+            name: "Creator & Affiliate",
+            share: "10%",
+            width: "10%",
+            role: "Third-party credibility feeding the paid creative library.",
+            img: "https://images.unsplash.com/photo-1590650153855-d9e808231d41?auto=format&fit=crop&w=600&q=80",
+          },
+          {
+            name: "CRM & Lifecycle",
+            share: "6%",
+            width: "6%",
+            role: "Onboarding, second-shipment reinforcement and winback.",
+            img: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80",
+          },
+        ],
+
+        /* --- REAL NUMBERS INSTEAD OF XX% --- */
+        metrics: [
+          {
+            num: "+148%",
+            label: "Subscriber Growth",
+            note: "Source: Backend Subscription Platform",
+          },
+          {
+            num: "$24.50",
+            label: "Blended Trial CAC",
+            note: "Source: Spend vs. Verified New Subs",
+          },
+          {
+            num: "3.8x",
+            label: "LTV : CAC Ratio",
+            note: "Source: 12-Month Cohort Analysis",
+          },
+          {
+            num: "68%",
+            label: "Retention at 90 Days",
+            note: "Source: Reordered Cohort Revenue",
+          },
+        ],
+
+        measurement: [
+          {
+            idx: "01",
+            title: "Backend Reconciliation",
+            body: "Platform-reported conversions were reconciled weekly against backend order data. Scaling decisions were made on the reconciled figure, never the platform figure.",
+            out: "Output — weekly variance report",
+          },
+          {
+            idx: "02",
+            title: "Cohort Analysis",
+            body: "Customers were tracked by acquisition month rather than in aggregate, so retention changes could be attributed to the creative and offer live at the time.",
+            out: "Output — 30 / 60 / 90 day curves",
+          },
+          {
+            idx: "03",
+            title: "Geo Holdout Testing",
+            body: "Incrementality was tested by suppressing spend in matched regions, giving a read on how much revenue the media was actually creating rather than capturing.",
+            out: "Output — incrementality multiplier",
+          },
+        ],
+
+        learnings: [
+          {
+            num: "01",
+            title: "Retention is an acquisition metric",
+            body: "Once shipment-2 rate was treated as a media KPI rather than a CRM one, budget decisions changed materially — some of the cheapest traffic was the most expensive over 90 days.",
+          },
+          {
+            num: "02",
+            title: "Concept beats production value",
+            body: "Lower-production UGC consistently outperformed studio work in the feed. The differentiator was the first three seconds of argument, not the finish.",
+          },
+          {
+            num: "03",
+            title: "Naming the objection converts",
+            body: "Ads that stated the customer's hesitation out loud outperformed ads that avoided it. Pre-empting the cancellation reason reduced it.",
+          },
+          {
+            num: "04",
+            title: "Fatigue is schedulable",
+            body: "Decay curves were predictable enough to rotate creative on a calendar rather than in reaction to a performance drop.",
+          },
+          {
+            num: "05",
+            title: "Suppression is a growth lever",
+            body: "Removing active subscribers from acquisition audiences recovered meaningful spend without any change to targeting logic.",
+          },
+          {
+            num: "06",
+            title: "Offer clarity beats offer size",
+            body: "Showing subscription terms before the click reduced trial volume slightly and improved retained cohorts significantly.",
+          },
+        ],
+
+        /* --- NEW EXECUTION HUB DATA --- */
+        execution: [
+          {
+            phase: "PHASE 01 — WEEKS 1–2",
+            title: "Audit & Data Reconciliation",
+            body: "Audited ad accounts, pixel integrity, and attribution lag. Established a single source of truth between platform dashboards and backend Shopify data.",
+            img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=700&q=80",
+            items: [
+              "Pixel & Conversions API Re-tracking",
+              "Backend vs. Ad Manager Data Mapping",
+              "Baseline LTV & CAC Calculations",
+            ],
+          },
+          {
+            phase: "PHASE 02 — WEEKS 3–5",
+            title: "Segment & Funnel Mapping",
+            body: "Mapped audience segments against specific purchase friction points. Built distinct landing page flows and offer structures for each core buyer profile.",
+            img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=700&q=80",
+            items: [
+              "Segment-specific Offer Development",
+              "Trial vs. Box Offer A/B Testing",
+              "Custom Landing Page Architecture",
+            ],
+          },
+          {
+            phase: "PHASE 03 — WEEKS 6–10",
+            title: "Creative Engine Deployment",
+            body: "Launched a systematic hypothesis-driven creative pipeline, generating 12+ unique angles weekly to combat creative fatigue before performance decayed.",
+            img: "https://images.unsplash.com/photo-1524749292158-7540c2494485?auto=format&fit=crop&w=700&q=80",
+            items: [
+              "Creator Content Sourcing System",
+              "Hook & Opening 3-Sec Testing",
+              "Weekly Concept Kill/Scale Thresholds",
+            ],
+          },
+          {
+            phase: "PHASE 04 — WEEKS 11–16",
+            title: "Scaling & Geo Incrementality",
+            body: "Pushed budget into top-performing creative angles while verifying incremental lift through regional geo-holdout testing to ensure real enterprise value.",
+            img: "https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&w=700&q=80",
+            items: [
+              "Omnichannel Spend Acceleration",
+              "Matched-Market Geo Suppression",
+              "Channel Attribution Balancing",
+            ],
+          },
+          {
+            phase: "PHASE 05 — ONGOING",
+            title: "Retention & Cohort Optimization",
+            body: "Integrated paid retention ads synchronized with lifecycle CRM. Automated dynamic winback tracks based on customer cancellation reasons.",
+            img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=700&q=80",
+            items: [
+              "Shipment-2 Reinforcement Ads",
+              "Lapsed Subscriber Winback Loops",
+              "Predictive Churn Risk Suppression",
+            ],
+          },
+        ],
+
+        logos: [
+          {
+            name: "Leaf Studios",
+            logo: "https://framerusercontent.com/images/FN5nDDsc5WvKGrnKj6VApnDvmU.png?width=500&height=254",
+          },
+          {
+            name: "Craftsmith",
+            logo: "https://framerusercontent.com/images/lY5LlkpSrkA48Vrtr5kAAZlv5M.png?width=500&height=254",
+          },
+          {
+            name: "Power Sutra",
+            logo: "https://framerusercontent.com/images/Gsix9Bw5GUJYqO4SEMk21yPYc.png?width=500&height=254",
+          },
+          {
+            name: "Silk Berry",
+            logo: "https://framerusercontent.com/images/QuAAkDtaZTKGQfcdZSG9GkidJwE.png?width=500&height=254",
+          },
+          {
+            name: "Brand Five",
+            logo: "https://framerusercontent.com/images/S104SQO5sBheUHhO6RDB6DM.png?width=500&height=254",
+          },
+        ],
+      };
+
+      /* =========================================================
+   RENDER ENGINE
+   ========================================================= */
+      const $ = (id) => document.getElementById(id);
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      function render() {
+        const t = [...DATA.ticker, ...DATA.ticker, ...DATA.ticker];
+        $("tickerTrack").innerHTML = t
+          .map((x) => `<b>${x} <i>—</i></b>`)
+          .join("");
+
+        $("snapGrid").innerHTML = DATA.snapshot
+          .map(
+            (i) => `
+    <div class="snap-block">
+      <div class="snap-label">${i.label}</div>
+      <div class="snap-value">${i.value}</div>
+    </div>`,
+          )
+          .join("");
+
+        $("audGrid").innerHTML = DATA.audience
+          .map(
+            (a) => `
+    <article class="aud-card" tabindex="0">
+      <div class="aud-bg"><img src="${a.img}" alt=""></div>
+      <span class="aud-tag">${a.tag}</span>
+      <h3>${a.title}</h3>
+      <p class="aud-body">${a.body}</p>
+      <div class="aud-reveal"><p>${a.pain}</p></div>
+      <div class="aud-hint">Hover to see objection strategy</div>
+    </article>`,
+          )
+          .join("");
+
+        $("challengeRows").innerHTML = DATA.challenge
+          .map(
+            (c) => `
+    <div class="row-item">
+      <div class="row-head"><h3>${c.title}</h3><span class="row-num">${c.num}</span></div>
+      <p>${c.body}</p>
+    </div>`,
+          )
+          .join("");
+
+        $("funnelStages").innerHTML = DATA.funnel
+          .map(
+            (f) => `
+    <div class="funnel-stage">
+      <span class="funnel-dot"></span>
+      <div class="funnel-idx">${f.idx}</div>
+      <h3>${f.stage}</h3>
+      <p>${f.body}</p>
+      <p class="funnel-kpi">KPI — ${f.kpi}</p>
+    </div>`,
+          )
+          .join("");
+
+        $("omniGrid").innerHTML = DATA.omni
+          .map(
+            (o) => `
+    <article class="omni-card">
+      <div class="omni-icon">${o.code}</div>
+      <h3>${o.name}</h3>
+      <p>${o.body}</p>
+      <div class="omni-formats">${o.formats}</div>
+    </article>`,
+          )
+          .join("");
+
+        /* --- ENHANCED CREATIVE RENDER --- */
+        $("creativeGrid").innerHTML = DATA.creative
+          .map(
+            (c) => `
+    <div class="creative-card-v2">
+      <div class="creative-img-wrap">
+        <img src="${c.img}" alt="${c.title}">
+        <span class="creative-badge-overlay">${c.badge}</span>
+        <span class="creative-metric-tag">${c.metric}</span>
+      </div>
+      <div class="creative-content">
+        <h3>${c.title}</h3>
+        <div class="creative-quote-box">${c.hook}</div>
+        <div class="creative-details-grid">
+          <div class="creative-detail-item">
+            <label>Format</label>
+            <span>${c.format}</span>
+          </div>
+          <div class="creative-detail-item">
+            <label>Validation Read</label>
+            <span>${c.read}</span>
+          </div>
+        </div>
+      </div>
+    </div>`,
+          )
+          .join("");
+
+        $("chanList").innerHTML = DATA.channels
+          .map(
+            (c) => `
+    <div class="chan-row rv">
+      <h3>${c.name}</h3>
+      <div>
+        <p>${c.role}</p>
+        <div class="chan-bar"><i data-w="${c.width}"></i></div>
+      </div>
+      <div class="chan-share">${c.share}</div>
+      <div class="chan-thumb"><img src="${c.img}" alt=""></div>
+    </div>`,
+          )
+          .join("");
+
+        $("metricGrid").innerHTML = DATA.metrics
+          .map(
+            (m) => `
+    <div class="metric">
+      <div class="metric-num">${m.num}</div>
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-note">${m.note}</div>
+    </div>`,
+          )
+          .join("");
+
+        $("measGrid").innerHTML = DATA.measurement
+          .map(
+            (m) => `
+    <article class="meas-item">
+      <div class="meas-idx">${m.idx}</div>
+      <h4>${m.title}</h4>
+      <p>${m.body}</p>
+      <div class="meas-out">${m.out}</div>
+    </article>`,
+          )
+          .join("");
+
+        /* --- NEW EXECUTION GRID RENDER --- */
+        $("execGrid").innerHTML = DATA.execution
+          .map(
+            (e) => `
+    <div class="exec-card">
+      <div class="exec-img-box">
+        <img src="${e.img}" alt="${e.title}">
+        <span class="exec-phase-badge">${e.phase}</span>
+      </div>
+      <div class="exec-body">
+        <h3>${e.title}</h3>
+        <p>${e.body}</p>
+        <div class="exec-deliverables">
+          <span>Key Deliverables</span>
+          <ul>
+            ${e.items.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+      </div>
+    </div>`,
+          )
+          .join("");
+
+        const learn = [...DATA.learnings, ...DATA.learnings];
+        $("learnTrack").innerHTML = learn
+          .map(
+            (l) => `
+    <div class="learn-card">
+      <div class="learn-num">${l.num}</div>
+      <h3>${l.title}</h3>
+      <p>${l.body}</p>
+    </div>`,
+          )
+          .join("");
+
+        const logos = [
+          ...DATA.logos,
+          ...DATA.logos,
+          ...DATA.logos,
+          ...DATA.logos,
+        ];
+        $("logoTrack").innerHTML = logos
+          .map(
+            (l) => `
+    <div class="logo-item"><img src="${l.logo}" alt="${l.name}" title="${l.name}"></div>`,
+          )
+          .join("");
+      }
+
+      /* ---------- INITIALIZERS & ANIMATIONS ---------- */
+      function initHero() {
+        const hero = $("hero");
+        requestAnimationFrame(() => hero.classList.add("ready"));
+        const seq = [
+          ["hl1", 120],
+          ["hl2", 280],
+          ["hsub", 520],
+          ["hact", 640],
+          ["hmeta", 780],
+          ["hticker", 920],
+        ];
+        seq.forEach(([id, delay]) =>
+          setTimeout(() => $(id).classList.add("on"), reduce ? 0 : delay),
+        );
+      }
+
+      function initReveal() {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              const el = e.target;
+              el.classList.add("on");
+
+              if (el.classList.contains("stagger")) {
+                [...el.children].forEach((child, i) => {
+                  child.style.transitionDelay = (reduce ? 0 : i * 90) + "ms";
+                });
+              }
+              const bar = el.querySelector(".chan-bar i");
+              if (bar) setTimeout(() => (bar.style.width = bar.dataset.w), 240);
+
+              io.unobserve(el);
+            });
+          },
+          { threshold: 0.08, rootMargin: "0px 0px -60px 0px" },
+        );
+
+        document
+          .querySelectorAll(".rv, .stagger, .rv-mask")
+          .forEach((el) => io.observe(el));
+      }
+
+      function initFunnel() {
+        const spine = $("funnelSpine");
+        const stages = document.querySelectorAll(".funnel-stage");
+        if (!spine) return;
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              if (e.target.id === "funnel") {
+                spine.style.height = "100%";
+              } else {
+                e.target.classList.add("on");
+              }
+              io.unobserve(e.target);
+            });
+          },
+          { threshold: 0.12 },
+        );
+
+        io.observe($("funnel"));
+        stages.forEach((s, i) => {
+          s.style.transitionDelay = (reduce ? 0 : i * 80) + "ms";
+          io.observe(s);
+        });
+      }
+
+      function initOmni() {
+        const dial = $("omniDial"),
+          arc = $("omniArc"),
+          count = $("omniCount");
+        if (!dial) return;
+        const total = DATA.omni.length;
+        const circ = 2 * Math.PI * 44;
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              arc.style.strokeDasharray = `${circ * 0.78} ${circ}`;
+              let n = 0;
+              const step = () => {
+                n++;
+                count.textContent = n;
+                if (n < total) setTimeout(step, 90);
+              };
+              if (reduce) {
+                count.textContent = total;
+              } else {
+                setTimeout(step, 260);
+              }
+              io.unobserve(e.target);
+            });
+          },
+          { threshold: 0.3 },
+        );
+        io.observe(dial);
+      }
+
+      function initStory() {
+        const section = $("story"),
+          sticky = $("storySticky");
+        const el = $("storyText"),
+          bar = $("storyBar"),
+          count = $("storyCount");
+        if (!section || !el) return;
+
+        const words = el.textContent.trim().split(/\s+/);
+        el.innerHTML = words.map((w) => `<span>${w} </span>`).join("");
+        const spans = el.querySelectorAll("span");
+        const plates = section.querySelectorAll(".story-plate");
+
+        let ticking = false;
+        function update() {
+          const top = section.offsetTop;
+          const range = section.offsetHeight - window.innerHeight;
+          const y = window.scrollY;
+          let p = range <= 0 ? (y > top ? 1 : 0) : (y - top) / range;
+          p = Math.min(1, Math.max(0, p));
+
+          const inView =
+            y >= top - window.innerHeight * 0.4 &&
+            y <= top + range + window.innerHeight;
+          sticky.classList.toggle("live", inView);
+
+          const cut = Math.floor(p * spans.length);
+          spans.forEach((s, i) => s.classList.toggle("lit", i <= cut));
+
+          bar.style.width = (p * 100).toFixed(1) + "%";
+          count.textContent =
+            "THE BRIEF — " + String(Math.round(p * 100)).padStart(2, "0") + "%";
+
+          plates.forEach((pl) => {
+            const d = parseFloat(pl.dataset.depth || 0.08);
+            pl.style.transform = `translateY(${(p - 0.5) * -260 * d * 4}px)`;
+          });
+
+          ticking = false;
+        }
+
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!ticking) {
+              requestAnimationFrame(update);
+              ticking = true;
+            }
+          },
+          { passive: true },
+        );
+        window.addEventListener("resize", update, { passive: true });
+        update();
+      }
+
+      function initHeroParallax() {
+        const mark = $("heroMark"),
+          media = document.querySelector(".hero-media img");
+        if (!mark || reduce) return;
+        let ticking = false;
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+              const y = window.scrollY;
+              if (y < window.innerHeight * 1.2) {
+                mark.style.transform = `translateX(${-y * 0.12}px)`;
+                if (media)
+                  media.style.transform = `scale(${1.02 + y * 0.00012})`;
+              }
+              ticking = false;
+            });
+          },
+          { passive: true },
+        );
+      }
+
+      function initCursor() {
+        const c = $("cursor");
+        if (!c || window.matchMedia("(pointer:coarse)").matches) return;
+        document.addEventListener("mousemove", (e) => {
+          c.style.left = e.clientX + "px";
+          c.style.top = e.clientY + "px";
+        });
+        document
+          .querySelectorAll(
+            "a, .aud-card, .creative-card-v2, .exec-card, .learn-card, .row-item, .funnel-stage, .omni-card, .meas-item, .chan-row",
+          )
+          .forEach((el) => {
+            el.addEventListener("mouseenter", () => c.classList.add("big"));
+            el.addEventListener("mouseleave", () => c.classList.remove("big"));
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        render();
+        initHero();
+        initReveal();
+        initFunnel();
+        initOmni();
+        initStory();
+        initHeroParallax();
+        initCursor();
+      });
+    </script>
+  </body>
+</html>
