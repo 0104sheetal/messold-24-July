@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Marketing Architecture V8 — MESSOLD</title>
+    
+    <!-- General Sans & Geist CDNs -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@200,300,400,500&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/geist-sans@1.0.1/dist/geist-sans.css">
+    
+    <style>
+        /* --- BRAND DESIGN CORE SYSTEMS --- */
+        :root {
+            --bg-master: #050505;
+            --text-master: #ffffff;
+            --border-master: rgba(255, 255, 255, 0.12);
+            --border-glow: rgba(255, 255, 255, 0.25);
+            --accent-master: #ffffff;
+            --font-editorial: "General Sans", "Geist", "Inter", -apple-system, sans-serif;
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.5, 1);
+            --transition-color: background-color 0.8s var(--ease-cinematic), color 0.8s var(--ease-cinematic), border-color 0.8s var(--ease-cinematic);
+        }
+
+        .ms-theme-engine {
+            font-family: var(--font-editorial);
+            background-color: var(--bg-master);
+            color: var(--text-master);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: var(--transition-color);
+            font-weight: 300; 
+        }
+
+        .ms-theme-engine *, .ms-theme-engine *::before, .ms-theme-engine *::after {
+            box-sizing: inherit;
+        }
+
+        .ms-theme-engine .dynamic-bg-transition {
+            transition: var(--transition-color);
+        }
+        
+        .ms-theme-engine .dynamic-bg-transition.bg-active-state {
+            --bg-master: #ffffff; 
+            --text-master: #050505;
+            --border-master: rgba(0, 0, 0, 0.12);
+            --border-glow: rgba(0, 0, 0, 0.25);
+            background-color: var(--bg-master);
+            color: var(--text-master);
+        }
+
+        .layout-wrapper {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 5rem;
+        }
+
+        @media (max-width: 991px) {
+            .layout-wrapper { padding: 0 2.5rem; }
+        }
+        @media (max-width: 768px) {
+            .layout-wrapper { padding: 0 1.5rem; }
+        }
+
+        .section-padding {
+            padding: 5.5rem 0;
+        }
+        @media (max-width: 991px) {
+            .section-padding { padding: 4.5rem 0; }
+        }
+        @media (max-width: 768px) {
+            .section-padding { padding: 3.5rem 0; }
+        }
+
+        .label-editorial {
+            font-size: 0.75rem;
+            color: inherit;
+            font-family: var(--font-editorial);
+            letter-spacing: 0.12em;
+            display: inline-block;
+            text-transform: uppercase;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+
+        .cta-editorial-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            border: 1px solid var(--text-master);
+            background: transparent;
+            color: var(--text-master);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 300;
+            transition: all 0.4s var(--ease-cinematic);
+        }
+        .cta-editorial-btn:hover {
+            background: var(--text-master);
+            color: var(--bg-master);
+        }
+
+        /* ==========================================================================
+           1. REDESIGNED HERO SECTION (CLEAN SINGLE-COLUMN ARCHITECTURE)
+           ========================================================================== */
+        .hero-hud-section {
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            padding-top: 6rem;
+            padding-bottom: 5rem;
+            background: #050505;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-master);
+        }
+
+        .hero-single-column {
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .hero-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: #00ff87;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff87;
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        .hero-title-headline {
+            font-size: clamp(3.2rem, 5.5vw, 5.8rem);
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+            margin-top: 0;
+            color: #ffffff;
+        }
+
+        .hero-title-headline span {
+            display: block;
+            opacity: 0.5;
+            font-weight: 200;
+        }
+
+        .hero-paragraph-desc {
+            font-size: clamp(1.1rem, 1.6vw, 1.25rem);
+            font-weight: 300;
+            opacity: 0.75;
+            max-width: 720px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .hero-action-group {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-secondary-stat {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-left: 2rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-unit-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-unit-val {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #fff;
+        }
+
+        .stat-unit-lbl {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.5;
+        }
+
+        /* --- DESCRIPTIVE SHOPIFY CHAMPIONS SHOWCASE --- */
+        .champions-split-showcase {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 5rem;
+            align-items: center;
+            padding-bottom: 2rem;
+        }
+        @media (max-width: 991px) {
+            .champions-split-showcase { grid-template-columns: 1fr; gap: 3rem; }
+        }
+        
+        .champions-editorial-statement {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 0rem;
+        }
+        .champions-editorial-statement strong { font-weight: 400; }
+        
+        .champions-prose-description {
+            font-size: 1rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        .champions-visual-frame {
+            background: var(--border-master);
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            border: 1px solid var(--border-master);
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        .champions-visual-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .champions-inverted-showcase {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+        @media (max-width: 991px) {
+            .champions-inverted-showcase { grid-template-columns: 1fr; gap: 3rem; }
+            .champions-inverted-showcase .champions-visual-frame { order: -1; }
+        }
+
+        /* ==========================================================================
+           2. REDESIGNED OMNICHANNEL MASTERY SECTION
+           ========================================================================== */
+        .omnichannel-section-wrapper {
+            margin-top: 3rem;
+            border: 1px solid var(--border-master);
+            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.01);
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .omnichannel-section-wrapper { padding: 2rem 1.5rem; }
+        }
+
+        .omnichannel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .omnichannel-card {
+            border: 1px solid var(--border-master);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            text-align: center;
+            transition: all 0.4s var(--ease-cinematic);
+        }
+
+        .omnichannel-card:hover {
+            border-color: var(--text-master);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-4px);
+        }
+
+        .omnichannel-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            fill: currentColor;
+        }
+
+        .omnichannel-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .omnichannel-name {
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .omnichannel-tag {
+            font-size: 0.65rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* MARQUEE CONTINUOUS STREAM */
+        .marketing-marquee-wrapper {
+            overflow: hidden;
+            width: 100%;
+            border-top: 1px solid var(--border-master);
+            border-bottom: 1px solid var(--border-master);
+            padding: 2.5rem 0;
+            margin-top: 4rem;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        
+        .marketing-logo-track {
+            display: flex;
+            gap: 6rem;
+            width: max-content;
+            animation: infiniteLoopMarquee 25s linear infinite;
+            align-items: center;
+        }
+
+        .marketing-logo-item {
+            height: 32px;
+            width: auto;
+            opacity: 0.4;
+            transition: opacity 0.4s ease, filter 0.4s ease;
+            filter: grayscale(1) brightness(2);
+        }
+        .dynamic-bg-transition.bg-active-state .marketing-logo-item {
+            filter: grayscale(1) brightness(0);
+        }
+        .marketing-logo-item:hover {
+            opacity: 1;
+            filter: grayscale(0) brightness(1);
+        }
+
+        @keyframes infiniteLoopMarquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+
+        /* --- EDITORIAL SPLIT CONFIGURATION --- */
+        .split-editorial-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+        @media (max-width: 991px) {
+            .split-editorial-grid { grid-template-columns: 1fr; gap: 0rem; }
+        }
+
+        .split-statement-sticky {
+            position: sticky;
+            top: 6rem;
+        }
+        .split-statement-headline {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+        .split-statement-headline span { display: block; font-weight: 300; margin-top: 1rem; }
+
+        .split-reasons-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .reason-typography-block {
+            opacity: 0.15;
+            transform: translateY(30px);
+            transition: all 0.8s var(--ease-cinematic);
+        }
+        .reason-typography-block.revealed-node {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reason-node-num {
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            opacity: 0.7;
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .reason-node-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0;
+            letter-spacing: 0.01em;
+            margin-top: 0;
+        }
+        .reason-node-desc {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            opacity: 0.75;
+            font-weight: 400;
+        }
+
+        /* ==========================================================================
+           3. REDESIGNED RIGOROUS SPECIFICATIONS (COMMAND MATRIX SPEC)
+           ========================================================================== */
+        .specs-telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3.5rem;
+        }
+
+        @media (max-width: 991px) {
+            .specs-telemetry-grid { grid-template-columns: 1fr; }
+        }
+
+        .specs-telemetry-card {
+            border: 1px solid var(--border-master);
+            background: rgba(255, 255, 255, 0.015);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.5s var(--ease-cinematic);
+        }
+
+        .specs-telemetry-card:hover {
+            border-color: var(--text-master);
+            transform: translateY(-4px);
+        }
+
+        .specs-card-header {
+            border-bottom: 1px solid var(--border-master);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .specs-status-chip {
+            align-self: flex-start;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--border-master);
+            opacity: 0.6;
+        }
+
+        .specs-card-headline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .specs-card-body {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            opacity: 0.7;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+        }
+
+        .specs-metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            border-top: 1px solid var(--border-master);
+            padding-top: 1.5rem;
+        }
+
+        .specs-metric-unit {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .specs-metric-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .specs-metric-number {
+            font-size: 2.2rem;
+            font-weight: 200;
+            letter-spacing: -0.03em;
+            color: var(--text-master);
+        }
+
+        /* ==========================================================================
+           4. REDESIGNED OPERATIONAL BLUEPRINT (CREATIVE PROCESS BOARD)
+           ========================================================================== */
+        .blueprint-interactive-container {
+            margin-top: 3.5rem;
+            border: 1px solid var(--border-master);
+            background: rgba(255, 255, 255, 0.01);
+            padding: 3rem;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .blueprint-interactive-container { padding: 1.5rem; }
+        }
+
+        .blueprint-timeline-nav {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.5rem;
+            position: relative;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-master);
+            padding-bottom: 1.5rem;
+        }
+
+        @media (max-width: 991px) {
+            .blueprint-timeline-nav {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                padding-bottom: 1rem;
+            }
+            .blueprint-timeline-nav::-webkit-scrollbar { display: none; }
+        }
+
+        .blueprint-timeline-step {
+            background: transparent;
+            border: none;
+            color: var(--text-master);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: left;
+            cursor: pointer;
+            opacity: 0.35;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            scroll-snap-align: start;
+        }
+
+        .blueprint-timeline-step:hover {
+            opacity: 0.7;
+        }
+
+        .blueprint-timeline-step.step-active {
+            opacity: 1;
+        }
+
+        .blueprint-step-num {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+            opacity: 0.6;
+        }
+
+        .blueprint-step-label {
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        .blueprint-active-bar-indicator {
+            height: 2px;
+            background: var(--text-master);
+            width: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s var(--ease-cinematic);
+        }
+
+        .blueprint-timeline-step.step-active .blueprint-active-bar-indicator {
+            transform: scaleX(1);
+        }
+
+        .blueprint-display-stage {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 4rem;
+            align-items: center;
+            min-height: 260px;
+        }
+
+        @media (max-width: 991px) {
+            .blueprint-display-stage {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .blueprint-stage-pane {
+            display: none;
+            animation: paneFadeIn 0.5s var(--ease-cinematic) forwards;
+        }
+
+        .blueprint-stage-pane.pane-active {
+            display: block;
+        }
+
+        @keyframes paneFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .blueprint-pane-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .blueprint-pane-title {
+            font-size: clamp(2rem, 3vw, 2.5rem);
+            font-weight: 300;
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .blueprint-pane-desc {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            opacity: 0.75;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .blueprint-deliverables-box {
+            border: 1px solid var(--border-master);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .blueprint-box-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.6;
+            margin: 0;
+        }
+
+        .blueprint-deliverables-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .blueprint-deliverable-node {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0.85;
+        }
+
+        .blueprint-deliverable-node::before {
+            content: "✦";
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+
+        /* --- CAPABILITY VECTORS --- */
+        .capability-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3.5rem;
+        }
+
+        @media (max-width: 991px) {
+            .capability-bento-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .capability-bento-grid { grid-template-columns: 1fr; }
+        }
+
+        .capability-bento-card {
+            border: 1px solid var(--border-master);
+            background: rgba(255, 255, 255, 0.015);
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.5s var(--ease-cinematic);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+        }
+
+        .capability-bento-card:hover {
+            border-color: var(--text-master);
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .bento-card-icon-frame {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border-master);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            transition: border-color 0.4s ease;
+        }
+
+        .capability-bento-card:hover .bento-card-icon-frame {
+            border-color: var(--text-master);
+        }
+
+        .bento-card-icon-frame svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: var(--text-master);
+            stroke-width: 1.5;
+        }
+
+        .bento-card-title {
+            font-size: 1.35rem;
+            font-weight: 300;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .bento-card-desc {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            opacity: 0.7;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        /* --- VERIFIED TELEMETRY LIGHTBOX MODAL --- */
+        .netflix-slider-outer {
+            position: relative;
+            margin-top: 3rem;
+        }
+
+        .netflix-track-clip {
+            overflow: hidden;
+            padding: 1rem 0;
+        }
+
+        .netflix-horizontal-strip {
+            display: flex;
+            gap: 2.5rem;
+            transition: transform 0.6s var(--ease-cinematic);
+            width: max-content;
+        }
+
+        .netflix-video-card {
+            width: 380px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        @media (max-width: 480px) {
+            .netflix-video-card { width: 280px; }
+        }
+
+        .netflix-video-element-wrapper {
+            position: relative;
+            aspect-ratio: 16/10;
+            background: #000;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.4s var(--ease-cinematic);
+        }
+        .netflix-video-card:hover .netflix-video-element-wrapper {
+            transform: scale(1.02);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .netflix-video-element-wrapper video {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.65;
+            transition: opacity 0.3s ease;
+        }
+        .netflix-video-card:hover video { opacity: 0.9; }
+
+        .netflix-play-trigger-icon {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #ffffff;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+        .netflix-video-card:hover .netflix-play-trigger-icon {
+            background: #ffffff; color: #050505; scale: 1.1;
+        }
+
+        .netflix-card-quote {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            opacity: 0.85;
+        }
+
+        .netflix-card-profile-meta {
+            border-top: 1px solid var(--border-master);
+            padding-top: 1rem;
+            transition: border-color 0.8s var(--ease-cinematic);
+        }
+        .netflix-profile-name { font-size: 0.9rem; font-weight: 400; margin-bottom: 0.2rem; }
+        .netflix-profile-brand { font-size: 0.75rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 300; }
+
+        .netflix-controls-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .netflix-arrow-trigger {
+            width: 50px; height: 50px;
+            border: 1px solid var(--text-master);
+            background: transparent;
+            color: var(--text-master);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .netflix-arrow-trigger:hover {
+            background: var(--text-master); color: var(--bg-master);
+        }
+        .netflix-arrow-trigger:disabled {
+            opacity: 0.2; cursor: not-allowed;
+        }
+
+        .ms-video-lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.96);
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+            padding: 2rem;
+        }
+        .ms-video-lightbox-overlay.lightbox-is-open {
+            opacity: 1; pointer-events: auto;
+        }
+        .lightbox-window-container {
+            position: relative;
+            width: 100%; max-width: 960px;
+            aspect-ratio: 16/9;
+            background: #000;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+        .lightbox-window-container video {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+        .lightbox-close-trigger {
+            position: absolute;
+            top: -3.5rem; right: 0;
+            background: transparent; border: none;
+            color: #ffffff; font-size: 0.9rem; text-transform: uppercase;
+            letter-spacing: 0.15em; cursor: pointer; opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .lightbox-close-trigger:hover { opacity: 1; }
+
+        /* --- SECTOR ADAPTABILITY --- */
+        .industry-cases-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 6rem;
+            align-items: start;
+        }
+        
+        @media (max-width: 1024px) { 
+            .industry-cases-grid-layout { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; } 
+        }
+        @media (max-width: 768px) { 
+            .industry-cases-grid-layout { grid-template-columns: 1fr; gap: 3.5rem; } 
+        }
+
+        .industry-editorial-card-node {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            background: transparent;
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.9s var(--ease-cinematic), transform 0.9s var(--ease-cinematic);
+        }
+        
+        .industry-editorial-card-node.revealed-node {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ind-card-media-canvas {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: #111;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.4s ease;
+        }
+
+        .ind-card-media-canvas img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.3) brightness(0.9);
+            transition: transform 0.8s var(--ease-cinematic), filter 0.8s var(--ease-cinematic);
+        }
+
+        .industry-editorial-card-node:hover .ind-card-media-canvas img {
+            transform: scale(1.05);
+            filter: grayscale(0) brightness(1.05);
+        }
+
+        .ind-card-content-block {
+            padding: 1.5rem 0 0 0;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .ind-card-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .ind-card-label-sector {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            font-weight: 500;
+        }
+
+        .ind-card-metric-badge {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .ind-card-heading-title {
+            font-size: clamp(1.3rem, 2vw, 1.6rem);
+            font-weight: 400;
+            margin: 0.25rem 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .ind-card-prose-summary {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.6;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .ind-card-action-anchor {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-master);
+            width: fit-content;
+            padding-bottom: 2px;
+        }
+
+        /* --- FAQ SECTION --- */
+        .premium-faq-split-axis {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 6rem;
+        }
+        @media (max-width: 991px) {
+            .premium-faq-split-axis { grid-template-columns: 1fr; gap: 0rem; }
+        }
+
+        .faq-left-editorial-panel h2 {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .faq-editorial-contacts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .faq-contact-anchor {
+            font-size: 0.95rem; color: var(--text-master); text-decoration: none; font-weight: 500; width: fit-content; border-bottom: 1px solid var(--text-master); padding-bottom: 0.2rem;
+        }
+
+        .faq-accordion-stack {
+            border-top: 1px solid var(--border-master);
+        }
+
+        .faq-accordion-node {
+            border-bottom: 1px solid var(--border-master);
+        }
+        .faq-node-trigger {
+            padding: 1.25rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .faq-node-headline { font-size: 1.15rem; font-weight: 400; padding-right: 2rem; margin: 0; }
+        .faq-node-sign { font-size: 1.2rem; font-weight: 200; transition: transform 0.4s var(--ease-cinematic); }
+        
+        .faq-node-hidden-drawer {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease-cinematic);
+        }
+        .faq-drawer-inner-prose {
+            padding-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.65; opacity: 0.7; font-weight: 300;
+        }
+
+        .faq-accordion-node.drawer-active .faq-node-sign {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body class="ms-theme-engine">
+
+    <!-- 1. REDESIGNED HERO SECTION (NO RIGHT SIDE - CLEAN BOLD EDITORIAL ARCHITECTURE) -->
+    <section class="hero-hud-section">
+        <div class="layout-wrapper" style="width: 100%;">
+            <div class="hero-single-column">
+                <div class="hero-status-pill">
+                    <span class="hero-pulse-dot"></span> Active Scaling Engine
+                </div>
+                <h1 class="hero-title-headline">Scaling Paid Channels <span>That Drive Profitable ROAS.</span></h1>
+                <p class="hero-paragraph-desc">Data-driven performance execution engineered exclusively for high-volume enterprise brands requiring profitable customer acquisition, algorithmic ad scaling, and rapid revenue velocity.</p>
+                
+                <div class="hero-action-group">
+                    <a href="#footerContact" class="cta-editorial-btn">Book Audit Strategy Call &rarr;</a>
+                    <div class="hero-secondary-stat">
+                        <div class="stat-unit-item">
+                            <span class="stat-unit-val">+320%</span>
+                            <span class="stat-unit-lbl">Average Growth</span>
+                        </div>
+                        <div class="stat-unit-item">
+                            <span class="stat-unit-val">4.2x</span>
+                            <span class="stat-unit-lbl">Target ROAS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. VERIFIED ALIGNMENT CONTAINER -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Verified Alignment</span>
+            
+            <div class="champions-split-showcase">
+                <div>
+                    <h2 class="champions-editorial-statement">An accredited media ecosystem for sustainable scale.</h2>
+                    <p class="champions-prose-description">
+                        As vetted media specialists, we engineer highly optimized paid campaign structures that convert intent traffic at historic profit margins. We bypass the guesswork of native ad platforms to build rigorous testing frameworks, first-party tracking setups, and scalable creative funnels tailored to complex multi-channel customer journeys.
+                    </p>
+                    <a href="#capabilityvectors" class="cta-editorial-btn" style="padding: 0.8rem 2rem; font-size: 0.75rem;">Explore Strategy</a>
+                </div>
+                <div>
+                    <div class="champions-visual-frame">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="MESSOLD performance marketing management interface">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. REDESIGNED OMNICHANNEL MASTERY SECTION (REPLACES LEADING PARTNERS) -->
+    <section class="section-padding dynamic-bg-transition">
+        <div class="layout-wrapper">
+            <div class="champions-inverted-showcase">
+                <div>
+                    <div class="champions-visual-frame">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Performance Growth Framework Strategy">
+                    </div>
+                </div>
+                <div>
+                    <h2 class="champions-editorial-statement">Ad-Scaling Champions</h2>
+                    <p class="champions-prose-description">
+                        We drive market dominance by unifying paid ad signals with deep backend analytics metrics. Our media setups guarantee seamless conversion tracking across every digital touchpoint, offering enterprise businesses unrivaled scaling safety nets, lowering CAC, and maximizing blended return on ad spend.
+                    </p>
+                    <a href="#footerContact" class="cta-editorial-btn" style="padding: 0.8rem 2rem; font-size: 0.75rem;">Partner With Champions</a>
+                </div>
+            </div>
+
+            <!-- OMNICHANNEL MASTERY SHOWCASE GRID -->
+            <div class="omnichannel-section-wrapper">
+                <span class="label-editorial">Omnichannel Mastery</span>
+                <h3 style="font-size: 1.8rem; font-weight: 300; margin-top: 0.5rem; margin-bottom: 0;">Multi-Channel Deployment Ecosystem</h3>
+                
+                <div class="omnichannel-grid">
+                    <div class="omnichannel-card">
+                        <div class="omnichannel-icon">
+                            <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </div>
+                        <span class="omnichannel-name">Meta Ads</span>
+                        <span class="omnichannel-tag">Advantage+ / CAPI</span>
+                    </div>
+
+                    <div class="omnichannel-card">
+                        <div class="omnichannel-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+                        </div>
+                        <span class="omnichannel-name">Google Ads</span>
+                        <span class="omnichannel-tag">Search / PMax</span>
+                    </div>
+
+                    <div class="omnichannel-card">
+                        <div class="omnichannel-icon">
+                            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                        </div>
+                        <span class="omnichannel-name">WhatsApp</span>
+                        <span class="omnichannel-tag">Direct Retargeting</span>
+                    </div>
+
+                    <div class="omnichannel-card">
+                        <div class="omnichannel-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.56-1.31 1.52-1.36 2.51-.02.77.26 1.54.76 2.13.72.86 1.87 1.25 2.97 1.05 1.06-.18 1.98-.92 2.37-1.93.22-.58.28-1.21.28-1.83V.02z"/></svg>
+                        </div>
+                        <span class="omnichannel-name">TikTok Ads</span>
+                        <span class="omnichannel-tag">Spark Ads / UGC</span>
+                    </div>
+
+                    <div class="omnichannel-card">
+                        <div class="omnichannel-icon">
+                            <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </div>
+                        <span class="omnichannel-name">YouTube</span>
+                        <span class="omnichannel-tag">Direct Response Video</span>
+                    </div>
+
+                    <div class="omnichannel-card">
+                        <div class="omnichannel-icon">
+                            <svg viewBox="0 0 24 24"><path d="M13.958 10.09c0 1.222.023 2.247.023 3.47 0 3.328-1.574 5.257-4.488 5.257-2.612 0-3.98-1.442-3.98-3.738 0-3.15 2.378-5.327 6.072-5.327h2.373v.338zm3.906-3.874h-3.906v1.94h2.373c2.443 0 3.653 1.15 3.653 3.125 0 .338-.023.7-.07 1.062l-.023.116h2.128c.046-.384.07-.77.07-1.178 0-3.328-1.896-5.065-4.225-5.065z"/></svg>
+                        </div>
+                        <span class="omnichannel-name">Amazon Ads</span>
+                        <span class="omnichannel-tag">Sponsored Brands</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTINUOUS LOGO TRACK -->
+            <div class="marketing-marquee-wrapper">
+                <div class="marketing-logo-track">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Shopify%20Partner.png" alt="Shopify Partner">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/razorpay-logo-white.svg" alt="Razorpay">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/shiprocket_1.png" alt="Shiprocket">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Microsoft-Gold.png" alt="Microsoft">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Freshworks.png" alt="Freshworks">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Gokwik.png" alt="Gokwik">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/google.png" alt="Google">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/Cashfree.png" alt="Cashfree">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/payu2.png" alt="PayU">
+                    <img class="marketing-logo-item" src="https://www.messold.com/data/logos/paypal_1.png" alt="PayPal">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. CORE PHILOSOPHY GRID -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <div class="split-editorial-grid">
+                <div class="split-statement-sticky">
+                    <span class="label-editorial">Core Philosophy</span>
+                    <h2 class="split-statement-headline">We don't buy ad impressions. <span>We engineer revenue growth.</span></h2>
+                </div>
+                <div class="split-reasons-list">
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">01 / FIRST-PARTY ATTRIBUTION</span>
+                        <h3 class="reason-node-title">Server-Side Tracking Precision</h3>
+                        <p class="reason-node-desc">We build server-to-server CAPI connections that pass clean conversion signals directly back to ad algorithms, overcoming signal loss from ad blockers and browser privacy rules.</p>
+                    </div>
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">02 / SCALABLE MEDIA STRUCTURE</span>
+                        <h3 class="reason-node-title">Algorithmic Account Architecture</h3>
+                        <p class="reason-node-desc">Clean, consolidated account hierarchies built to give platform AI engines the data volume required to stabilize CAC at scale without budget efficiency drop-offs.</p>
+                    </div>
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">03 / CREATIVE VELOCITY</span>
+                        <h3 class="reason-node-title">High-Impact Iteration Matrix</h3>
+                        <p class="reason-node-desc">Continuous visual asset testing models that systematically isolate hooks, angles, and formats to beat creative fatigue before ROAS decays.</p>
+                    </div>
+                    <div class="reason-typography-block scroll-triggered-reveal">
+                        <span class="reason-node-num">04 / LIFECYCLE OPTIMIZATION</span>
+                        <h3 class="reason-node-title">Long-term Growth Partnership</h3>
+                        <p class="reason-node-desc">We do not manage ad spend passively. We continuously optimize along your margin curves, aligning acquisition strategy with true net profitability and LTV.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. REDESIGNED OPERATIONAL BLUEPRINT (CREATIVE PROCESS TIMELINE BOARD) -->
+    <section class="section-padding" id="operational-blueprint">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Operational Blueprint</span>
+            <h2 class="split-statement-headline">The Performance Marketing Lifecycle.</h2>
+            
+            <div class="blueprint-interactive-container">
+                <div class="blueprint-timeline-nav" id="blueprintNav">
+                    <button class="blueprint-timeline-step step-active" data-step="0">
+                        <span class="blueprint-step-num">01</span>
+                        <span class="blueprint-step-label">Audit</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="1">
+                        <span class="blueprint-step-num">02</span>
+                        <span class="blueprint-step-label">Strategy</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="2">
+                        <span class="blueprint-step-num">03</span>
+                        <span class="blueprint-step-label">Tracking</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="3">
+                        <span class="blueprint-step-num">04</span>
+                        <span class="blueprint-step-label">Creative</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="4">
+                        <span class="blueprint-step-num">05</span>
+                        <span class="blueprint-step-label">Launch</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="5">
+                        <span class="blueprint-step-num">06</span>
+                        <span class="blueprint-step-label">Testing</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="6">
+                        <span class="blueprint-step-num">07</span>
+                        <span class="blueprint-step-label">Scaling</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                    <button class="blueprint-timeline-step" data-step="7">
+                        <span class="blueprint-step-num">08</span>
+                        <span class="blueprint-step-label">Live Ops</span>
+                        <div class="blueprint-active-bar-indicator"></div>
+                    </button>
+                </div>
+
+                <div class="blueprint-display-stage">
+                    <div class="blueprint-pane-content">
+                        <div class="blueprint-stage-pane pane-active" data-pane="0">
+                            <span class="blueprint-pane-tag">Phase 01 / Diagnostics</span>
+                            <h3 class="blueprint-pane-title">Structural Campaign Audit</h3>
+                            <p class="blueprint-pane-desc">Deep-dive diagnostics analyzing historical media efficiency, pixel data leaks, unit margins, and creative decay patterns to highlight immediate revenue opportunities.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="1">
+                            <span class="blueprint-pane-tag">Phase 02 / Architecture</span>
+                            <h3 class="blueprint-pane-title">Media & Growth Strategy</h3>
+                            <p class="blueprint-pane-desc">Constructing multi-channel allocation blueprints, target Marketing Efficiency Ratios (MER), budget thresholds, and creative velocity frameworks tailored to your margins.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="2">
+                            <span class="blueprint-pane-tag">Phase 03 / Infrastructure</span>
+                            <h3 class="blueprint-pane-title">Server-Side Tracking (CAPI)</h3>
+                            <p class="blueprint-pane-desc">Engineering first-party attribution infrastructure and server-to-server CAPI pipes to bypass browser tracking loss and restore clean conversion signals.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="3">
+                            <span class="blueprint-pane-tag">Phase 04 / Production</span>
+                            <h3 class="blueprint-pane-title">Creative Studio Asset Engine</h3>
+                            <p class="blueprint-pane-desc">Scripting and producing high-converting direct response assets, motion graphics, UGC formats, and hook variations designed to convert cold audiences.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="4">
+                            <span class="blueprint-pane-tag">Phase 05 / Deployment</span>
+                            <h3 class="blueprint-pane-title">Omnichannel Campaign Launch</h3>
+                            <p class="blueprint-pane-desc">Building consolidated ad account hierarchies natively across Meta, Google Search, Performance Max, TikTok, and automated retargeting funnels.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="5">
+                            <span class="blueprint-pane-tag">Phase 06 / Experimentation</span>
+                            <h3 class="blueprint-pane-title">Multivariate A/B Testing</h3>
+                            <p class="blueprint-pane-desc">Testing visual angles, landing page variations, ad hooks, and offer structures under rigorous statistical isolation to locate reliable winners.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="6">
+                            <span class="blueprint-pane-tag">Phase 07 / Expansion</span>
+                            <h3 class="blueprint-pane-title">Algorithmic Scaling Protocol</h3>
+                            <p class="blueprint-pane-desc">Vertically and horizontally scaling winning media spend lines while actively maintaining strict net profit margins and target MER levels.</p>
+                        </div>
+                        <div class="blueprint-stage-pane" data-pane="7">
+                            <span class="blueprint-pane-tag">Phase 08 / Refinement</span>
+                            <h3 class="blueprint-pane-title">Continuous Live Optimization</h3>
+                            <p class="blueprint-pane-desc">Real-time attribution monitoring, creative rotation updates, and algorithmic bid adjustments to preserve long-term acquisition stability.</p>
+                        </div>
+                    </div>
+
+                    <div class="blueprint-deliverables-box">
+                        <h4 class="blueprint-box-title">Key Phase Output</h4>
+                        <ul class="blueprint-deliverables-list" id="blueprintOutputList">
+                            <li class="blueprint-deliverable-node">Data Leak Identification</li>
+                            <li class="blueprint-deliverable-node">Ad Fatigue Mapping</li>
+                            <li class="blueprint-deliverable-node">CAC / LTV Baseline Analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CAPABILITY VECTORS -->
+    <section class="section-padding dynamic-bg-transition" id="capabilityvectors">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Capability Vectors</span>
+            <h2 class="split-statement-headline">Media Execution Mastery Built For <br>Performance Scaling.</h2>
+            
+            <div class="capability-bento-grid">
+                <div class="capability-bento-card">
+                    <div>
+                        <div class="bento-card-icon-frame">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                        </div>
+                        <h3 class="bento-card-title">Paid Social Acquisition</h3>
+                        <p class="bento-card-desc">Deploying broad targeting models, advantage+ campaign structures, and creative-led audience segmentation across Meta and TikTok.</p>
+                    </div>
+                </div>
+
+                <div class="capability-bento-card">
+                    <div>
+                        <div class="bento-card-icon-frame">
+                            <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <h3 class="bento-card-title">Paid Search & PMax</h3>
+                        <p class="bento-card-desc">Capturing high-intent customer queries via Google Search, Performance Max, and YouTube ad funnels optimized for target ROAS.</p>
+                    </div>
+                </div>
+
+                <div class="capability-bento-card">
+                    <div>
+                        <div class="bento-card-icon-frame">
+                            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        </div>
+                        <h3 class="bento-card-title">Creative Testing Systems</h3>
+                        <p class="bento-card-desc">Engineered modular ad iteration models testing visual hooks, body angles, and CTA variations to continuously beat ad fatigue.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. REDESIGNED RIGOROUS SPECIFICATIONS -->
+    <section class="section-padding dynamic-bg-transition">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Rigorous Specifications</span>
+            <h2 class="split-statement-headline">Optimized Behind The Scenes.</h2>
+            
+            <div class="specs-telemetry-grid">
+                <div class="specs-telemetry-card">
+                    <div class="specs-card-header">
+                        <span class="specs-status-chip">01 / SCALING</span>
+                        <h3 class="specs-card-headline">ROAS & MER Scaling Architecture</h3>
+                    </div>
+                    <p class="specs-card-body">We isolate budget allocation paths, completely eliminate wasted spend on fatigue creatives, and prioritize top-performing placement algorithms for highly profitable revenue expansion.</p>
+                    <div class="specs-metrics-grid">
+                        <div class="specs-metric-unit">
+                            <span class="specs-metric-label">Target ROAS Lift</span>
+                            <span class="specs-metric-number metric-counter-display" data-target="99">0</span>
+                        </div>
+                        <div class="specs-metric-unit">
+                            <span class="specs-metric-label">Ad Delivery Score</span>
+                            <span class="specs-metric-number metric-counter-display" data-target="100">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="specs-telemetry-card">
+                    <div class="specs-card-header">
+                        <span class="specs-status-chip">02 / DATA PIPES</span>
+                        <h3 class="specs-card-headline">Server-Side Tracking & Attribution</h3>
+                    </div>
+                    <p class="specs-card-body">Constructing clean tracking schema naturally passing purchases, custom events, and user parameters down to the ad engine API layer for accurate targeting optimizations.</p>
+                    <div class="specs-metrics-grid">
+                        <div class="specs-metric-unit">
+                            <span class="specs-metric-label">Event Match Quality</span>
+                            <span class="specs-metric-number metric-counter-display" data-target="98">0</span>
+                        </div>
+                        <div class="specs-metric-unit">
+                            <span class="specs-metric-label">Signal Accuracy</span>
+                            <span class="specs-metric-number metric-counter-display" data-target="99">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="specs-telemetry-card">
+                    <div class="specs-card-header">
+                        <span class="specs-status-chip">03 / CREATIVE</span>
+                        <h3 class="specs-card-headline">Creative Velocity & Hook Testing</h3>
+                    </div>
+                    <p class="specs-card-body">Setting up rapid creative production loops that test new ad hooks and visual angles weekly to keep Customer Acquisition Costs low without dropping overall conversion volume.</p>
+                    <div class="specs-metrics-grid">
+                        <div class="specs-metric-unit">
+                            <span class="specs-metric-label">CAC Reduction</span>
+                            <span class="specs-metric-number metric-counter-display" data-target="35">0</span>
+                        </div>
+                        <div class="specs-metric-unit">
+                            <span class="specs-metric-label">Refresh Speed (Days)</span>
+                            <span class="specs-metric-number metric-counter-display" data-target="7">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. VERIFIED TELEMETRY LIGHTBOX SLIDER -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Verified Telemetry</span>
+            <h2 class="split-statement-headline">Client Growth Stories.</h2>
+            
+            <div class="netflix-slider-outer">
+                <div class="netflix-track-clip">
+                    <div class="netflix-horizontal-strip" id="netflixStrip">
+                        <div class="netflix-video-card" data-video-url="https://assets.mixkit.co/videos/preview/mixkit-corporate-woman-working-with-colleagues-in-office-42267-large.mp4">
+                            <div class="netflix-video-element-wrapper">
+                                <span class="netflix-play-trigger-icon">PLAY</span>
+                                <video loop muted playsinline poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/aayushi.png" src="https://cdn.shopify.com/videos/c/o/v/3919a0774ab744acb272b5fb46764f3b.mov"></video>
+                            </div>
+                            <p class="netflix-card-quote">"MESSOLD completely restructured our Meta campaign architecture. Our ROAS doubled while CAC dropped significantly post-launch."</p>
+                            <div class="netflix-card-profile-meta">
+                                <h4 class="netflix-profile-name">Aayushi Jain</h4>
+                                <span class="netflix-profile-brand">Founder, Weaving Cult &bull; Apparel</span>
+                            </div>
+                        </div>
+
+                        <div class="netflix-video-card" data-video-url="https://assets.mixkit.co/videos/preview/mixkit-man-working-on-his-laptop-at-home-42284-large.mp4">
+                            <div class="netflix-video-element-wrapper">
+                                <span class="netflix-play-trigger-icon">PLAY</span>
+                                <video loop muted playsinline poster="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/adib_rais.png" src="https://cdn.shopify.com/videos/c/o/v/d7649d4dc9ff4f20974fe9862cb263a3.mov"></video>
+                            </div>
+                            <p class="netflix-card-quote">"Their CAPI tracking and creative testing pipeline unlocked predictable scale for our paid ad budget when we were stuck."</p>
+                            <div class="netflix-card-profile-meta">
+                                <h4 class="netflix-profile-name">Adeeb Rais</h4>
+                                <span class="netflix-profile-brand">Founder, Love a Lot &bull; Cosmetics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="netflix-controls-row">
+                    <button class="netflix-arrow-trigger" id="netflixPrev" disabled>&larr;</button>
+                    <button class="netflix-arrow-trigger" id="netflixNext">&rarr;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IMMERSIVE POPUP LIGHTBOX DOM ELEMENT -->
+    <div class="ms-video-lightbox-overlay" id="videoLightbox">
+        <div class="lightbox-window-container">
+            <button class="lightbox-close-trigger" id="closeLightbox">Close / Esc</button>
+            <video id="lightboxTargetVideo" controls playsinline></video>
+        </div>
+    </div>
+
+    <!-- 9. SECTOR ADAPTABILITY -->
+    <section class="section-padding">
+        <div class="layout-wrapper">
+            <span class="label-editorial">Sector Adaptability</span>
+            <h2 class="split-statement-headline">Tailored Growth Frameworks Across Verticals.</h2>
+            
+            <div class="industry-cases-grid-layout">
+                <a href="#footerContact" class="industry-editorial-card-node instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/powersutra_1.png" alt="Powersutra Strategy">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">FASHION</span>
+                            <span class="ind-card-metric-badge">+320% ROAS Scaling</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Powersutra</h3>
+                        <p class="ind-card-prose-summary">Complete campaign restructure mapping broad Meta funnel routing and high-converting UGC engines.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <a href="#footerContact" class="industry-editorial-card-node instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/kraft_f61b0bf4-afe9-4cd8-821c-76e3b944ac48.png" alt="Kraftsmiths Growth">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">JEWELRY</span>
+                            <span class="ind-card-metric-badge">-35% CAC Reduction</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Kraftsmiths</h3>
+                        <p class="ind-card-prose-summary">Deploying high-intent Google Search and Shopping campaign structures to drive profitable acquisition.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+
+                <a href="#footerContact" class="industry-editorial-card-node instant-scroll-reveal">
+                    <div class="ind-card-media-canvas">
+                        <img src="https://cdn.shopify.com/s/files/1/0522/6178/1673/files/Udd_Studio.webp" alt="Udd Studio Analytics">
+                    </div>
+                    <div class="ind-card-content-block">
+                        <div class="ind-card-top-row">
+                            <span class="ind-card-label-sector">FASHION</span>
+                            <span class="ind-card-metric-badge">Real-Time CAPI Sync</span>
+                        </div>
+                        <h3 class="ind-card-heading-title">Udd Studio</h3>
+                        <p class="ind-card-prose-summary">Bespoke attribution setups balancing multi-channel paid spend across social and search channels.</p>
+                        <span class="ind-card-action-anchor">View Case File</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. CLEAR ANSWERS (FAQ) -->
+    <section class="section-padding dynamic-bg-transition" id="footerContact">
+        <div class="layout-wrapper">
+            <div class="premium-faq-split-axis">
+                <div class="faq-left-editorial-panel">
+                    <span class="label-editorial">Clear Answers</span>
+                    <h2>Need help deciding?</h2>
+                    <p>Connect with our performance marketing specialists directly to query tailored scaling strategy, media audits, and ad growth roadmaps.</p>
+                    <div class="faq-editorial-contacts-list">
+                        <a href="mailto:hello@messold.com" class="faq-contact-anchor">hello@messold.com</a>
+                        <a href="tel:+12345678" class="faq-contact-anchor">+1 (234) 567-890</a>
+                    </div>
+                </div>
+                
+                <div class="faq-accordion-stack">
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">How quickly can we expect ROAS improvements on our paid accounts?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                Initial account audit, tracking setup, and creative testing take 1 to 2 weeks. Performance gains and CAC stabilization typically become evident within the first 30 to 45 days of active algorithmic optimization.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-accordion-node">
+                        <div class="faq-node-trigger">
+                            <h3 class="faq-node-headline">What paid ad channels do you specialize in managing?</h3>
+                            <span class="faq-node-sign">+</span>
+                        </div>
+                        <div class="faq-node-hidden-drawer">
+                            <div class="faq-drawer-inner-prose">
+                                We manage Meta (Facebook & Instagram Ads), Google Ads (Search, Performance Max, Shopping, YouTube), TikTok Ads, WhatsApp marketing, and specialized retargeting networks.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // --- OPERATIONAL BLUEPRINT PROCESS BOARD INTERACTION ---
+            const blueprintSteps = document.querySelectorAll(".blueprint-timeline-step");
+            const blueprintPanes = document.querySelectorAll(".blueprint-stage-pane");
+            const blueprintOutputList = document.getElementById("blueprintOutputList");
+
+            const phaseOutputs = [
+                ["Data Leak Identification", "Ad Fatigue Mapping", "CAC / LTV Baseline Analysis"],
+                ["MER Target Framework", "Channel Allocation Plan", "Unit Economics Alignment"],
+                ["Server-Side CAPI Sync", "EMQ Score Optimization", "First-Party Data Integration"],
+                ["Hook Iteration Matrix", "Direct Response UGC", "High-Velocity Ad Copy"],
+                ["Consolidated Account Structures", "Advantage+ Campaign Setup", "Search Intent Funnels"],
+                ["Statistical Angle Isolation", "Landing Page Sync", "Offer Testing Protocols"],
+                ["Vertical Budget Scaling", "Horizontal Placement Spread", "Net Profit Margin Protection"],
+                ["Bid Strategy Fine-Tuning", "Fatigue Rotation Model", "Live Telemetry Dashboard"]
+            ];
+
+            blueprintSteps.forEach((stepBtn) => {
+                stepBtn.addEventListener("click", () => {
+                    const stepIdx = parseInt(stepBtn.getAttribute("data-step"));
+
+                    blueprintSteps.forEach(s => s.classList.remove("step-active"));
+                    blueprintPanes.forEach(p => p.classList.remove("pane-active"));
+
+                    stepBtn.classList.add("step-active");
+                    const targetPane = document.querySelector(`.blueprint-stage-pane[data-pane="${stepIdx}"]`);
+                    if(targetPane) targetPane.classList.add("pane-active");
+
+                    if(blueprintOutputList && phaseOutputs[stepIdx]) {
+                        blueprintOutputList.innerHTML = phaseOutputs[stepIdx]
+                            .map(item => `<li class="blueprint-deliverable-node">${item}</li>`)
+                            .join('');
+                    }
+                });
+            });
+
+            // --- INTERSECTION OBSERVER FOR SMART BACKGROUND TRANSITIONS ---
+            const targetBgSections = document.querySelectorAll(".dynamic-bg-transition");
+            const bgObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add("bg-active-state");
+                    } else {
+                        entry.target.classList.remove("bg-active-state");
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            targetBgSections.forEach(section => bgObserver.observe(section));
+
+            // --- REVEAL NODES OBSERVER ---
+            const revealNodes = document.querySelectorAll(".scroll-triggered-reveal, .instant-scroll-reveal");
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("revealed-node");
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealNodes.forEach(node => revealObserver.observe(node));
+
+            // --- METRIC COUNTERS ENGINE ---
+            const counters = document.querySelectorAll(".metric-counter-display");
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute("data-target"));
+                        if (isNaN(target)) return;
+                        
+                        let count = 0;
+                        const duration = 1200;
+                        const increment = target / (duration / 16);
+                        
+                        const updateCount = () => {
+                            count += increment;
+                            if (count >= target) {
+                                entry.target.innerText = target + (target === 99 || target === 98 || target === 35 ? "%" : "");
+                            } else {
+                                entry.target.innerText = Math.floor(count);
+                                requestAnimationFrame(updateCount);
+                            }
+                        };
+                        updateCount();
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(counter => counterObserver.observe(counter));
+
+            // --- TELEMETRY LIGHTBOX SYSTEM ---
+            const videoCards = document.querySelectorAll(".netflix-video-card");
+            const videoLightbox = document.getElementById("videoLightbox");
+            const lightboxTargetVideo = document.getElementById("lightboxTargetVideo");
+            const closeLightbox = document.getElementById("closeLightbox");
+
+            if(videoCards && videoLightbox && lightboxTargetVideo && closeLightbox) {
+                videoCards.forEach(card => {
+                    card.addEventListener("click", () => {
+                        const videoUrl = card.getAttribute("data-video-url");
+                        lightboxTargetVideo.src = videoUrl;
+                        videoLightbox.classList.add("lightbox-is-open");
+                        lightboxTargetVideo.play();
+                    });
+                });
+
+                const terminateLightbox = () => {
+                    videoLightbox.classList.remove("lightbox-is-open");
+                    lightboxTargetVideo.pause();
+                    lightboxTargetVideo.src = "";
+                };
+
+                closeLightbox.addEventListener("click", terminateLightbox);
+                videoLightbox.addEventListener("click", (e) => {
+                    if(e.target === videoLightbox) terminateLightbox();
+                });
+            }
+
+            // --- ACCORDION FAQ ENGINE ---
+            const faqNodes = document.querySelectorAll(".faq-accordion-node");
+            faqNodes.forEach(node => {
+                const trigger = node.querySelector(".faq-node-trigger");
+                const drawer = node.querySelector(".faq-node-hidden-drawer");
+
+                if (trigger && drawer) {
+                    trigger.addEventListener("click", () => {
+                        const isNodeActive = node.classList.contains("drawer-active");
+
+                        faqNodes.forEach(n => {
+                            n.classList.remove("drawer-active");
+                            n.querySelector(".faq-node-hidden-drawer").style.maxHeight = null;
+                        });
+
+                        if (!isNodeActive) {
+                            node.classList.add("drawer-active");
+                            drawer.style.maxHeight = drawer.scrollHeight + "px";
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
